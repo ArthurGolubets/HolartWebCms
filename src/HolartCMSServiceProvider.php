@@ -37,9 +37,6 @@ class HolartCMSServiceProvider extends ServiceProvider
         // Load migrations
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
-        // Load routes
-        $this->loadRoutesFrom(__DIR__.'/../routes/admin.php');
-
         // Load views
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'holart-cms');
 
