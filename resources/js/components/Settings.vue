@@ -68,32 +68,121 @@
       <!-- Интеграции -->
       <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Интеграции</h3>
-        
+
+        <!-- Tabs -->
+        <div class="border-b border-gray-200 dark:border-gray-700 mb-6">
+          <nav class="flex space-x-4">
+            <button
+              @click="activeTab = 'bitrix24'"
+              type="button"
+              class="pb-3 px-1 border-b-2 font-medium text-sm transition"
+              :class="activeTab === 'bitrix24'
+                ? 'border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400'
+                : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'"
+            >
+              Bitrix24
+            </button>
+            <button
+              @click="activeTab = 'payment'"
+              type="button"
+              class="pb-3 px-1 border-b-2 font-medium text-sm transition"
+              :class="activeTab === 'payment'
+                ? 'border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400'
+                : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'"
+            >
+              Платежная система
+            </button>
+            <button
+              @click="activeTab = 'telegram'"
+              type="button"
+              class="pb-3 px-1 border-b-2 font-medium text-sm transition"
+              :class="activeTab === 'telegram'
+                ? 'border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400'
+                : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'"
+            >
+              Telegram
+            </button>
+          </nav>
+        </div>
+
+        <!-- Tab Content -->
         <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Bitrix24 Webhook</label>
-            <input v-model="settings.bitrix24_webhook" type="text" class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white">
+          <!-- Bitrix24 Tab -->
+          <div v-if="activeTab === 'bitrix24'">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Webhook URL</label>
+              <input
+                v-model="settings.bitrix24_webhook"
+                type="text"
+                placeholder="https://your-domain.bitrix24.ru/rest/1/..."
+                class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
+              >
+              <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                Вебхук для интеграции с CRM Bitrix24
+              </p>
+            </div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Платежная система: Shop ID</label>
-              <input v-model="settings.payment_shop_id" type="text" class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white">
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Платежная система: Secret</label>
-              <input v-model="settings.payment_secret" type="password" class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white">
+          <!-- Payment Tab -->
+          <div v-if="activeTab === 'payment'">
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Shop ID</label>
+                <input
+                  v-model="settings.payment_shop_id"
+                  type="text"
+                  placeholder="12345"
+                  class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
+                >
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Secret Key</label>
+                <input
+                  v-model="settings.payment_secret"
+                  type="password"
+                  placeholder="••••••••••••••••"
+                  class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
+                >
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">API Key</label>
+                <input
+                  v-model="settings.payment_api_key"
+                  type="password"
+                  placeholder="••••••••••••••••"
+                  class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
+                >
+              </div>
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                Настройки для интеграции с платежной системой
+              </p>
             </div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Telegram: Chat ID</label>
-              <input v-model="settings.telegram_chat_id" type="text" class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white">
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Telegram: Token</label>
-              <input v-model="settings.telegram_token" type="password" class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white">
+          <!-- Telegram Tab -->
+          <div v-if="activeTab === 'telegram'">
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Bot Token</label>
+                <input
+                  v-model="settings.telegram_token"
+                  type="password"
+                  placeholder="1234567890:ABCdefGHIjklMNOpqrsTUVwxyz"
+                  class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
+                >
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Chat ID</label>
+                <input
+                  v-model="settings.telegram_chat_id"
+                  type="text"
+                  placeholder="-1001234567890"
+                  class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
+                >
+              </div>
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                Настройки для отправки уведомлений в Telegram
+              </p>
             </div>
           </div>
         </div>
@@ -133,6 +222,7 @@ import { useModal } from '../composables/useModal';
 const { success, error } = useModal();
 
 const loading = ref(false);
+const activeTab = ref('bitrix24');
 const settings = ref({
   panel_name: '',
   theme_color: 'red',
@@ -143,6 +233,7 @@ const settings = ref({
   bitrix24_webhook: '',
   payment_shop_id: '',
   payment_secret: '',
+  payment_api_key: '',
   telegram_chat_id: '',
   telegram_token: '',
   header_code: '',
