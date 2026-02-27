@@ -1,6 +1,7 @@
 {
     "name": "holartweb/holart-cms",
     "description": "Admin panel for Laravel 12 with Vue.js",
+    "version": "1.0.0",
     "type": "library",
     "license": "MIT",
     "keywords": ["laravel", "admin", "cms", "vue"],
@@ -34,6 +35,6 @@
             ]
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }
