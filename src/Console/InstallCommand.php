@@ -131,7 +131,7 @@ class InstallCommand extends Command
 
         // Check if license already saved
         $savedKey = $this->licenseService->getSavedLicense();
-        if ($savedKey && $this->licenseService->checkLicense($savedKey)) {
+        if ($savedKey && $this->licenseService->checkLicense($savedKey, 'install')) {
             $this->info('✅ Лицензия действительна');
             return true;
         }
@@ -146,7 +146,7 @@ class InstallCommand extends Command
 
         $this->line('Проверка ключа...');
 
-        if (!$this->licenseService->checkLicense($key)) {
+        if (!$this->licenseService->checkLicense($key, 'install')) {
             $this->error('❌ Недействительный лицензионный ключ');
             return false;
         }

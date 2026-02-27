@@ -90,7 +90,7 @@
                 ? 'border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400'
                 : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'"
             >
-              Платежная система
+              Юкасса
             </button>
             <button
               @click="activeTab = 'telegram'"
@@ -144,17 +144,8 @@
                   class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
                 >
               </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">API Key</label>
-                <input
-                  v-model="settings.payment_api_key"
-                  type="password"
-                  placeholder="••••••••••••••••"
-                  class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
-                >
-              </div>
               <p class="text-xs text-gray-500 dark:text-gray-400">
-                Настройки для интеграции с платежной системой
+                Настройки для интеграции с Юкассой
               </p>
             </div>
           </div>
@@ -233,7 +224,6 @@ const settings = ref({
   bitrix24_webhook: '',
   payment_shop_id: '',
   payment_secret: '',
-  payment_api_key: '',
   telegram_chat_id: '',
   telegram_token: '',
   header_code: '',

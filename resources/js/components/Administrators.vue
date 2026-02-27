@@ -17,6 +17,17 @@
       </button>
     </div>
 
+    <!-- Search -->
+    <div class="mb-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+      <input
+        v-model="searchQuery"
+        @input="handleSearch"
+        type="text"
+        placeholder="Поиск по имени, email..."
+        class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
+      >
+    </div>
+
     <!-- Table -->
     <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
       <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -130,14 +141,7 @@
 
           <!-- Active -->
           <div>
-            <label class="flex items-center cursor-pointer">
-              <input
-                v-model="form.is_active"
-                type="checkbox"
-                class="w-4 h-4 rounded"
-              >
-              <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Активен</span>
-            </label>
+            <ToggleSwitch v-model="form.is_active" label="Активен" />
           </div>
 
           <!-- Actions -->
@@ -163,12 +167,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useModal } from '../composables/useModal';
+import ToggleSwitch from './ToggleSwitch.vue';
 
 const { confirm, success, error } = useModal();
 
 const administrators = ref([]);
+const allAdministrators = ref([]);
+const searchQuery = ref('');
 const showCreateModal = ref(false);
 const showEditModal = ref(false);
 const form = ref({
@@ -179,6 +186,19 @@ const form = ref({
   role: 'manager',
   is_active: true
 });
+
+const handleSearch = () => {
+  if (!searchQuery.value) {
+    administrators.value = allAdministrators.value;
+    return;
+  }
+
+  const query = searchQuery.value.toLowerCase();
+  administrators.value = allAdministrators.value.filter(admin =>
+    admin.name.toLowerCase().includes(query) ||
+    admin.email.toLowerCase().includes(query)
+  );
+};
 
 const getInitials = (name) => {
   return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
@@ -205,7 +225,9 @@ const getRoleBadgeClass = (role) => {
 const fetchAdministrators = async () => {
   try {
     const response = await fetch('/admin/api/administrators');
-    administrators.value = await response.json();
+    const data = await response.json();
+    allAdministrators.value = data;
+    administrators.value = data;
   } catch (err) {
     console.error('Error fetching administrators:', err);
     await error('Ошибка при загрузке списка администраторов');

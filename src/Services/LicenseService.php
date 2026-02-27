@@ -11,11 +11,12 @@ class LicenseService
     /**
      * Check license key validity.
      */
-    public function checkLicense(string $key): bool
+    public function checkLicense(string $key, string $action = 'install'): bool
     {
         try {
             $response = Http::timeout(10)->post($this->licenseServer, [
                 'key' => $key,
+                'action' => $action,
             ]);
 
             if (!$response->successful()) {
@@ -56,7 +57,7 @@ class LicenseService
     /**
      * Check if license exists and is valid.
      */
-    public function hasValidLicense(): bool
+    public function hasValidLicense(string $action = 'install'): bool
     {
         $key = $this->getSavedLicense();
 
@@ -64,6 +65,6 @@ class LicenseService
             return false;
         }
 
-        return $this->checkLicense($key);
+        return $this->checkLicense($key, $action);
     }
 }

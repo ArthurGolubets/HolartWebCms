@@ -23,12 +23,20 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'email' => 'required|string',
             'password' => 'required|string',
         ]);
 
-        $credentials = $request->only('email', 'password');
+        $login = $request->input('email');
+        $password = $request->input('password');
         $remember = $request->filled('remember');
+
+        // Determine if login is email or username
+        $fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
+        $credentials = [
+            $fieldType => $login,
+            'password' => $password,
+        ];
 
         if (Auth::guard('admin')->attempt($credentials, $remember)) {
             $request->session()->regenerate();

@@ -43,13 +43,13 @@ class HolartCMSServiceProvider extends ServiceProvider
         // Register middleware
         $this->app['router']->aliasMiddleware('admin.auth', \HolartWeb\HolartCMS\Http\Middleware\RedirectIfNotAdmin::class);
 
-        // Register commands
-        if ($this->app->runningInConsole()) {
-            $this->commands([
-                \HolartWeb\HolartCMS\Console\InstallCommand::class,
-                \HolartWeb\HolartCMS\Console\UpdateCommand::class,
-            ]);
-        }
+        // Register commands (always register so they can be called via Artisan::call() from web)
+        $this->commands([
+            \HolartWeb\HolartCMS\Console\InstallCommand::class,
+            \HolartWeb\HolartCMS\Console\UpdateCommand::class,
+            \HolartWeb\HolartCMS\Console\ShopInstallCommand::class,
+            \HolartWeb\HolartCMS\Console\ShopUninstallCommand::class,
+        ]);
 
         // Publish config
         $this->publishes([

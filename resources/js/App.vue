@@ -9,7 +9,7 @@
 
     <!-- Sidebar -->
     <aside
-      class="fixed lg:static inset-y-0 left-0 z-50 bg-gray-900 dark:bg-gray-950 text-gray-200 flex flex-col border-r border-gray-800 transition-all duration-300"
+      class="fixed lg:sticky top-0 inset-y-0 left-0 z-50 h-screen bg-gray-900 dark:bg-gray-950 text-gray-200 flex flex-col border-r border-gray-800 transition-all duration-300"
       :class="[
         isCollapsed ? 'w-20' : 'w-64',
         isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
@@ -30,73 +30,82 @@
       </div>
 
       <!-- Navigation -->
-      <nav class="flex-1 py-4 px-3">
-        <router-link
-          to="/"
-          v-slot="{ isActive }"
-          custom
-        >
-          <a
-            @click="$router.push('/'); isMobileMenuOpen = false"
-            class="flex items-center px-3 py-2.5 mb-1 rounded-md transition-colors cursor-pointer"
-            :class="[
-              isActive ? 'text-white font-medium' : 'text-gray-300 hover:bg-gray-800 hover:text-white',
-              isCollapsed ? 'justify-center' : ''
-            ]"
-            :style="isActive ? `background-color: ${themeColor}` : ''"
-            :title="isCollapsed ? 'Главная' : ''"
-          >
-            <svg class="w-5 h-5" :class="isCollapsed ? '' : 'mr-3'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-            </svg>
+      <nav class="flex-1 py-4 px-3 overflow-y-auto">
+        <!-- Dashboard -->
+        <router-link to="/" v-slot="{ isActive }" custom>
+          <a @click="$router.push('/'); isMobileMenuOpen = false" class="flex items-center px-3 py-2.5 mb-1 rounded-md transition-colors cursor-pointer" :class="[isActive ? 'text-white font-medium' : 'text-gray-300 hover:bg-gray-800 hover:text-white', isCollapsed ? 'justify-center' : '']" :style="isActive ? `background-color: ${themeColor}` : ''" :title="isCollapsed ? 'Главная' : ''">
+            <svg class="w-5 h-5" :class="isCollapsed ? '' : 'mr-3'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
             <span v-if="!isCollapsed">Главная</span>
           </a>
         </router-link>
 
-        <router-link
-          to="/administrators"
-          v-slot="{ isActive }"
-          custom
-        >
-          <a
-            @click="$router.push('/administrators'); isMobileMenuOpen = false"
-            class="flex items-center px-3 py-2.5 mb-1 rounded-md transition-colors cursor-pointer"
-            :class="[
-              isActive ? 'text-white font-medium' : 'text-gray-300 hover:bg-gray-800 hover:text-white',
-              isCollapsed ? 'justify-center' : ''
-            ]"
-            :style="isActive ? `background-color: ${themeColor}` : ''"
-            :title="isCollapsed ? 'Администраторы' : ''"
-          >
-            <svg class="w-5 h-5" :class="isCollapsed ? '' : 'mr-3'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-            </svg>
-            <span v-if="!isCollapsed">Администраторы</span>
-          </a>
-        </router-link>
+        <!-- Content Group (only if shop module is installed) -->
+        <div v-if="shopModuleInstalled" class="mb-1">
+          <button @click="toggleMenuGroup('content')" class="w-full flex items-center px-3 py-2.5 text-gray-300 hover:bg-gray-800 hover:text-white rounded-md transition-colors" :class="isCollapsed ? 'justify-center' : 'justify-between'" :title="isCollapsed ? 'Контент' : ''">
+            <div class="flex items-center">
+              <svg class="w-5 h-5" :class="isCollapsed ? '' : 'mr-3'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+              <span v-if="!isCollapsed">Контент</span>
+            </div>
+            <svg v-if="!isCollapsed" class="w-4 h-4 transition-transform" :class="{ 'rotate-180': menuGroups.content }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div v-if="menuGroups.content && !isCollapsed" class="ml-3 mt-1 space-y-1">
+            <router-link to="/catalog" v-slot="{ isActive }" custom>
+              <a @click="$router.push('/catalog'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+                Каталог
+              </a>
+            </router-link>
+            <router-link to="/products" v-slot="{ isActive }" custom>
+              <a @click="$router.push('/products'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                Список товаров
+              </a>
+            </router-link>
+          </div>
+        </div>
 
-        <router-link
-          to="/settings"
-          v-slot="{ isActive }"
-          custom
-        >
-          <a
-            @click="$router.push('/settings'); isMobileMenuOpen = false"
-            class="flex items-center px-3 py-2.5 mb-1 rounded-md transition-colors cursor-pointer"
-            :class="[
-              isActive ? 'text-white font-medium' : 'text-gray-300 hover:bg-gray-800 hover:text-white',
-              isCollapsed ? 'justify-center' : ''
-            ]"
-            :style="isActive ? `background-color: ${themeColor}` : ''"
-            :title="isCollapsed ? 'Настройки' : ''"
-          >
-            <svg class="w-5 h-5" :class="isCollapsed ? '' : 'mr-3'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-            </svg>
-            <span v-if="!isCollapsed">Настройки</span>
-          </a>
-        </router-link>
+        <!-- Settings Group (only for super_admin and administrator) -->
+        <div v-if="canAccessSettings" class="mb-1">
+          <button @click="toggleMenuGroup('settings')" class="w-full flex items-center px-3 py-2.5 text-gray-300 hover:bg-gray-800 hover:text-white rounded-md transition-colors" :class="isCollapsed ? 'justify-center' : 'justify-between'" :title="isCollapsed ? 'Настройки' : ''">
+            <div class="flex items-center">
+              <svg class="w-5 h-5" :class="isCollapsed ? '' : 'mr-3'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <span v-if="!isCollapsed">Настройки</span>
+            </div>
+            <svg v-if="!isCollapsed" class="w-4 h-4 transition-transform" :class="{ 'rotate-180': menuGroups.settings }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div v-if="menuGroups.settings && !isCollapsed" class="ml-3 mt-1 space-y-1">
+            <router-link to="/settings" v-slot="{ isActive }" custom>
+              <a @click="$router.push('/settings'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                Настройки панели
+              </a>
+            </router-link>
+            <router-link to="/environment" v-slot="{ isActive }" custom>
+              <a @click="$router.push('/environment'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                Окружение
+              </a>
+            </router-link>
+            <router-link to="/modules" v-slot="{ isActive }" custom>
+              <a @click="$router.push('/modules'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                Модули
+              </a>
+            </router-link>
+            <router-link to="/logs" v-slot="{ isActive }" custom>
+              <a @click="$router.push('/logs'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                Логи
+              </a>
+            </router-link>
+            <router-link to="/administrators" v-slot="{ isActive }" custom>
+              <a @click="$router.push('/administrators'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                Администраторы
+              </a>
+            </router-link>
+          </div>
+        </div>
       </nav>
 
       <!-- User Menu -->
@@ -144,13 +153,13 @@
           </svg>
         </button>
 
-        <h1 class="text-xl font-semibold text-gray-900 dark:text-white hidden lg:block">Dashboard</h1>
-        <div class="lg:hidden"></div>
+        <GlobalSearch class="hidden lg:block flex-1 max-w-md" />
+        <div class="lg:hidden flex-1"></div>
 
         <!-- Actions -->
         <div class="flex items-center space-x-3">
-          <!-- Settings Button -->
-          <router-link to="/settings">
+          <!-- Settings Button (only for super_admin and administrator) -->
+          <router-link v-if="canAccessSettings" to="/settings">
             <button class="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition" title="Настройки">
               <svg class="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
@@ -240,22 +249,32 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import Modal from './components/Modal.vue';
+import GlobalSearch from './components/GlobalSearch.vue';
 import { useModal } from './composables/useModal';
+import { useTheme } from './composables/useTheme';
+import { useModuleEvents } from './composables/useModuleEvents';
 
 const { modalState, success, error } = useModal();
+const { themeColor: globalThemeColor, setThemeColor } = useTheme();
+const { moduleUpdateCounter } = useModuleEvents();
 
 const isDark = ref(false);
 const isCollapsed = ref(false);
 const isMobileMenuOpen = ref(false);
 const showUserMenu = ref(false);
 const panelName = ref('HolartCMS');
-const themeColor = ref('#ef4444'); // Default red
+const themeColor = globalThemeColor; // Use global theme color
+const menuGroups = ref({
+  content: false,
+});
 
 const adminUser = ref({
   name: 'Администратор',
   email: 'admin@example.com',
   role: 'super_admin'
 });
+
+const shopModuleInstalled = ref(false);
 
 const roleLabel = computed(() => {
   const roles = {
@@ -271,9 +290,17 @@ const userInitials = computed(() => {
   return names.map(n => n[0]).join('').toUpperCase().slice(0, 2);
 });
 
+const canAccessSettings = computed(() => {
+  return adminUser.value.role === 'super_admin' || adminUser.value.role === 'administrator';
+});
+
 const toggleSidebar = () => {
   isCollapsed.value = !isCollapsed.value;
   localStorage.setItem('holart-cms-sidebar', isCollapsed.value ? 'collapsed' : 'expanded');
+};
+
+const toggleMenuGroup = (group) => {
+  menuGroups.value[group] = !menuGroups.value[group];
 };
 
 const toggleTheme = () => {
@@ -316,6 +343,25 @@ const logout = async () => {
   }
 };
 
+const loadCurrentUser = async () => {
+  try {
+    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    const response = await fetch('/admin/api/me', {
+      headers: {
+        'X-CSRF-TOKEN': token,
+        'Accept': 'application/json'
+      }
+    });
+
+    if (response.ok) {
+      const user = await response.json();
+      adminUser.value = user;
+    }
+  } catch (error) {
+    console.error('Failed to load current user:', error);
+  }
+};
+
 const loadSettings = async () => {
   try {
     const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
@@ -339,11 +385,29 @@ const loadSettings = async () => {
           orange: '#f97316',
           pink: '#ec4899'
         };
-        themeColor.value = colorMap[settings.theme_color] || '#ef4444';
+        const color = colorMap[settings.theme_color] || '#ef4444';
+        themeColor.value = color;
+        setThemeColor(color);
       }
     }
   } catch (error) {
     console.error('Failed to load settings:', error);
+  }
+};
+
+const loadModulesStatus = async () => {
+  try {
+    const response = await fetch('/admin/api/modules', {
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const shopModule = data.modules?.find(m => m.id === 'shop');
+      shopModuleInstalled.value = shopModule?.installed || false;
+    }
+  } catch (error) {
+    console.error('Failed to load modules status:', error);
   }
 };
 
@@ -358,7 +422,14 @@ onMounted(() => {
   const savedSidebar = localStorage.getItem('holart-cms-sidebar');
   isCollapsed.value = savedSidebar === 'collapsed';
 
+  loadCurrentUser();
   loadSettings();
+  loadModulesStatus();
+});
+
+// Watch for module updates and reload sidebar
+watch(moduleUpdateCounter, () => {
+  loadModulesStatus();
 });
 </script>
 

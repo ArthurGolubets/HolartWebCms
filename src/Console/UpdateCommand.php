@@ -127,7 +127,7 @@ class UpdateCommand extends Command
         $this->info('🔑 Проверка лицензии...');
 
         // Check saved license
-        if (!$this->licenseService->hasValidLicense()) {
+        if (!$this->licenseService->hasValidLicense('update')) {
             $this->error('❌ Лицензия недействительна или отсутствует');
             $this->line('Пожалуйста, переустановите HolartCMS с действительной лицензией');
             return false;
