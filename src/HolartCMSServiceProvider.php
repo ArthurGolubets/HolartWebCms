@@ -40,10 +40,14 @@ class HolartCMSServiceProvider extends ServiceProvider
         // Load views
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'holart-cms');
 
+        // Register middleware
+        $this->app['router']->aliasMiddleware('admin.auth', \HolartWeb\HolartCMS\Http\Middleware\RedirectIfNotAdmin::class);
+
         // Register commands
         if ($this->app->runningInConsole()) {
             $this->commands([
                 \HolartWeb\HolartCMS\Console\InstallCommand::class,
+                \HolartWeb\HolartCMS\Console\UpdateCommand::class,
             ]);
         }
 

@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use HolartWeb\HolartCMS\Models\TAdministrator;
 use HolartWeb\HolartCMS\Enums\AdminRole;
+use HolartWeb\HolartCMS\Services\LicenseService;
 
 class InstallCommand extends Command
 {
@@ -24,11 +25,33 @@ class InstallCommand extends Command
     protected $description = 'Install HolartCMS admin panel';
 
     /**
+     * License service instance.
+     */
+    protected LicenseService $licenseService;
+
+    /**
+     * Create a new command instance.
+     */
+    public function __construct(LicenseService $licenseService)
+    {
+        parent::__construct();
+        $this->licenseService = $licenseService;
+    }
+
+    /**
      * Execute the console command.
      */
     public function handle(): int
     {
         $this->info('🚀 Установка HolartCMS...');
+        $this->newLine();
+
+        // Check license
+        if (!$this->checkLicense()) {
+            $this->error('❌ Установка отменена: недействительный лицензионный ключ');
+            return self::FAILURE;
+        }
+
         $this->newLine();
 
         // Publish configuration
@@ -97,6 +120,42 @@ class InstallCommand extends Command
             $this->error('Ошибка при сборке фронтенда');
             $this->line('Попробуйте вручную: cd ' . $packagePath . ' && npm run build');
         }
+    }
+
+    /**
+     * Check license key.
+     */
+    protected function checkLicense(): bool
+    {
+        $this->info('🔑 Проверка лицензионного ключа...');
+
+        // Check if license already saved
+        $savedKey = $this->licenseService->getSavedLicense();
+        if ($savedKey && $this->licenseService->checkLicense($savedKey)) {
+            $this->info('✅ Лицензия действительна');
+            return true;
+        }
+
+        // Ask for license key
+        $this->warn('Для установки HolartCMS требуется лицензионный ключ');
+        $key = $this->ask('Введите лицензионный ключ');
+
+        if (!$key) {
+            return false;
+        }
+
+        $this->line('Проверка ключа...');
+
+        if (!$this->licenseService->checkLicense($key)) {
+            $this->error('❌ Недействительный лицензионный ключ');
+            return false;
+        }
+
+        // Save license key
+        $this->licenseService->saveLicense($key);
+        $this->info('✅ Лицензия активирована успешно');
+
+        return true;
     }
 
     /**

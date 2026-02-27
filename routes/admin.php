@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use HolartWeb\HolartCMS\Http\Controllers\Auth\LoginController;
 use HolartWeb\HolartCMS\Http\Controllers\Auth\ForgotPasswordController;
 use HolartWeb\HolartCMS\Http\Controllers\DashboardController;
+use HolartWeb\HolartCMS\Http\Controllers\AdministratorController;
+use HolartWeb\HolartCMS\Http\Controllers\SettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,9 +27,20 @@ Route::middleware('guest:admin')->group(function () {
 });
 
 // Authenticated admin routes
-Route::middleware(['auth:admin'])->group(function () {
+Route::middleware(['admin.auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('holart-cms.dashboard');
     Route::post('logout', [LoginController::class, 'logout'])->name('holart-cms.logout');
+
+    // API Routes
+    Route::prefix('api')->group(function () {
+        Route::get('administrators', [AdministratorController::class, 'index']);
+        Route::post('administrators', [AdministratorController::class, 'store']);
+        Route::put('administrators/{id}', [AdministratorController::class, 'update']);
+        Route::delete('administrators/{id}', [AdministratorController::class, 'destroy']);
+
+        Route::get('settings', [SettingsController::class, 'index']);
+        Route::post('settings', [SettingsController::class, 'update']);
+    });
 
     // SPA route - catch all for Vue Router
     Route::get('/{any}', [DashboardController::class, 'index'])

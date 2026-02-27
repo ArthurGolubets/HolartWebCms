@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вход - {{ config('holart-cms.name', 'HolartCMS') }}</title>
+    <title>Восстановление пароля - {{ config('holart-cms.name', 'HolartCMS') }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -58,22 +58,25 @@
             </svg>
         </button>
 
-        <!-- Login Card -->
+        <!-- Card -->
         <div class="relative z-10 w-full max-w-md fade-in">
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 transition-colors duration-300">
                 <!-- Header -->
                 <div class="text-center mb-8">
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                        {{ config('holart-cms.name', 'HolartCMS') }}
+                        Восстановление пароля
                     </h1>
-                    <p class="text-gray-600 dark:text-gray-400">Панель администратора</p>
+                    <p class="text-gray-600 dark:text-gray-400">Введите ваш email для получения ссылки</p>
                 </div>
+
+                <!-- Success Message -->
+                <div id="success-alert" class="hidden mb-6 p-4 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg text-green-800 dark:text-green-200 text-sm"></div>
 
                 <!-- Error Alert -->
                 <div id="error-alert" class="hidden mb-6 p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-200 text-sm"></div>
 
-                <!-- Login Form -->
-                <form id="login-form" method="POST" action="{{ route('holart-cms.login.post') }}" class="space-y-5">
+                <!-- Form -->
+                <form id="forgot-form" method="POST" action="{{ route('holart-cms.password.email') }}" class="space-y-5">
                     @csrf
 
                     <!-- Email -->
@@ -85,44 +88,27 @@
                                required
                                autofocus
                                class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-opacity-50 transition-colors outline-none text-gray-900 dark:text-white"
-                               placeholder="admin@example.com"
-                               style="focus:ring-color: var(--theme-color);">
+                               placeholder="admin@example.com">
                         <span id="email-error" class="text-red-500 text-sm mt-1 hidden"></span>
-                    </div>
-
-                    <!-- Password -->
-                    <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Пароль</label>
-                        <input type="password"
-                               id="password"
-                               name="password"
-                               required
-                               class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-opacity-50 transition-colors outline-none text-gray-900 dark:text-white"
-                               placeholder="••••••••">
-                        <span id="password-error" class="text-red-500 text-sm mt-1 hidden"></span>
-                    </div>
-
-                    <!-- Remember & Forgot -->
-                    <div class="flex items-center justify-between">
-                        <label class="flex items-center cursor-pointer">
-                            <input type="checkbox" name="remember" class="w-4 h-4 rounded border-gray-300 dark:border-gray-600">
-                            <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">Запомнить меня</span>
-                        </label>
-                        <a href="{{ route('holart-cms.password.request') }}" class="text-sm font-medium hover:underline transition" id="forgot-link">
-                            Забыли пароль?
-                        </a>
                     </div>
 
                     <!-- Submit Button -->
                     <button type="submit"
-                            id="login-btn"
+                            id="submit-btn"
                             class="w-full py-3 px-4 text-white font-semibold rounded-lg hover:opacity-90 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-60">
-                        <span id="btn-text">Войти</span>
+                        <span id="btn-text">Отправить ссылку</span>
                         <svg id="loader" class="hidden animate-spin h-5 w-5 mx-auto text-white" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
                     </button>
+
+                    <!-- Back to login -->
+                    <div class="text-center">
+                        <a href="{{ route('holart-cms.login') }}" class="text-sm font-medium hover:underline transition" id="back-link">
+                            ← Вернуться ко входу
+                        </a>
+                    </div>
                 </form>
             </div>
         </div>
@@ -143,10 +129,10 @@
         document.documentElement.style.setProperty('--theme-color', colorMap[themeColor] || colorMap.red);
 
         // Apply theme color to elements
-        const loginBtn = document.getElementById('login-btn');
-        const forgotLink = document.getElementById('forgot-link');
-        loginBtn.style.backgroundColor = colorMap[themeColor] || colorMap.red;
-        forgotLink.style.color = colorMap[themeColor] || colorMap.red;
+        const submitBtn = document.getElementById('submit-btn');
+        const backLink = document.getElementById('back-link');
+        submitBtn.style.backgroundColor = colorMap[themeColor] || colorMap.red;
+        backLink.style.color = colorMap[themeColor] || colorMap.red;
 
         // Theme toggle
         const themeToggle = document.getElementById('theme-toggle');
@@ -176,7 +162,7 @@
         });
 
         // Form submission
-        const form = document.getElementById('login-form');
+        const form = document.getElementById('forgot-form');
         const btnText = document.getElementById('btn-text');
         const loader = document.getElementById('loader');
 
@@ -184,10 +170,10 @@
             e.preventDefault();
 
             document.getElementById('error-alert').classList.add('hidden');
+            document.getElementById('success-alert').classList.add('hidden');
             document.getElementById('email-error').classList.add('hidden');
-            document.getElementById('password-error').classList.add('hidden');
 
-            loginBtn.disabled = true;
+            submitBtn.disabled = true;
             btnText.classList.add('hidden');
             loader.classList.remove('hidden');
 
@@ -205,24 +191,20 @@
 
                 const data = await response.json();
 
-                if (response.ok) {
-                    window.location.href = data.redirect;
-                } else {
-                    loginBtn.disabled = false;
-                    btnText.classList.remove('hidden');
-                    loader.classList.add('hidden');
+                submitBtn.disabled = false;
+                btnText.classList.remove('hidden');
+                loader.classList.add('hidden');
 
-                    if (data.errors) {
-                        if (data.errors.email) {
-                            const emailError = document.getElementById('email-error');
-                            emailError.textContent = data.errors.email[0];
-                            emailError.classList.remove('hidden');
-                        }
-                        if (data.errors.password) {
-                            const passwordError = document.getElementById('password-error');
-                            passwordError.textContent = data.errors.password[0];
-                            passwordError.classList.remove('hidden');
-                        }
+                if (response.ok) {
+                    const successAlert = document.getElementById('success-alert');
+                    successAlert.textContent = data.message || 'Ссылка для восстановления отправлена на ваш email';
+                    successAlert.classList.remove('hidden');
+                    form.reset();
+                } else {
+                    if (data.errors && data.errors.email) {
+                        const emailError = document.getElementById('email-error');
+                        emailError.textContent = data.errors.email[0];
+                        emailError.classList.remove('hidden');
                     } else if (data.message) {
                         const alert = document.getElementById('error-alert');
                         alert.textContent = data.message;
@@ -230,7 +212,7 @@
                     }
                 }
             } catch (error) {
-                loginBtn.disabled = false;
+                submitBtn.disabled = false;
                 btnText.classList.remove('hidden');
                 loader.classList.add('hidden');
 
