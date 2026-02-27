@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
+use HolartWeb\HolartCMS\Models\TAdminAction;
 
 class ModulesController extends Controller
 {
@@ -40,6 +41,14 @@ class ModulesController extends Controller
                 'uninstall_command' => 'holartcms:commerce-uninstall',
                 'dependencies' => ['shop'],
                 'can_install' => $this->isShopModuleInstalled(),
+            ],
+            [
+                'id' => 'logging',
+                'name' => 'Журнал активности',
+                'description' => 'Модуль для отслеживания всех действий администраторов: создание, редактирование, удаление товаров, категорий, заказов, установка модулей и изменение настроек',
+                'installed' => $this->isLoggingModuleInstalled(),
+                'install_command' => 'holartcms:logging-install',
+                'uninstall_command' => 'holartcms:logging-uninstall',
             ]
         ];
 
@@ -57,6 +66,9 @@ class ModulesController extends Controller
             Artisan::call('holartcms:update');
 
             $output = Artisan::output();
+
+            // Log activity
+            TAdminAction::log('updated', 'system', null, 'Выполнено обновление системы');
 
             return response()->json([
                 'success' => true,
@@ -93,6 +105,9 @@ class ModulesController extends Controller
                 case 'commerce':
                     $exitCode = Artisan::call('holartcms:commerce-install');
                     break;
+                case 'logging':
+                    $exitCode = Artisan::call('holartcms:logging-install');
+                    break;
                 default:
                     return response()->json([
                         'success' => false,
@@ -110,6 +125,11 @@ class ModulesController extends Controller
                     'message' => 'Ошибка при установке модуля. Проверьте вывод команды.'
                 ], 400);
             }
+
+            // Log activity
+            $moduleNames = ['shop' => 'Каталог и товары', 'callback' => 'Обратная связь', 'commerce' => 'Коммерция', 'logging' => 'Журнал активности'];
+            $moduleName = $moduleNames[$moduleId] ?? $moduleId;
+            TAdminAction::log('installed', 'module', null, 'Установлен модуль: ' . $moduleName);
 
             return response()->json([
                 'success' => true,
@@ -152,6 +172,11 @@ class ModulesController extends Controller
                         '--preserve-db' => $preserveDatabase
                     ]);
                     break;
+                case 'logging':
+                    Artisan::call('holartcms:logging-uninstall', [
+                        '--preserve-db' => $preserveDatabase
+                    ]);
+                    break;
                 default:
                     return response()->json([
                         'success' => false,
@@ -160,6 +185,11 @@ class ModulesController extends Controller
             }
 
             $output = Artisan::output();
+
+            // Log activity
+            $moduleNames = ['shop' => 'Каталог и товары', 'callback' => 'Обратная связь', 'commerce' => 'Коммерция', 'logging' => 'Журнал активности'];
+            $moduleName = $moduleNames[$moduleId] ?? $moduleId;
+            TAdminAction::log('uninstalled', 'module', null, 'Удален модуль: ' . $moduleName);
 
             return response()->json([
                 'success' => true,
@@ -208,6 +238,15 @@ class ModulesController extends Controller
                file_exists(app_path('Http/Controllers/PromocodesController.php')) &&
                Schema::hasTable('t_orders') &&
                Schema::hasTable('t_promocodes');
+    }
+
+    /**
+     * Check if logging module is installed
+     */
+    private function isLoggingModuleInstalled()
+    {
+        return file_exists(app_path('Http/Controllers/LogsController.php')) &&
+               Schema::hasTable('t_admin_actions');
     }
 
     /**

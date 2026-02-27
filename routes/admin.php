@@ -58,6 +58,16 @@ Route::middleware(['admin.auth'])->group(function () {
         Route::get('logs/actions', [LogsController::class, 'actions']);
         Route::get('logs/entity-types', [LogsController::class, 'entityTypes']);
 
+        // Activity logs (admin actions tracking) - only if logging module is installed
+        $logsControllerPath = app_path('Http/Controllers/LogsController.php');
+        if (file_exists($logsControllerPath)) {
+            $logsController = 'App\\Http\\Controllers\\LogsController';
+            Route::get('logs', [$logsController, 'index']);
+            Route::get('logs/{id}', [$logsController, 'show']);
+            Route::get('logs/statistics', [$logsController, 'statistics']);
+            Route::get('logs/filters', [$logsController, 'filters']);
+        }
+
         Route::get('modules', [ModulesController::class, 'index']);
         Route::post('modules/update', [ModulesController::class, 'update']);
         Route::post('modules/{moduleId}/install', [ModulesController::class, 'install']);

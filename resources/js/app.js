@@ -6,6 +6,7 @@ import Administrators from './components/Administrators.vue';
 import Settings from './components/Settings.vue';
 import EnvironmentSettings from './components/EnvironmentSettings.vue';
 import Logs from './components/Logs.vue';
+import ActivityLogs from './components/ActivityLogs.vue';
 import Modules from './components/Modules.vue';
 import CatalogTree from './components/CatalogTree.vue';
 import CatalogView from './components/CatalogView.vue';
@@ -58,6 +59,11 @@ const router = createRouter({
             path: '/logs',
             name: 'logs',
             component: Logs
+        },
+        {
+            path: '/activity-logs',
+            name: 'activity-logs',
+            component: ActivityLogs
         },
         {
             path: '/modules',
@@ -203,7 +209,7 @@ router.beforeEach(async (to, from, next) => {
         const userData = await response.json();
 
         // Check access to settings pages (only for super_admin and administrator)
-        const settingsRoutes = ['settings', 'environment', 'logs', 'modules', 'administrators'];
+        const settingsRoutes = ['settings', 'environment', 'logs', 'activity-logs', 'modules', 'administrators'];
         if (settingsRoutes.includes(to.name)) {
             if (userData.role !== 'super_admin' && userData.role !== 'administrator') {
                 next({ name: 'error-403' });
