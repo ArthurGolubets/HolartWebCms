@@ -116,7 +116,8 @@
       <button
         @click="saveSettings"
         :disabled="loading"
-        class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition disabled:opacity-50"
+        :style="buttonStyle"
+        class="px-6 py-3 text-white rounded-lg font-medium transition-opacity hover:opacity-90 disabled:opacity-50"
       >
         {{ loading ? 'Сохранение...' : 'Сохранить' }}
       </button>
@@ -127,8 +128,10 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useModal } from '../composables/useModal';
+import { useTheme } from '../composables/useTheme';
 
 const { success, error } = useModal();
+const { buttonStyle } = useTheme();
 
 const loading = ref(false);
 const testing = ref(false);

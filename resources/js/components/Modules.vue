@@ -28,7 +28,8 @@
         <button
           @click="executeUpdate"
           :disabled="updating"
-          class="ml-4 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg font-medium transition flex items-center"
+          :style="buttonStyle"
+          class="ml-4 px-6 py-2.5 disabled:bg-gray-400 text-white rounded-lg font-medium transition-opacity hover:opacity-90 flex items-center"
         >
           <svg v-if="updating" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -42,76 +43,152 @@
     <!-- Separator -->
     <div class="mb-6 border-t-2 border-gray-300 dark:border-gray-700"></div>
 
-    <!-- Modules Section Header -->
-    <div class="mb-6">
-      <h3 class="text-xl font-bold text-gray-900 dark:text-white">Доступные модули</h3>
-      <p class="text-gray-600 dark:text-gray-400 mt-1">Установка и управление дополнительными модулями</p>
-    </div>
-
     <!-- Loading -->
     <div v-if="loading" class="flex justify-center py-12">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
     </div>
 
-    <!-- Modules List -->
-    <div v-else class="space-y-4">
-      <div
-        v-for="module in modules"
-        :key="module.id"
-        class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6"
-      >
-        <div class="flex items-start justify-between">
-          <div class="flex-1">
-            <div class="flex items-center mb-2">
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ module.name }}</h3>
-              <span
-                v-if="module.installed"
-                class="ml-3 px-2 py-1 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 rounded"
-              >
-                Установлен
-              </span>
-              <span
-                v-else
-                class="ml-3 px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 rounded"
-              >
-                Не установлен
-              </span>
-            </div>
+    <div v-else>
+      <!-- Modules Section -->
+      <div class="mb-8">
+        <div class="mb-6">
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white">Модули</h3>
+          <p class="text-gray-600 dark:text-gray-400 mt-1">Установка и управление функциональными модулями</p>
+        </div>
 
-            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{{ module.description }}</p>
+        <div class="space-y-4">
+          <div
+            v-for="module in functionalModules"
+            :key="module.id"
+            class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6"
+          >
+            <div class="flex items-start justify-between">
+              <div class="flex-1">
+                <div class="flex items-center mb-2">
+                  <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ module.name }}</h3>
+                  <span
+                    v-if="module.installed"
+                    class="ml-3 px-2 py-1 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 rounded"
+                  >
+                    Установлен
+                  </span>
+                  <span
+                    v-else
+                    class="ml-3 px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 rounded"
+                  >
+                    Не установлен
+                  </span>
+                </div>
 
-            <!-- Module Output -->
-            <div v-if="moduleOutputs[module.id]" class="mb-4 p-4 bg-gray-900 text-green-400 rounded-lg font-mono text-xs overflow-x-auto max-h-48 overflow-y-auto">
-              <pre>{{ moduleOutputs[module.id] }}</pre>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{{ module.description }}</p>
+
+                <!-- Module Output -->
+                <div v-if="moduleOutputs[module.id]" class="mb-4 p-4 bg-gray-900 text-green-400 rounded-lg font-mono text-xs overflow-x-auto max-h-48 overflow-y-auto">
+                  <pre>{{ moduleOutputs[module.id] }}</pre>
+                </div>
+              </div>
+
+              <div class="ml-4 flex flex-col space-y-2">
+                <button
+                  v-if="!module.installed"
+                  @click="installModule(module)"
+                  :disabled="processingModules[module.id]"
+                  :style="buttonStyle"
+                  class="px-6 py-2.5 disabled:bg-gray-400 text-white rounded-lg font-medium transition-opacity hover:opacity-90 flex items-center"
+                >
+                  <svg v-if="processingModules[module.id]" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  {{ processingModules[module.id] ? 'Установка...' : 'Установить' }}
+                </button>
+
+                <button
+                  v-if="module.installed"
+                  @click="showUninstallModal(module)"
+                  :disabled="processingModules[module.id]"
+                  class="px-6 py-2.5 bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white rounded-lg font-medium transition flex items-center"
+                >
+                  <svg v-if="processingModules[module.id]" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  {{ processingModules[module.id] ? 'Удаление...' : 'Удалить' }}
+                </button>
+              </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          <div class="ml-4 flex flex-col space-y-2">
-            <button
-              v-if="!module.installed"
-              @click="installModule(module)"
-              :disabled="processingModules[module.id]"
-              class="px-6 py-2.5 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg font-medium transition flex items-center"
-            >
-              <svg v-if="processingModules[module.id]" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              {{ processingModules[module.id] ? 'Установка...' : 'Установить' }}
-            </button>
+      <!-- Integrations Section -->
+      <div v-if="integrationModules.length > 0">
+        <div class="mb-6">
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white">Интеграции</h3>
+          <p class="text-gray-600 dark:text-gray-400 mt-1">Подключение сторонних сервисов и API</p>
+        </div>
 
-            <button
-              v-if="module.installed"
-              @click="showUninstallModal(module)"
-              :disabled="processingModules[module.id]"
-              class="px-6 py-2.5 bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white rounded-lg font-medium transition flex items-center"
-            >
-              <svg v-if="processingModules[module.id]" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              {{ processingModules[module.id] ? 'Удаление...' : 'Удалить' }}
-            </button>
+        <div class="space-y-4">
+          <div
+            v-for="module in integrationModules"
+            :key="module.id"
+            class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6"
+          >
+            <div class="flex items-start justify-between">
+              <div class="flex-1">
+                <div class="flex items-center mb-2">
+                  <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ module.name }}</h3>
+                  <span
+                    v-if="module.installed"
+                    class="ml-3 px-2 py-1 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 rounded"
+                  >
+                    Установлен
+                  </span>
+                  <span
+                    v-else
+                    class="ml-3 px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 rounded"
+                  >
+                    Не установлен
+                  </span>
+                </div>
+
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{{ module.description }}</p>
+
+                <!-- Module Output -->
+                <div v-if="moduleOutputs[module.id]" class="mb-4 p-4 bg-gray-900 text-green-400 rounded-lg font-mono text-xs overflow-x-auto max-h-48 overflow-y-auto">
+                  <pre>{{ moduleOutputs[module.id] }}</pre>
+                </div>
+              </div>
+
+              <div class="ml-4 flex flex-col space-y-2">
+                <button
+                  v-if="!module.installed"
+                  @click="installModule(module)"
+                  :disabled="processingModules[module.id]"
+                  :style="buttonStyle"
+                  class="px-6 py-2.5 disabled:bg-gray-400 text-white rounded-lg font-medium transition-opacity hover:opacity-90 flex items-center"
+                >
+                  <svg v-if="processingModules[module.id]" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  {{ processingModules[module.id] ? 'Установка...' : 'Установить' }}
+                </button>
+
+                <button
+                  v-if="module.installed"
+                  @click="showUninstallModal(module)"
+                  :disabled="processingModules[module.id]"
+                  class="px-6 py-2.5 bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white rounded-lg font-medium transition flex items-center"
+                >
+                  <svg v-if="processingModules[module.id]" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  {{ processingModules[module.id] ? 'Удаление...' : 'Удалить' }}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -169,12 +246,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useModal } from '../composables/useModal';
+import { useTheme } from '../composables/useTheme';
 import { useModuleEvents } from '../composables/useModuleEvents';
 
 const { success, error } = useModal();
 const { triggerModuleUpdate } = useModuleEvents();
+const { buttonStyle } = useTheme();
 
 const loading = ref(false);
 const modules = ref([]);
@@ -187,6 +266,15 @@ const uninstallModal = ref({
   show: false,
   module: null,
   preserveDatabase: true
+});
+
+// Разделение модулей на функциональные и интеграции
+const functionalModules = computed(() => {
+  return modules.value.filter(m => m.type !== 'integration');
+});
+
+const integrationModules = computed(() => {
+  return modules.value.filter(m => m.type === 'integration');
 });
 
 const loadModules = async () => {
@@ -258,6 +346,10 @@ const installModule = async (module) => {
       await loadModules();
       triggerModuleUpdate(); // Notify App.vue to update sidebar
     } else {
+      // Show output even on error
+      if (result.output) {
+        moduleOutputs.value[module.id] = result.output;
+      }
       await error(result.message || 'Ошибка при установке модуля');
     }
   } catch (err) {
@@ -313,6 +405,10 @@ const confirmUninstall = async () => {
       await loadModules();
       triggerModuleUpdate(); // Notify App.vue to update sidebar
     } else {
+      // Show output even on error
+      if (result.output) {
+        moduleOutputs.value[module.id] = result.output;
+      }
       await error(result.message || 'Ошибка при удалении модуля');
     }
   } catch (err) {

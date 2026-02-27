@@ -22,6 +22,24 @@ class ModulesController extends Controller
                 'installed' => $this->isShopModuleInstalled(),
                 'install_command' => 'holartcms:shop-install',
                 'uninstall_command' => 'holartcms:shop-uninstall',
+            ],
+            [
+                'id' => 'callback',
+                'name' => 'Обратная связь',
+                'description' => 'Модуль для управления email подписками, комментариями и обращениями пользователей',
+                'installed' => $this->isCallbackModuleInstalled(),
+                'install_command' => 'holartcms:callback-user-install',
+                'uninstall_command' => 'holartcms:callback-user-uninstall',
+            ],
+            [
+                'id' => 'commerce',
+                'name' => 'Коммерция',
+                'description' => 'Модуль для управления заказами, промокодами и платежными транзакциями. Требует установленный модуль "Каталог и товары"',
+                'installed' => $this->isCommerceModuleInstalled(),
+                'install_command' => 'holartcms:commerce-install',
+                'uninstall_command' => 'holartcms:commerce-uninstall',
+                'dependencies' => ['shop'],
+                'can_install' => $this->isShopModuleInstalled(),
             ]
         ];
 
@@ -63,9 +81,17 @@ class ModulesController extends Controller
         ]);
 
         try {
+            $exitCode = 0;
+
             switch ($moduleId) {
                 case 'shop':
-                    Artisan::call('holartcms:shop-install');
+                    $exitCode = Artisan::call('holartcms:shop-install');
+                    break;
+                case 'callback':
+                    $exitCode = Artisan::call('holartcms:callback-user-install');
+                    break;
+                case 'commerce':
+                    $exitCode = Artisan::call('holartcms:commerce-install');
                     break;
                 default:
                     return response()->json([
@@ -75,6 +101,15 @@ class ModulesController extends Controller
             }
 
             $output = Artisan::output();
+
+            // Check if command failed (exit code != 0)
+            if ($exitCode !== 0) {
+                return response()->json([
+                    'success' => false,
+                    'output' => $output,
+                    'message' => 'Ошибка при установке модуля. Проверьте вывод команды.'
+                ], 400);
+            }
 
             return response()->json([
                 'success' => true,
@@ -104,6 +139,16 @@ class ModulesController extends Controller
             switch ($moduleId) {
                 case 'shop':
                     Artisan::call('holartcms:shop-uninstall', [
+                        '--preserve-db' => $preserveDatabase
+                    ]);
+                    break;
+                case 'callback':
+                    Artisan::call('holartcms:callback-user-uninstall', [
+                        '--preserve-db' => $preserveDatabase
+                    ]);
+                    break;
+                case 'commerce':
+                    Artisan::call('holartcms:commerce-uninstall', [
                         '--preserve-db' => $preserveDatabase
                     ]);
                     break;
@@ -139,6 +184,30 @@ class ModulesController extends Controller
                file_exists(app_path('Http/Controllers/ProductController.php')) &&
                Schema::hasTable('t_catalogs') &&
                Schema::hasTable('t_products');
+    }
+
+    /**
+     * Check if callback module is installed
+     */
+    private function isCallbackModuleInstalled()
+    {
+        return file_exists(app_path('Http/Controllers/UsersEmailsController.php')) &&
+               file_exists(app_path('Http/Controllers/CommentsController.php')) &&
+               file_exists(app_path('Http/Controllers/UserRequestsController.php')) &&
+               Schema::hasTable('t_users_emails') &&
+               Schema::hasTable('t_comments') &&
+               Schema::hasTable('t_user_requests');
+    }
+
+    /**
+     * Check if commerce module is installed
+     */
+    private function isCommerceModuleInstalled()
+    {
+        return file_exists(app_path('Http/Controllers/OrdersController.php')) &&
+               file_exists(app_path('Http/Controllers/PromocodesController.php')) &&
+               Schema::hasTable('t_orders') &&
+               Schema::hasTable('t_promocodes');
     }
 
     /**

@@ -13,6 +13,19 @@ import CatalogForm from './components/CatalogForm.vue';
 import ProductsList from './components/ProductsList.vue';
 import ProductView from './components/ProductView.vue';
 import ProductForm from './components/ProductForm.vue';
+import UsersEmails from './components/UsersEmails.vue';
+import UsersEmailView from './components/UsersEmailView.vue';
+import Comments from './components/Comments.vue';
+import CommentView from './components/CommentView.vue';
+import UserRequests from './components/UserRequests.vue';
+import UserRequestView from './components/UserRequestView.vue';
+import Orders from './components/Orders.vue';
+import OrderView from './components/OrderView.vue';
+import OrderCreate from './components/OrderCreate.vue';
+import OrderEdit from './components/OrderEdit.vue';
+import Transactions from './components/Transactions.vue';
+import Promocodes from './components/Promocodes.vue';
+import OrdersSettings from './components/OrdersSettings.vue';
 import Error403 from './components/Error403.vue';
 import Error404 from './components/Error404.vue';
 import './style.css';
@@ -92,6 +105,71 @@ const router = createRouter({
             component: ProductForm
         },
         {
+            path: '/users-emails',
+            name: 'users-emails',
+            component: UsersEmails
+        },
+        {
+            path: '/users-emails/:id',
+            name: 'users-email-view',
+            component: UsersEmailView
+        },
+        {
+            path: '/comments',
+            name: 'comments',
+            component: Comments
+        },
+        {
+            path: '/comments/:id',
+            name: 'comment-view',
+            component: CommentView
+        },
+        {
+            path: '/user-requests',
+            name: 'user-requests',
+            component: UserRequests
+        },
+        {
+            path: '/user-requests/:id',
+            name: 'user-request-view',
+            component: UserRequestView
+        },
+        {
+            path: '/orders',
+            name: 'orders',
+            component: Orders
+        },
+        {
+            path: '/orders/create',
+            name: 'order-create',
+            component: OrderCreate
+        },
+        {
+            path: '/orders/:id/edit',
+            name: 'order-edit',
+            component: OrderEdit
+        },
+        {
+            path: '/orders/:id',
+            name: 'order-view',
+            component: OrderView
+        },
+        {
+            path: '/transactions',
+            name: 'transactions',
+            component: Transactions
+        },
+        {
+            path: '/promocodes',
+            name: 'promocodes',
+            component: Promocodes
+        },
+        {
+            path: '/orders-settings',
+            name: 'orders-settings',
+            component: OrdersSettings
+        },
+        {
             path: '/403',
             name: 'error-403',
             component: Error403
@@ -146,6 +224,50 @@ router.beforeEach(async (to, from, next) => {
                 const shopModule = modulesData.modules?.find(m => m.id === 'shop');
 
                 if (!shopModule?.installed) {
+                    next({ name: 'error-404' });
+                    return;
+                }
+            }
+        }
+
+        // Check if accessing callback module routes
+        const callbackRoutes = ['users-emails', 'users-email-view', 'comments', 'comment-view', 'user-requests', 'user-request-view'];
+        if (callbackRoutes.includes(to.name)) {
+            // Check if callback module is installed
+            const modulesResponse = await fetch('/admin/api/modules', {
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (modulesResponse.ok) {
+                const modulesData = await modulesResponse.json();
+                const callbackModule = modulesData.modules?.find(m => m.id === 'callback');
+
+                if (!callbackModule?.installed) {
+                    next({ name: 'error-404' });
+                    return;
+                }
+            }
+        }
+
+        // Check if accessing commerce module routes (only for super_admin and administrator)
+        const commerceRoutes = ['orders', 'order-create', 'order-edit', 'order-view', 'transactions', 'promocodes', 'orders-settings'];
+        if (commerceRoutes.includes(to.name)) {
+            // Check role first
+            if (userData.role !== 'super_admin' && userData.role !== 'administrator') {
+                next({ name: 'error-403' });
+                return;
+            }
+
+            // Check if commerce module is installed
+            const modulesResponse = await fetch('/admin/api/modules', {
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (modulesResponse.ok) {
+                const modulesData = await modulesResponse.json();
+                const commerceModule = modulesData.modules?.find(m => m.id === 'commerce');
+
+                if (!commerceModule?.installed) {
                     next({ name: 'error-404' });
                     return;
                 }

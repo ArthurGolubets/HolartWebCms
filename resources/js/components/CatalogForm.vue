@@ -113,7 +113,8 @@
         <button
           type="submit"
           :disabled="loading"
-          class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition disabled:opacity-50"
+          :style="buttonStyle"
+          class="px-6 py-3 text-white rounded-lg font-medium transition-opacity hover:opacity-90 disabled:opacity-50"
         >
           {{ loading ? 'Сохранение...' : (isEdit ? 'Сохранить' : 'Создать') }}
         </button>
@@ -126,9 +127,11 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useModal } from '../composables/useModal';
+import { useTheme } from '../composables/useTheme';
 import ImageUpload from './ImageUpload.vue';
 
 const { success, error } = useModal();
+const { buttonStyle } = useTheme();
 const route = useRoute();
 const router = useRouter();
 

@@ -77,7 +77,7 @@
             <input v-model.number="variant.old_price" placeholder="Старая цена" type="number" step="0.01" class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white">
           </div>
         </div>
-        <button type="button" @click="addVariant" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm">+ Добавить вариант</button>
+        <button type="button" @click="addVariant" :style="buttonStyle" class="px-4 py-2 text-white rounded-lg transition-opacity hover:opacity-90 text-sm">+ Добавить вариант</button>
       </div>
 
       <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
@@ -87,7 +87,7 @@
 
       <div class="flex justify-end space-x-3">
         <button type="button" @click="$router.back()" class="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium">Отмена</button>
-        <button type="submit" :disabled="loading" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium disabled:opacity-50">{{ loading ? 'Сохранение...' : (isEdit ? 'Сохранить' : 'Создать') }}</button>
+        <button type="submit" :disabled="loading" :style="buttonStyle" class="px-6 py-3 text-white rounded-lg font-medium transition-opacity hover:opacity-90 disabled:opacity-50">{{ loading ? 'Сохранение...' : (isEdit ? 'Сохранить' : 'Создать') }}</button>
       </div>
     </form>
   </div>
@@ -97,11 +97,13 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useModal } from '../composables/useModal';
+import { useTheme } from '../composables/useTheme';
 import ImageUpload from './ImageUpload.vue';
 import GalleryUpload from './GalleryUpload.vue';
 import ToggleSwitch from './ToggleSwitch.vue';
 
 const { success, error } = useModal();
+const { buttonStyle } = useTheme();
 const route = useRoute();
 const router = useRouter();
 

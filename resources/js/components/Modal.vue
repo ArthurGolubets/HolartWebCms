@@ -97,6 +97,9 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'confirm', 'cancel']);
 
+import { useTheme } from '../composables/useTheme';
+const { bgClass } = useTheme();
+
 const iconBgClass = computed(() => {
   const classes = {
     success: 'bg-green-100 dark:bg-green-900/30',
@@ -124,8 +127,8 @@ const confirmButtonClass = computed(() => {
     success: 'bg-green-600 hover:bg-green-700',
     error: 'bg-red-600 hover:bg-red-700',
     warning: 'bg-yellow-600 hover:bg-yellow-700',
-    info: 'bg-blue-600 hover:bg-blue-700',
-    confirm: 'bg-blue-600 hover:bg-blue-700'
+    info: `${bgClass} hover:opacity-90`,
+    confirm: `${bgClass} hover:opacity-90`
   };
   return classes[props.type] || classes.info;
 });

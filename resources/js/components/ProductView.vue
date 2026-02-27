@@ -12,7 +12,7 @@
           <span v-if="product.is_recommended" class="px-3 py-1 text-sm bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 rounded-full">Рекомендуем</span>
         </div>
       </div>
-      <button @click="$router.push(`/products/${product.id}/edit`)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium">Редактировать</button>
+      <button @click="$router.push(`/products/${product.id}/edit`)" :style="buttonStyle" class="px-4 py-2 text-white rounded-lg font-medium transition-opacity hover:opacity-90">Редактировать</button>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -77,8 +77,10 @@
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useModal } from '../composables/useModal';
+import { useTheme } from '../composables/useTheme';
 
 const { error } = useModal();
+const { buttonStyle } = useTheme();
 const route = useRoute();
 const product = ref(null);
 

@@ -25,7 +25,8 @@
       </div>
       <button
         @click="$router.push(`/catalog/${catalog.id}/edit`)"
-        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition"
+        :style="buttonStyle"
+        class="px-4 py-2 text-white rounded-lg font-medium transition-opacity hover:opacity-90"
       >
         Редактировать
       </button>
@@ -72,7 +73,8 @@
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Товары в категории</h3>
         <button
           @click="$router.push(`/products/create?catalog_id=${catalog.id}`)"
-          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition text-sm"
+          :style="buttonStyle"
+          class="px-4 py-2 text-white rounded-lg font-medium transition-opacity hover:opacity-90 text-sm"
         >
           Добавить товар
         </button>
@@ -115,8 +117,10 @@
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useModal } from '../composables/useModal';
+import { useTheme } from '../composables/useTheme';
 
 const { error } = useModal();
+const { buttonStyle } = useTheme();
 const route = useRoute();
 
 const catalog = ref(null);

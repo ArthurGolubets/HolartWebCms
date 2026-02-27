@@ -121,7 +121,7 @@
               @click="goToPage(page)"
               :disabled="page === pagination.current_page"
               :class="{
-                'bg-blue-600 text-white': page === pagination.current_page,
+                [`${bgClass} text-white`]: page === pagination.current_page,
                 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600': page !== pagination.current_page
               }"
               class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
@@ -138,8 +138,10 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useModal } from '../composables/useModal';
+import { useTheme } from '../composables/useTheme';
 
 const { error } = useModal();
+const { bgClass } = useTheme();
 
 const loading = ref(false);
 const logs = ref([]);

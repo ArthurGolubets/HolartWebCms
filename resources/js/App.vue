@@ -64,6 +64,74 @@
           </div>
         </div>
 
+        <!-- Callback Group (only if callback module is installed) -->
+        <div v-if="callbackModuleInstalled" class="mb-1">
+          <button @click="toggleMenuGroup('callback')" class="w-full flex items-center px-3 py-2.5 text-gray-300 hover:bg-gray-800 hover:text-white rounded-md transition-colors" :class="isCollapsed ? 'justify-center' : 'justify-between'" :title="isCollapsed ? 'Обратная связь' : ''">
+            <div class="flex items-center">
+              <svg class="w-5 h-5" :class="isCollapsed ? '' : 'mr-3'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              <span v-if="!isCollapsed">Обратная связь</span>
+            </div>
+            <svg v-if="!isCollapsed" class="w-4 h-4 transition-transform" :class="{ 'rotate-180': menuGroups.callback }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div v-if="menuGroups.callback && !isCollapsed" class="ml-3 mt-1 space-y-1">
+            <router-link to="/users-emails" v-slot="{ isActive }" custom>
+              <a @click="$router.push('/users-emails'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/></svg>
+                Подписки
+              </a>
+            </router-link>
+            <router-link to="/comments" v-slot="{ isActive }" custom>
+              <a @click="$router.push('/comments'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
+                Комментарии
+              </a>
+            </router-link>
+            <router-link to="/user-requests" v-slot="{ isActive }" custom>
+              <a @click="$router.push('/user-requests'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                Обращения
+              </a>
+            </router-link>
+          </div>
+        </div>
+
+        <!-- Commerce Group (only if commerce module is installed and user is admin/super_admin) -->
+        <div v-if="commerceModuleInstalled && canAccessSettings" class="mb-1">
+          <button @click="toggleMenuGroup('commerce')" class="w-full flex items-center px-3 py-2.5 text-gray-300 hover:bg-gray-800 hover:text-white rounded-md transition-colors" :class="isCollapsed ? 'justify-center' : 'justify-between'" :title="isCollapsed ? 'Коммерция' : ''">
+            <div class="flex items-center">
+              <svg class="w-5 h-5" :class="isCollapsed ? '' : 'mr-3'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+              <span v-if="!isCollapsed">Коммерция</span>
+            </div>
+            <svg v-if="!isCollapsed" class="w-4 h-4 transition-transform" :class="{ 'rotate-180': menuGroups.commerce }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div v-if="menuGroups.commerce && !isCollapsed" class="ml-3 mt-1 space-y-1">
+            <router-link to="/orders" v-slot="{ isActive }" custom>
+              <a @click="$router.push('/orders'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                Список заказов
+              </a>
+            </router-link>
+            <router-link to="/transactions" v-slot="{ isActive }" custom>
+              <a @click="$router.push('/transactions'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                Список транзакций
+              </a>
+            </router-link>
+            <router-link to="/promocodes" v-slot="{ isActive }" custom>
+              <a @click="$router.push('/promocodes'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                Промокоды
+              </a>
+            </router-link>
+            <router-link to="/orders-settings" v-slot="{ isActive }" custom>
+              <a @click="$router.push('/orders-settings'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                Настройки заказов
+              </a>
+            </router-link>
+          </div>
+        </div>
+
         <!-- Settings Group (only for super_admin and administrator) -->
         <div v-if="canAccessSettings" class="mb-1">
           <button @click="toggleMenuGroup('settings')" class="w-full flex items-center px-3 py-2.5 text-gray-300 hover:bg-gray-800 hover:text-white rounded-md transition-colors" :class="isCollapsed ? 'justify-center' : 'justify-between'" :title="isCollapsed ? 'Настройки' : ''">
@@ -266,6 +334,8 @@ const panelName = ref('HolartCMS');
 const themeColor = globalThemeColor; // Use global theme color
 const menuGroups = ref({
   content: false,
+  callback: false,
+  commerce: false,
 });
 
 const adminUser = ref({
@@ -275,6 +345,8 @@ const adminUser = ref({
 });
 
 const shopModuleInstalled = ref(false);
+const callbackModuleInstalled = ref(false);
+const commerceModuleInstalled = ref(false);
 
 const roleLabel = computed(() => {
   const roles = {
@@ -405,6 +477,12 @@ const loadModulesStatus = async () => {
       const data = await response.json();
       const shopModule = data.modules?.find(m => m.id === 'shop');
       shopModuleInstalled.value = shopModule?.installed || false;
+
+      const callbackModule = data.modules?.find(m => m.id === 'callback');
+      callbackModuleInstalled.value = callbackModule?.installed || false;
+
+      const commerceModule = data.modules?.find(m => m.id === 'commerce');
+      commerceModuleInstalled.value = commerceModule?.installed || false;
     }
   } catch (error) {
     console.error('Failed to load modules status:', error);

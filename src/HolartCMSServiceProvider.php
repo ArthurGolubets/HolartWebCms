@@ -49,6 +49,10 @@ class HolartCMSServiceProvider extends ServiceProvider
             \HolartWeb\HolartCMS\Console\UpdateCommand::class,
             \HolartWeb\HolartCMS\Console\ShopInstallCommand::class,
             \HolartWeb\HolartCMS\Console\ShopUninstallCommand::class,
+            \HolartWeb\HolartCMS\Console\CallbackInstallCommand::class,
+            \HolartWeb\HolartCMS\Console\CallbackUninstallCommand::class,
+            \HolartWeb\HolartCMS\Console\CommerceInstallCommand::class,
+            \HolartWeb\HolartCMS\Console\CommerceUninstallCommand::class,
         ]);
 
         // Publish config

@@ -99,6 +99,78 @@ Route::middleware(['admin.auth'])->group(function () {
             Route::put('products/{id}', [$productController, 'update']);
             Route::delete('products/{id}', [$productController, 'destroy']);
         }
+
+        // Callback routes - only if callback module is installed
+        $usersEmailsControllerPath = app_path('Http/Controllers/UsersEmailsController.php');
+        if (file_exists($usersEmailsControllerPath)) {
+            $usersEmailsController = 'App\\Http\\Controllers\\UsersEmailsController';
+            $commentsController = 'App\\Http\\Controllers\\CommentsController';
+            $userRequestsController = 'App\\Http\\Controllers\\UserRequestsController';
+
+            // Users Emails routes
+            Route::get('users-emails', [$usersEmailsController, 'index']);
+            Route::get('users-emails/{id}', [$usersEmailsController, 'show']);
+            Route::post('users-emails', [$usersEmailsController, 'store']);
+            Route::put('users-emails/{id}', [$usersEmailsController, 'update']);
+            Route::delete('users-emails/{id}', [$usersEmailsController, 'destroy']);
+            Route::post('users-emails/bulk-delete', [$usersEmailsController, 'bulkDestroy']);
+
+            // Comments routes
+            Route::get('comments', [$commentsController, 'index']);
+            Route::get('comments/{id}', [$commentsController, 'show']);
+            Route::post('comments', [$commentsController, 'store']);
+            Route::put('comments/{id}', [$commentsController, 'update']);
+            Route::delete('comments/{id}', [$commentsController, 'destroy']);
+            Route::post('comments/bulk-delete', [$commentsController, 'bulkDestroy']);
+            Route::post('comments/{id}/toggle-moderation', [$commentsController, 'toggleModeration']);
+
+            // User Requests routes
+            Route::get('user-requests', [$userRequestsController, 'index']);
+            Route::get('user-requests/{id}', [$userRequestsController, 'show']);
+            Route::post('user-requests', [$userRequestsController, 'store']);
+            Route::put('user-requests/{id}', [$userRequestsController, 'update']);
+            Route::delete('user-requests/{id}', [$userRequestsController, 'destroy']);
+            Route::post('user-requests/bulk-delete', [$userRequestsController, 'bulkDestroy']);
+        }
+
+        // Commerce routes - only if commerce module is installed
+        $ordersControllerPath = app_path('Http/Controllers/OrdersController.php');
+        if (file_exists($ordersControllerPath)) {
+            $ordersController = 'App\\Http\\Controllers\\OrdersController';
+            $promocodesController = 'App\\Http\\Controllers\\PromocodesController';
+            $transactionsController = 'App\\Http\\Controllers\\PaymentTransactionsController';
+            $ordersDataController = 'App\\Http\\Controllers\\OrdersDataController';
+
+            // Orders routes
+            Route::get('orders', [$ordersController, 'index']);
+            Route::get('orders/{id}', [$ordersController, 'show']);
+            Route::post('orders', [$ordersController, 'store']);
+            Route::put('orders/{id}', [$ordersController, 'update']);
+            Route::delete('orders/{id}', [$ordersController, 'destroy']);
+            Route::put('orders/{id}/status', [$ordersController, 'updateStatus']);
+
+            // Promocodes routes
+            Route::get('promocodes', [$promocodesController, 'index']);
+            Route::get('promocodes/{id}', [$promocodesController, 'show']);
+            Route::post('promocodes', [$promocodesController, 'store']);
+            Route::put('promocodes/{id}', [$promocodesController, 'update']);
+            Route::delete('promocodes/{id}', [$promocodesController, 'destroy']);
+            Route::post('promocodes/verify', [$promocodesController, 'verify']);
+
+            // Payment Transactions routes
+            Route::get('transactions', [$transactionsController, 'index']);
+            Route::get('transactions/{id}', [$transactionsController, 'show']);
+            Route::post('transactions', [$transactionsController, 'store']);
+            Route::put('transactions/{id}', [$transactionsController, 'update']);
+            Route::delete('transactions/{id}', [$transactionsController, 'destroy']);
+
+            // Orders Settings routes
+            Route::get('orders-settings', [$ordersDataController, 'index']);
+            Route::get('orders-settings/{key}', [$ordersDataController, 'show']);
+            Route::post('orders-settings', [$ordersDataController, 'store']);
+            Route::put('orders-settings/{key}', [$ordersDataController, 'update']);
+            Route::delete('orders-settings/{key}', [$ordersDataController, 'destroy']);
+        }
     });
 
     // SPA route - catch all for Vue Router

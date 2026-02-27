@@ -109,7 +109,8 @@
             v-if="preview && preview.valid"
             @click="confirmImport"
             type="button"
-            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition"
+            :style="buttonStyle"
+            class="px-4 py-2 text-white rounded-lg font-medium transition-opacity hover:opacity-90"
             :disabled="importing"
           >
             {{ importing ? 'Импорт...' : 'Импортировать' }}
@@ -122,6 +123,9 @@
 
 <script setup>
 import { ref, watch } from 'vue';
+import { useTheme } from '../composables/useTheme';
+
+const { buttonStyle } = useTheme();
 
 const props = defineProps({
   show: Boolean,

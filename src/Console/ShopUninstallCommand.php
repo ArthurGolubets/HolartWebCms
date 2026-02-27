@@ -24,9 +24,15 @@ class ShopUninstallCommand extends Command
 
         if (!$preserveDb) {
             $this->warn('⚠ WARNING: This will delete all shop data from the database!');
-            if (!$this->confirm('Are you sure you want to continue?', false)) {
-                $this->info('Uninstallation cancelled.');
-                return self::SUCCESS;
+            // Only ask for confirmation if running in interactive console
+            if ($this->input->isInteractive() && defined('STDIN')) {
+                if (!$this->confirm('Are you sure you want to continue?', false)) {
+                    $this->info('Uninstallation cancelled.');
+                    return self::SUCCESS;
+                }
+            } else {
+                // When called from web interface, proceed without confirmation
+                $this->info('Running in non-interactive mode, proceeding with uninstallation...');
             }
         }
 
@@ -86,8 +92,8 @@ class ShopUninstallCommand extends Command
             }
             $this->newLine();
 
-            // Step 4: Remove Migrations
-            $this->info('Step 4: Removing migration files...');
+            // Step 4: Remove Migration Records from Database
+            $this->info('Step 4: Removing migration records from database...');
             $migrationFiles = [
                 '2024_01_01_000010_create_t_catalogs_table.php',
                 '2024_01_01_000011_create_t_products_table.php',
@@ -95,6 +101,18 @@ class ShopUninstallCommand extends Command
                 '2024_01_01_000013_add_main_image_to_products.php',
             ];
 
+            try {
+                DB::table('migrations')->whereIn('migration', array_map(function($file) {
+                    return str_replace('.php', '', $file);
+                }, $migrationFiles))->delete();
+                $this->info('✓ Removed migration records from database');
+            } catch (\Exception $e) {
+                $this->warn('⚠ Could not remove migration records: ' . $e->getMessage());
+            }
+            $this->newLine();
+
+            // Step 5: Remove Migration Files
+            $this->info('Step 5: Removing migration files...');
             foreach ($migrationFiles as $file) {
                 $path = database_path('migrations/' . $file);
                 if (File::exists($path)) {
@@ -109,8 +127,8 @@ class ShopUninstallCommand extends Command
             $this->newLine();
         }
 
-        // Step 5: Clear Cache
-        $this->info('Step 5: Clearing application cache...');
+        // Step 6: Clear Cache
+        $this->info('Step 6: Clearing application cache...');
         Artisan::call('config:clear');
         Artisan::call('route:clear');
         Artisan::call('view:clear');

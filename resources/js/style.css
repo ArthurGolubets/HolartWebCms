@@ -13,4 +13,21 @@
   #app {
     @apply w-full h-screen;
   }
+
+  /* Fix dark mode input/select text color */
+  .dark input,
+  .dark select,
+  .dark textarea {
+    @apply text-white;
+  }
+
+  .dark input::placeholder,
+  .dark textarea::placeholder {
+    @apply text-gray-400;
+  }
+
+  /* Fix dark mode select options */
+  .dark select option {
+    @apply bg-gray-700 text-white;
+  }
 }
