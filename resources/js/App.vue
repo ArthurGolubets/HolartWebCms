@@ -132,6 +132,37 @@
           </div>
         </div>
 
+        <!-- InfoBlocks Group (only if infoblocks module is installed) -->
+        <div v-if="infoblocksModuleInstalled" class="mb-1">
+          <button @click="toggleMenuGroup('infoblocks')" class="w-full flex items-center px-3 py-2.5 text-gray-300 hover:bg-gray-800 hover:text-white rounded-md transition-colors" :class="isCollapsed ? 'justify-center' : 'justify-between'" :title="isCollapsed ? 'Инфоблоки' : ''">
+            <div class="flex items-center">
+              <svg class="w-5 h-5" :class="isCollapsed ? '' : 'mr-3'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z"/></svg>
+              <span v-if="!isCollapsed">Инфоблоки</span>
+            </div>
+            <svg v-if="!isCollapsed" class="w-4 h-4 transition-transform" :class="{ 'rotate-180': menuGroups.infoblocks }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div v-if="menuGroups.infoblocks && !isCollapsed" class="ml-3 mt-1 space-y-1">
+            <router-link to="/infoblocks" v-slot="{ isActive }" custom>
+              <a @click="$router.push('/infoblocks'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/></svg>
+                Список инфоблоков
+              </a>
+            </router-link>
+
+            <!-- Favorite InfoBlocks -->
+            <div v-if="favoriteInfoBlocks.length > 0" class="border-t border-gray-700 pt-2 mt-2">
+              <router-link v-for="infoBlock in favoriteInfoBlocks" :key="infoBlock.id" :to="`/infoblocks/${infoBlock.id}/elements`" v-slot="{ isActive }" custom>
+                <a @click="$router.push(`/infoblocks/${infoBlock.id}/elements`); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                  <svg class="w-4 h-4 mr-2 text-yellow-500" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                  </svg>
+                  <span class="truncate">{{ infoBlock.name }}</span>
+                </a>
+              </router-link>
+            </div>
+          </div>
+        </div>
+
         <!-- Settings Group (only for super_admin and administrator) -->
         <div v-if="canAccessSettings" class="mb-1">
           <button @click="toggleMenuGroup('settings')" class="w-full flex items-center px-3 py-2.5 text-gray-300 hover:bg-gray-800 hover:text-white rounded-md transition-colors" :class="isCollapsed ? 'justify-center' : 'justify-between'" :title="isCollapsed ? 'Настройки' : ''">
@@ -336,6 +367,7 @@ const menuGroups = ref({
   content: false,
   callback: false,
   commerce: false,
+  infoblocks: false,
 });
 
 const adminUser = ref({
@@ -347,6 +379,8 @@ const adminUser = ref({
 const shopModuleInstalled = ref(false);
 const callbackModuleInstalled = ref(false);
 const commerceModuleInstalled = ref(false);
+const infoblocksModuleInstalled = ref(false);
+const favoriteInfoBlocks = ref([]);
 
 const roleLabel = computed(() => {
   const roles = {
@@ -483,9 +517,31 @@ const loadModulesStatus = async () => {
 
       const commerceModule = data.modules?.find(m => m.id === 'commerce');
       commerceModuleInstalled.value = commerceModule?.installed || false;
+
+      const infoblocksModule = data.modules?.find(m => m.id === 'infoblocks');
+      infoblocksModuleInstalled.value = infoblocksModule?.installed || false;
+
+      // Load favorite infoblocks if module is installed
+      if (infoblocksModuleInstalled.value) {
+        loadFavoriteInfoBlocks();
+      }
     }
   } catch (error) {
     console.error('Failed to load modules status:', error);
+  }
+};
+
+const loadFavoriteInfoBlocks = async () => {
+  try {
+    const response = await fetch('/admin/api/infoblocks/favorites', {
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (response.ok) {
+      favoriteInfoBlocks.value = await response.json();
+    }
+  } catch (error) {
+    console.error('Failed to load favorite infoblocks:', error);
   }
 };
 
@@ -503,6 +559,9 @@ onMounted(() => {
   loadCurrentUser();
   loadSettings();
   loadModulesStatus();
+
+  // Listen for favorites update event
+  window.addEventListener('infoblocks-favorites-updated', loadFavoriteInfoBlocks);
 });
 
 // Watch for module updates and reload sidebar

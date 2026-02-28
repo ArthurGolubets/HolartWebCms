@@ -182,6 +182,38 @@ Route::middleware(['admin.auth'])->group(function () {
             Route::put('orders-settings/{key}', [$ordersDataController, 'update']);
             Route::delete('orders-settings/{key}', [$ordersDataController, 'destroy']);
         }
+
+        // InfoBlocks routes - only if infoblocks module is installed
+        $infoBlocksControllerPath = app_path('Http/Controllers/InfoBlocksController.php');
+        if (file_exists($infoBlocksControllerPath)) {
+            $infoBlocksController = 'App\\Http\\Controllers\\InfoBlocksController';
+            $infoBlockFieldsController = 'App\\Http\\Controllers\\InfoBlockFieldsController';
+            $infoBlockElementsController = 'App\\Http\\Controllers\\InfoBlockElementsController';
+
+            // InfoBlocks routes
+            Route::get('infoblocks/favorites', [$infoBlocksController, 'favorites']);
+            Route::get('infoblocks', [$infoBlocksController, 'index']);
+            Route::get('infoblocks/{id}', [$infoBlocksController, 'show']);
+            Route::post('infoblocks', [$infoBlocksController, 'store']);
+            Route::put('infoblocks/{id}', [$infoBlocksController, 'update']);
+            Route::delete('infoblocks/{id}', [$infoBlocksController, 'destroy']);
+            Route::post('infoblocks/{id}/favorite', [$infoBlocksController, 'toggleFavorite']);
+
+            // InfoBlock Fields routes
+            Route::get('infoblocks/{infoBlockId}/fields', [$infoBlockFieldsController, 'index']);
+            Route::get('infoblocks/{infoBlockId}/fields/{id}', [$infoBlockFieldsController, 'show']);
+            Route::post('infoblocks/{infoBlockId}/fields', [$infoBlockFieldsController, 'store']);
+            Route::put('infoblocks/{infoBlockId}/fields/{id}', [$infoBlockFieldsController, 'update']);
+            Route::delete('infoblocks/{infoBlockId}/fields/{id}', [$infoBlockFieldsController, 'destroy']);
+            Route::get('infoblocks/field-types', [$infoBlockFieldsController, 'types']);
+
+            // InfoBlock Elements routes
+            Route::get('infoblocks/{infoBlockId}/elements', [$infoBlockElementsController, 'index']);
+            Route::get('infoblocks/{infoBlockId}/elements/{id}', [$infoBlockElementsController, 'show']);
+            Route::post('infoblocks/{infoBlockId}/elements', [$infoBlockElementsController, 'store']);
+            Route::put('infoblocks/{infoBlockId}/elements/{id}', [$infoBlockElementsController, 'update']);
+            Route::delete('infoblocks/{infoBlockId}/elements/{id}', [$infoBlockElementsController, 'destroy']);
+        }
     });
 
     // SPA route - catch all for Vue Router

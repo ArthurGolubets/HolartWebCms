@@ -49,6 +49,14 @@ class ModulesController extends Controller
                 'installed' => $this->isLoggingModuleInstalled(),
                 'install_command' => 'holartcms:logging-install',
                 'uninstall_command' => 'holartcms:logging-uninstall',
+            ],
+            [
+                'id' => 'infoblocks',
+                'name' => 'Информационные блоки',
+                'description' => 'Модуль для создания пользовательских сущностей с динамическими полями.',
+                'installed' => $this->isInfoBlocksModuleInstalled(),
+                'install_command' => 'holartcms:infoblocks-install',
+                'uninstall_command' => 'holartcms:infoblocks-uninstall',
             ]
         ];
 
@@ -108,6 +116,9 @@ class ModulesController extends Controller
                 case 'logging':
                     $exitCode = Artisan::call('holartcms:logging-install');
                     break;
+                case 'infoblocks':
+                    $exitCode = Artisan::call('holartcms:infoblocks-install');
+                    break;
                 default:
                     return response()->json([
                         'success' => false,
@@ -127,7 +138,7 @@ class ModulesController extends Controller
             }
 
             // Log activity
-            $moduleNames = ['shop' => 'Каталог и товары', 'callback' => 'Обратная связь', 'commerce' => 'Коммерция', 'logging' => 'Журнал активности'];
+            $moduleNames = ['shop' => 'Каталог и товары', 'callback' => 'Обратная связь', 'commerce' => 'Коммерция', 'logging' => 'Журнал активности', 'infoblocks' => 'Информационные блоки'];
             $moduleName = $moduleNames[$moduleId] ?? $moduleId;
             TAdminAction::log('installed', 'module', null, 'Установлен модуль: ' . $moduleName);
 
@@ -177,6 +188,11 @@ class ModulesController extends Controller
                         '--preserve-db' => $preserveDatabase
                     ]);
                     break;
+                case 'infoblocks':
+                    Artisan::call('holartcms:infoblocks-uninstall', [
+                        '--preserve-db' => $preserveDatabase
+                    ]);
+                    break;
                 default:
                     return response()->json([
                         'success' => false,
@@ -187,7 +203,7 @@ class ModulesController extends Controller
             $output = Artisan::output();
 
             // Log activity
-            $moduleNames = ['shop' => 'Каталог и товары', 'callback' => 'Обратная связь', 'commerce' => 'Коммерция', 'logging' => 'Журнал активности'];
+            $moduleNames = ['shop' => 'Каталог и товары', 'callback' => 'Обратная связь', 'commerce' => 'Коммерция', 'logging' => 'Журнал активности', 'infoblocks' => 'Информационные блоки'];
             $moduleName = $moduleNames[$moduleId] ?? $moduleId;
             TAdminAction::log('uninstalled', 'module', null, 'Удален модуль: ' . $moduleName);
 
@@ -247,6 +263,18 @@ class ModulesController extends Controller
     {
         return file_exists(app_path('Http/Controllers/LogsController.php')) &&
                Schema::hasTable('t_admin_actions');
+    }
+
+    /**
+     * Check if infoblocks module is installed
+     */
+    private function isInfoBlocksModuleInstalled()
+    {
+        return file_exists(app_path('Http/Controllers/InfoBlocksController.php')) &&
+               file_exists(app_path('Models/TInfoBlock.php')) &&
+               Schema::hasTable('t_info_blocks') &&
+               Schema::hasTable('t_info_block_fields') &&
+               Schema::hasTable('t_info_block_elements');
     }
 
     /**

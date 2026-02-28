@@ -26,6 +26,11 @@ import OrderEdit from './components/OrderEdit.vue';
 import Transactions from './components/Transactions.vue';
 import Promocodes from './components/Promocodes.vue';
 import OrdersSettings from './components/OrdersSettings.vue';
+import InfoBlocksList from './components/InfoBlocksList.vue';
+import InfoBlockForm from './components/InfoBlockForm.vue';
+import InfoBlockFields from './components/InfoBlockFields.vue';
+import InfoBlockElements from './components/InfoBlockElements.vue';
+import InfoBlockElementForm from './components/InfoBlockElementForm.vue';
 import Error403 from './components/Error403.vue';
 import Error404 from './components/Error404.vue';
 import './style.css';
@@ -170,6 +175,41 @@ const router = createRouter({
             component: OrdersSettings
         },
         {
+            path: '/infoblocks',
+            name: 'infoblocks',
+            component: InfoBlocksList
+        },
+        {
+            path: '/infoblocks/create',
+            name: 'infoblock-create',
+            component: InfoBlockForm
+        },
+        {
+            path: '/infoblocks/:id/edit',
+            name: 'infoblock-edit',
+            component: InfoBlockForm
+        },
+        {
+            path: '/infoblocks/:id/fields',
+            name: 'infoblock-fields',
+            component: InfoBlockFields
+        },
+        {
+            path: '/infoblocks/:id/elements',
+            name: 'infoblock-elements',
+            component: InfoBlockElements
+        },
+        {
+            path: '/infoblocks/:infoBlockId/elements/create',
+            name: 'infoblock-element-create',
+            component: InfoBlockElementForm
+        },
+        {
+            path: '/infoblocks/:infoBlockId/elements/:elementId/edit',
+            name: 'infoblock-element-edit',
+            component: InfoBlockElementForm
+        },
+        {
             path: '/403',
             name: 'error-403',
             component: Error403
@@ -268,6 +308,25 @@ router.beforeEach(async (to, from, next) => {
                 const commerceModule = modulesData.modules?.find(m => m.id === 'commerce');
 
                 if (!commerceModule?.installed) {
+                    next({ name: 'error-404' });
+                    return;
+                }
+            }
+        }
+
+        // Check if accessing infoblocks module routes
+        const infoblocksRoutes = ['infoblocks', 'infoblock-create', 'infoblock-edit', 'infoblock-fields', 'infoblock-elements', 'infoblock-element-create', 'infoblock-element-edit'];
+        if (infoblocksRoutes.includes(to.name)) {
+            // Check if infoblocks module is installed
+            const modulesResponse = await fetch('/admin/api/modules', {
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (modulesResponse.ok) {
+                const modulesData = await modulesResponse.json();
+                const infoblocksModule = modulesData.modules?.find(m => m.id === 'infoblocks');
+
+                if (!infoblocksModule?.installed) {
                     next({ name: 'error-404' });
                     return;
                 }
