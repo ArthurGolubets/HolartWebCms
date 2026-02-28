@@ -56,7 +56,14 @@ class LoggingInstallCommand extends Command
         }
 
         try {
-            Artisan::call('migrate', ['--force' => true]);
+            // Run only logging module migration
+            $migrationPath = database_path('migrations/' . $migrationFile);
+            if (file_exists($migrationPath)) {
+                Artisan::call('migrate', [
+                    '--path' => 'database/migrations/' . $migrationFile,
+                    '--force' => true
+                ]);
+            }
             $this->info('✓ Migrations completed successfully');
         } catch (\Exception $e) {
             $this->error('❌ Migration failed: ' . $e->getMessage());

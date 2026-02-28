@@ -137,7 +137,16 @@ class CommerceInstallCommand extends Command
         }
 
         try {
-            Artisan::call('migrate', ['--force' => true]);
+            // Run only commerce module migrations
+            foreach ($migrationFiles as $file) {
+                $migrationPath = database_path('migrations/' . $file);
+                if (file_exists($migrationPath)) {
+                    Artisan::call('migrate', [
+                        '--path' => 'database/migrations/' . $file,
+                        '--force' => true
+                    ]);
+                }
+            }
             $this->info('✓ Migrations completed successfully');
         } catch (\Exception $e) {
             $this->error('❌ Migration failed: ' . $e->getMessage());

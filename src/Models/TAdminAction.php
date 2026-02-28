@@ -35,7 +35,7 @@ class TAdminAction extends Model
     /**
      * Log an admin action
      */
-    public static function log(string $action, string $entityType = null, int $entityId = null, string $description = null, array $data = [])
+    public static function log(string $action, ?string $entityType = null, ?int $entityId = null, ?string $description = null, array $data = [])
     {
         $admin = auth()->guard('admin')->user();
 

@@ -100,7 +100,16 @@ class CallbackInstallCommand extends Command
         }
 
         try {
-            Artisan::call('migrate', ['--force' => true]);
+            // Run only callback module migrations
+            foreach ($migrationFiles as $file) {
+                $migrationPath = database_path('migrations/' . $file);
+                if (file_exists($migrationPath)) {
+                    Artisan::call('migrate', [
+                        '--path' => 'database/migrations/' . $file,
+                        '--force' => true
+                    ]);
+                }
+            }
             $this->info('✓ Migrations completed successfully');
         } catch (\Exception $e) {
             $this->error('❌ Migration failed: ' . $e->getMessage());
