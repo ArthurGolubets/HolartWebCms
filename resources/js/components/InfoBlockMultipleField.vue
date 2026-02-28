@@ -6,33 +6,37 @@
     </label>
 
     <!-- Values List -->
-    <div v-if="values.length > 0" class="space-y-2 mb-3">
-      <div v-for="(value, index) in values" :key="index" class="flex items-center gap-2">
+    <div v-if="localValues.length > 0" class="space-y-2 mb-3">
+      <div v-for="(value, index) in localValues" :key="index" class="flex items-center gap-2">
         <!-- Input based on type -->
         <input
           v-if="fieldType === 'string'"
-          v-model="values[index]"
+          :value="value"
+          @input="updateValue(index, $event.target.value)"
           type="text"
           :placeholder="`Значение ${index + 1}`"
           class="flex-1 px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
         >
         <textarea
           v-else-if="fieldType === 'text'"
-          v-model="values[index]"
+          :value="value"
+          @input="updateValue(index, $event.target.value)"
           :placeholder="`Значение ${index + 1}`"
           rows="2"
           class="flex-1 px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
         ></textarea>
         <input
           v-else-if="fieldType === 'number'"
-          v-model.number="values[index]"
+          :value="value"
+          @input="updateValue(index, parseFloat($event.target.value) || 0)"
           type="number"
           :placeholder="`Значение ${index + 1}`"
           class="flex-1 px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
         >
         <input
           v-else-if="fieldType === 'double'"
-          v-model.number="values[index]"
+          :value="value"
+          @input="updateValue(index, parseFloat($event.target.value) || 0)"
           type="number"
           step="0.01"
           :placeholder="`Значение ${index + 1}`"
@@ -40,19 +44,22 @@
         >
         <input
           v-else-if="fieldType === 'date'"
-          v-model="values[index]"
+          :value="value"
+          @input="updateValue(index, $event.target.value)"
           type="date"
           class="flex-1 px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
         >
         <input
           v-else-if="fieldType === 'datetime'"
-          v-model="values[index]"
+          :value="value"
+          @input="updateValue(index, $event.target.value)"
           type="datetime-local"
           class="flex-1 px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
         >
         <input
           v-else
-          v-model="values[index]"
+          :value="value"
+          @input="updateValue(index, $event.target.value)"
           type="text"
           :placeholder="`Значение ${index + 1}`"
           class="flex-1 px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
@@ -74,7 +81,7 @@
 
     <!-- Add Button -->
     <button
-      @click="addValue"
+      @click.prevent="addValue"
       type="button"
       class="w-full flex items-center justify-center gap-2 px-4 py-2 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-gray-600 dark:text-gray-400 hover:border-blue-500 hover:text-blue-500 dark:hover:border-blue-400 dark:hover:text-blue-400 transition"
     >
@@ -101,35 +108,60 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue']);
 
-const values = ref([]);
+const localValues = ref([]);
+let isInternalUpdate = false;
 
-// Initialize values from modelValue
+// Sync from modelValue to localValues (one-way)
 watch(() => props.modelValue, (newVal) => {
+  // Don't update if this change came from us
+  if (isInternalUpdate) {
+    return;
+  }
+
   if (Array.isArray(newVal)) {
-    values.value = [...newVal];
-  } else if (newVal) {
-    values.value = [newVal];
+    localValues.value = [...newVal];
+  } else if (newVal !== null && newVal !== undefined && newVal !== '') {
+    localValues.value = [newVal];
   } else {
-    values.value = [];
+    localValues.value = [];
   }
 }, { immediate: true });
 
-// Emit changes
-watch(values, (newVals) => {
-  emit('update:modelValue', newVals.filter(v => v !== '' && v !== null && v !== undefined));
-}, { deep: true });
+// Emit changes when localValues change
+const emitChanges = () => {
+  const filtered = localValues.value.filter(v => v !== '' && v !== null && v !== undefined);
+  isInternalUpdate = true;
+  emit('update:modelValue', filtered);
+  // Reset flag on next tick
+  setTimeout(() => {
+    isInternalUpdate = false;
+  }, 0);
+};
+
+const updateValue = (index, newValue) => {
+  localValues.value[index] = newValue;
+  emitChanges();
+};
 
 const addValue = () => {
+  console.log('addValue called! fieldType:', props.fieldType);
+  console.log('localValues before:', localValues.value);
+
   if (props.fieldType === 'number' || props.fieldType === 'double') {
-    values.value.push(0);
+    localValues.value.push(0);
   } else if (props.fieldType === 'bool') {
-    values.value.push(false);
+    localValues.value.push(false);
   } else {
-    values.value.push('');
+    localValues.value.push('');
   }
+
+  console.log('localValues after push:', localValues.value);
+  emitChanges();
+  console.log('emitChanges called');
 };
 
 const removeValue = (index) => {
-  values.value.splice(index, 1);
+  localValues.value.splice(index, 1);
+  emitChanges();
 };
 </script>

@@ -216,7 +216,8 @@ const toggleFavorite = async (block) => {
       method: 'POST',
       headers: {
         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       }
     });
 
@@ -226,9 +227,14 @@ const toggleFavorite = async (block) => {
 
       // Emit event to update sidebar
       window.dispatchEvent(new CustomEvent('infoblocks-favorites-updated'));
+    } else {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('Failed to toggle favorite:', response.status, errorData);
+      alert('Ошибка при изменении избранного: ' + (errorData.message || 'Неизвестная ошибка'));
     }
   } catch (error) {
     console.error('Failed to toggle favorite:', error);
+    alert('Ошибка при изменении избранного');
   }
 };
 
