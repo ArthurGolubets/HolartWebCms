@@ -38,7 +38,13 @@ class ShopInstallCommand extends Command
 
         // Step 2: Copy Shop Models
         $this->info('Step 2: Copying shop models...');
-        $packagePath = base_path('packages/holartweb/holart-cms');
+
+        // Determine package path (works for both local development and composer installation)
+        $packagePath = base_path('vendor/holartweb/holart-cms');
+        if (!file_exists($packagePath)) {
+            $packagePath = base_path('packages/holartweb/holart-cms');
+        }
+
         $appModelsPath = app_path('Models');
 
         $models = ['TCatalog.php', 'TProduct.php', 'TProductVariant.php'];
@@ -49,6 +55,8 @@ class ShopInstallCommand extends Command
             if (file_exists($source)) {
                 copy($source, $destination);
                 $this->info("✓ Copied {$model}");
+            } else {
+                $this->warn("⚠ Source file not found: {$source}");
             }
         }
         $this->newLine();
@@ -77,6 +85,8 @@ class ShopInstallCommand extends Command
                 );
                 file_put_contents($destination, $content);
                 $this->info("✓ Copied {$controller}");
+            } else {
+                $this->warn("⚠ Source file not found: {$source}");
             }
         }
         $this->newLine();
@@ -97,6 +107,8 @@ class ShopInstallCommand extends Command
             if (file_exists($source)) {
                 copy($source, $destination);
                 $this->info("✓ Copied migration {$file}");
+            } else {
+                $this->warn("⚠ Source migration not found: {$source}");
             }
         }
 

@@ -19,7 +19,13 @@ class LoggingInstallCommand extends Command
 
         // Step 1: Copy Logs Controller
         $this->info('Step 1: Copying logs controller...');
-        $packagePath = base_path('packages/holartweb/holart-cms');
+
+        // Determine package path (works for both local development and composer installation)
+        $packagePath = base_path('vendor/holartweb/holart-cms');
+        if (!file_exists($packagePath)) {
+            $packagePath = base_path('packages/holartweb/holart-cms');
+        }
+
         $appControllersPath = app_path('Http/Controllers');
 
         $source = $packagePath . '/src/Http/Controllers/Logging/LogsController.php';
@@ -40,6 +46,8 @@ class LoggingInstallCommand extends Command
             );
             file_put_contents($destination, $content);
             $this->info("✓ Copied LogsController.php");
+        } else {
+            $this->warn("⚠ Source file not found: {$source}");
         }
         $this->newLine();
 
@@ -53,6 +61,8 @@ class LoggingInstallCommand extends Command
         if (file_exists($source)) {
             copy($source, $destination);
             $this->info("✓ Copied migration {$migrationFile}");
+        } else {
+            $this->warn("⚠ Source migration not found: {$source}");
         }
 
         try {
