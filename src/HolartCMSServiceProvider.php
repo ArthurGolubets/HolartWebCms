@@ -57,6 +57,8 @@ class HolartCMSServiceProvider extends ServiceProvider
             \HolartWeb\HolartCMS\Console\LoggingUninstallCommand::class,
             \HolartWeb\HolartCMS\Console\InfoBlocksInstallCommand::class,
             \HolartWeb\HolartCMS\Console\InfoBlocksUninstallCommand::class,
+            \HolartWeb\HolartCMS\Console\PagesInstallCommand::class,
+            \HolartWeb\HolartCMS\Console\PagesUninstallCommand::class,
         ]);
 
         // Publish config

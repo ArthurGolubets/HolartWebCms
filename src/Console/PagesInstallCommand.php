@@ -1,0 +1,494 @@
+<?php
+
+namespace HolartWeb\HolartCMS\Console;
+
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+class PagesInstallCommand extends Command
+{
+    protected $signature = 'holartcms:pages-install';
+    protected $description = 'Install HolartCMS Pages Module';
+
+    public function handle(): int
+    {
+        $this->info('╔════════════════════════════════════╗');
+        $this->info('║ HolartCMS Pages Module Installer  ║');
+        $this->info('╚════════════════════════════════════╝');
+        $this->newLine();
+
+        // Determine package path (works for both local development and composer installation)
+        $packagePath = base_path('vendor/holartweb/holart-cms');
+        if (!file_exists($packagePath)) {
+            $packagePath = base_path('packages/holartweb/holart-cms');
+        }
+
+        // Step 1: Copy Pages Models
+        $this->info('Step 1: Copying pages models...');
+        $appModelsPath = app_path('Models');
+
+        $models = ['TPage.php', 'TPageBlock.php', 'TPageBlockType.php'];
+        foreach ($models as $model) {
+            $source = $packagePath . '/src/Models/Pages/' . $model;
+            $destination = $appModelsPath . '/' . $model;
+
+            if (file_exists($source)) {
+                $content = file_get_contents($source);
+                // Update namespace from package to app
+                $content = str_replace(
+                    'namespace HolartWeb\HolartCMS\Models\Pages;',
+                    'namespace App\Models;',
+                    $content
+                );
+                file_put_contents($destination, $content);
+                $this->info("✓ Copied {$model}");
+            } else {
+                $this->warn("⚠ Source file not found: {$source}");
+            }
+        }
+        $this->newLine();
+
+        // Step 2: Copy Pages Controllers
+        $this->info('Step 2: Copying pages controllers...');
+        $appControllersPath = app_path('Http/Controllers');
+
+        $controllers = [
+            'PagesController.php',
+            'PageBlocksController.php',
+            'PageBlockTypesController.php'
+        ];
+
+        foreach ($controllers as $controller) {
+            $source = $packagePath . '/src/Http/Controllers/Pages/' . $controller;
+            $destination = $appControllersPath . '/' . $controller;
+
+            if (file_exists($source)) {
+                $content = file_get_contents($source);
+                // Update namespace from package to app
+                $content = str_replace(
+                    'namespace HolartWeb\HolartCMS\Http\Controllers\Pages;',
+                    'namespace App\Http\Controllers;',
+                    $content
+                );
+                $content = str_replace(
+                    'use Illuminate\Routing\Controller;',
+                    '',
+                    $content
+                );
+                $content = str_replace(
+                    'use HolartWeb\HolartCMS\Models\Pages\TPage;',
+                    'use App\Models\TPage;',
+                    $content
+                );
+                $content = str_replace(
+                    'use HolartWeb\HolartCMS\Models\Pages\TPageBlock;',
+                    'use App\Models\TPageBlock;',
+                    $content
+                );
+                $content = str_replace(
+                    'use HolartWeb\HolartCMS\Models\Pages\TPageBlockType;',
+                    'use App\Models\TPageBlockType;',
+                    $content
+                );
+                file_put_contents($destination, $content);
+                $this->info("✓ Copied {$controller}");
+            } else {
+                $this->warn("⚠ Source file not found: {$source}");
+            }
+        }
+        $this->newLine();
+
+        // Step 3: Copy Blade Templates
+        $this->info('Step 3: Copying blade templates...');
+        $viewsSource = $packagePath . '/resources/views/components';
+        $viewsDestination = resource_path('views/components');
+
+        // Create components directory if it doesn't exist
+        if (!file_exists($viewsDestination)) {
+            mkdir($viewsDestination, 0755, true);
+        }
+
+        // Create blocks subdirectory
+        $blocksDestination = $viewsDestination . '/blocks';
+        if (!file_exists($blocksDestination)) {
+            mkdir($blocksDestination, 0755, true);
+        }
+
+        // Copy all blade files
+        $bladeFiles = [
+            'blocks/hero-1.blade.php',
+            'blocks/hero-2.blade.php',
+            'blocks/text.blade.php',
+            'blocks/rich-text.blade.php',
+            'blocks/cards.blade.php',
+            'blocks/products.blade.php',
+            'blocks/catalogs.blade.php',
+            'blocks/features.blade.php',
+            'blocks/breadcrumbs.blade.php',
+            'blocks/slider.blade.php',
+            'blocks/container-50-50.blade.php',
+            'blocks/container-33-33-33.blade.php',
+            'blocks/container-25-75.blade.php',
+            'page-renderer.blade.php',
+        ];
+
+        foreach ($bladeFiles as $file) {
+            $source = $viewsSource . '/' . $file;
+            $destination = $viewsDestination . '/' . $file;
+
+            if (file_exists($source)) {
+                copy($source, $destination);
+                $this->info("✓ Copied {$file}");
+            } else {
+                $this->warn("⚠ Source file not found: {$source}");
+            }
+        }
+        $this->newLine();
+
+        // Step 4: Copy and Run Migrations
+        $this->info('Step 4: Copying and running database migrations...');
+
+        // Check if tables already exist
+        $tablesExist = Schema::hasTable('t_pages') &&
+                       Schema::hasTable('t_page_blocks') &&
+                       Schema::hasTable('t_page_block_types');
+
+        if ($tablesExist) {
+            $this->warn('⚠ Tables already exist. Running update migrations only...');
+
+            // Copy and run update migration
+            $updateMigrationFile = '2026_03_02_000053_update_pages_add_container_support.php';
+            $updateSource = $packagePath . '/database/migrations/pages/2026_03_02_update_pages_add_container_support.php';
+            $updateDestination = database_path('migrations/' . $updateMigrationFile);
+
+            if (file_exists($updateSource)) {
+                copy($updateSource, $updateDestination);
+                $this->info("✓ Copied update migration {$updateMigrationFile}");
+
+                try {
+                    Artisan::call('migrate', [
+                        '--path' => 'database/migrations/' . $updateMigrationFile,
+                        '--force' => true
+                    ]);
+                    $this->info('✓ Update migration completed successfully');
+                } catch (\Exception $e) {
+                    $this->warn('⚠ Update migration warning: ' . $e->getMessage());
+                }
+            }
+            $this->newLine();
+        } else {
+            $migrationFiles = [
+                '2026_03_02_000050_create_t_pages_table.php',
+                '2026_03_02_000051_create_t_page_block_types_table.php',
+                '2026_03_02_000052_create_t_page_blocks_table.php',
+            ];
+
+            $migrationsSource = $packagePath . '/database/migrations/pages/';
+
+            foreach ($migrationFiles as $file) {
+                $source = $migrationsSource . str_replace('2026_03_02_000050_', '2026_03_02_',
+                    str_replace('2026_03_02_000051_', '2026_03_02_',
+                    str_replace('2026_03_02_000052_', '2026_03_02_', $file)));
+                $destination = database_path('migrations/' . $file);
+
+                if (file_exists($source)) {
+                    copy($source, $destination);
+                    $this->info("✓ Copied migration {$file}");
+                } else {
+                    $this->warn("⚠ Source migration not found: {$source}");
+                }
+            }
+
+            try {
+                // Run only pages module migrations
+                foreach ($migrationFiles as $file) {
+                    $migrationPath = database_path('migrations/' . $file);
+                    if (file_exists($migrationPath)) {
+                        Artisan::call('migrate', [
+                            '--path' => 'database/migrations/' . $file,
+                            '--force' => true
+                        ]);
+                    }
+                }
+                $this->info('✓ Migrations completed successfully');
+            } catch (\Exception $e) {
+                $this->error('❌ Migration failed: ' . $e->getMessage());
+                return self::FAILURE;
+            }
+            $this->newLine();
+        }
+
+        // Step 5: Seed Default Block Types
+        $this->info('Step 5: Creating default block types...');
+        $this->seedDefaultBlockTypes();
+        $this->info('✓ Default block types created');
+        $this->newLine();
+
+        // Step 6: Build Frontend Assets
+        $this->info('Step 6: Building frontend assets...');
+
+        if (file_exists($packagePath . '/package.json')) {
+            $this->info('Building assets...');
+            exec("cd {$packagePath} && npm run build 2>&1", $output, $returnVar);
+
+            if ($returnVar !== 0) {
+                $this->error('❌ Asset build failed');
+                return self::FAILURE;
+            }
+            $this->info('✓ Assets built successfully');
+        } else {
+            $this->warn('⚠ package.json not found, skipping asset build');
+        }
+        $this->newLine();
+
+        // Step 7: Publish Assets
+        $this->info('Step 7: Publishing assets...');
+        Artisan::call('vendor:publish', [
+            '--tag' => 'holart-cms-assets',
+            '--force' => true,
+        ]);
+        $this->info('✓ Assets published successfully');
+        $this->newLine();
+
+        // Step 8: Clear Cache
+        $this->info('Step 8: Clearing application cache...');
+        Artisan::call('config:clear');
+        Artisan::call('route:clear');
+        Artisan::call('view:clear');
+        $this->info('✓ Cache cleared successfully');
+        $this->newLine();
+
+        // Success Message
+        $this->info('╔═══════════════════════════════════════╗');
+        $this->info('║ Pages Module Installed Successfully! ║');
+        $this->info('╚═══════════════════════════════════════╝');
+        $this->newLine();
+        $this->info('You can now create pages in your admin panel.');
+        $this->info('Navigate to: ' . url('/admin/pages'));
+        $this->newLine();
+
+        return self::SUCCESS;
+    }
+
+    /**
+     * Seed default block types
+     */
+    protected function seedDefaultBlockTypes(): void
+    {
+        $blockTypes = [
+            [
+                'code' => 'hero_1',
+                'name' => 'Hero Section 1',
+                'description' => 'Основной баннер с заголовком, описанием и кнопкой',
+                'icon' => 'heroicons:rectangle-stack',
+                'category' => 'hero',
+                'is_system' => true,
+                'fields_schema' => [
+                    ['name' => 'title', 'type' => 'string', 'label' => 'Заголовок'],
+                    ['name' => 'subtitle', 'type' => 'string', 'label' => 'Подзаголовок'],
+                    ['name' => 'description', 'type' => 'text', 'label' => 'Описание'],
+                    ['name' => 'button_text', 'type' => 'string', 'label' => 'Текст кнопки'],
+                    ['name' => 'button_link', 'type' => 'string', 'label' => 'Ссылка кнопки'],
+                    ['name' => 'background_image', 'type' => 'image', 'label' => 'Фоновое изображение'],
+                ],
+            ],
+            [
+                'code' => 'hero_2',
+                'name' => 'Hero Section 2',
+                'description' => 'Альтернативный hero-блок с видео фоном',
+                'icon' => 'heroicons:film',
+                'category' => 'hero',
+                'is_system' => true,
+                'fields_schema' => [
+                    ['name' => 'title', 'type' => 'string', 'label' => 'Заголовок'],
+                    ['name' => 'description', 'type' => 'text', 'label' => 'Описание'],
+                    ['name' => 'video_url', 'type' => 'string', 'label' => 'URL видео'],
+                ],
+            ],
+            [
+                'code' => 'text',
+                'name' => 'Текстовый блок',
+                'description' => 'Простой блок с текстом и заголовком',
+                'icon' => 'heroicons:document-text',
+                'category' => 'content',
+                'is_system' => true,
+                'fields_schema' => [
+                    ['name' => 'title', 'type' => 'string', 'label' => 'Заголовок'],
+                    ['name' => 'content', 'type' => 'textarea', 'label' => 'Содержимое'],
+                ],
+            ],
+            [
+                'code' => 'rich_text',
+                'name' => 'Расширенный текстовый блок',
+                'description' => 'Блок с WYSIWYG редактором',
+                'icon' => 'heroicons:document-text',
+                'category' => 'content',
+                'is_system' => true,
+                'fields_schema' => [
+                    ['name' => 'title', 'type' => 'string', 'label' => 'Заголовок'],
+                    ['name' => 'content', 'type' => 'textarea', 'label' => 'Содержимое (HTML)'],
+                ],
+            ],
+            [
+                'code' => 'cards',
+                'name' => 'Карточки',
+                'description' => 'Блок с карточками из разных источников',
+                'icon' => 'heroicons:rectangle-group',
+                'category' => 'content',
+                'is_system' => true,
+                'fields_schema' => [
+                    ['name' => 'title', 'type' => 'string', 'label' => 'Заголовок'],
+                    ['name' => 'data_source', 'type' => 'select', 'label' => 'Источник данных', 'options' => [
+                        ['value' => 'manual', 'label' => 'Вручную'],
+                        ['value' => 'products', 'label' => 'Товары'],
+                        ['value' => 'infoblocks', 'label' => 'Инфоблоки'],
+                    ]],
+                    ['name' => 'source_id', 'type' => 'string', 'label' => 'ID источника (для инфоблоков)'],
+                    ['name' => 'limit', 'type' => 'number', 'label' => 'Количество', 'default' => 6],
+                    ['name' => 'columns', 'type' => 'select', 'label' => 'Колонок', 'options' => [
+                        ['value' => '2', 'label' => '2'],
+                        ['value' => '3', 'label' => '3'],
+                        ['value' => '4', 'label' => '4'],
+                    ]],
+                ],
+            ],
+            [
+                'code' => 'products',
+                'name' => 'Товары',
+                'description' => 'Блок с товарами из каталога',
+                'icon' => 'heroicons:shopping-bag',
+                'category' => 'shop',
+                'is_system' => true,
+                'fields_schema' => [
+                    ['name' => 'title', 'type' => 'string', 'label' => 'Заголовок'],
+                    ['name' => 'catalog_id', 'type' => 'string', 'label' => 'ID каталога (пусто = все)'],
+                    ['name' => 'limit', 'type' => 'number', 'label' => 'Количество', 'default' => 8],
+                    ['name' => 'columns', 'type' => 'select', 'label' => 'Колонок', 'options' => [
+                        ['value' => '2', 'label' => '2'],
+                        ['value' => '3', 'label' => '3'],
+                        ['value' => '4', 'label' => '4'],
+                    ]],
+                ],
+            ],
+            [
+                'code' => 'catalogs',
+                'name' => 'Каталоги',
+                'description' => 'Блок с категориями товаров',
+                'icon' => 'heroicons:squares-2x2',
+                'category' => 'shop',
+                'is_system' => true,
+                'fields_schema' => [
+                    ['name' => 'title', 'type' => 'string', 'label' => 'Заголовок'],
+                    ['name' => 'parent_id', 'type' => 'string', 'label' => 'ID родительского каталога (пусто = корневые)'],
+                    ['name' => 'columns', 'type' => 'select', 'label' => 'Колонок', 'options' => [
+                        ['value' => '2', 'label' => '2'],
+                        ['value' => '3', 'label' => '3'],
+                        ['value' => '4', 'label' => '4'],
+                    ]],
+                ],
+            ],
+            [
+                'code' => 'slider',
+                'name' => 'Слайдер',
+                'description' => 'Карусель изображений',
+                'icon' => 'heroicons:photo',
+                'category' => 'media',
+                'is_system' => true,
+                'fields_schema' => [
+                    ['name' => 'slides', 'type' => 'repeater', 'label' => 'Слайды', 'fields' => [
+                        ['name' => 'image', 'type' => 'image', 'label' => 'Изображение'],
+                        ['name' => 'title', 'type' => 'string', 'label' => 'Заголовок'],
+                        ['name' => 'description', 'type' => 'text', 'label' => 'Описание'],
+                    ]],
+                ],
+            ],
+            [
+                'code' => 'breadcrumbs',
+                'name' => 'Хлебные крошки',
+                'description' => 'Навигационные хлебные крошки',
+                'icon' => 'heroicons:arrow-right',
+                'category' => 'navigation',
+                'is_system' => true,
+                'fields_schema' => [],
+            ],
+            [
+                'code' => 'features',
+                'name' => 'Преимущества',
+                'description' => 'Список преимуществ с иконками',
+                'icon' => 'heroicons:star',
+                'category' => 'content',
+                'is_system' => true,
+                'fields_schema' => [
+                    ['name' => 'title', 'type' => 'string', 'label' => 'Заголовок секции'],
+                    ['name' => 'items', 'type' => 'repeater', 'label' => 'Преимущества', 'fields' => [
+                        ['name' => 'icon', 'type' => 'string', 'label' => 'Иконка'],
+                        ['name' => 'title', 'type' => 'string', 'label' => 'Заголовок'],
+                        ['name' => 'description', 'type' => 'text', 'label' => 'Описание'],
+                    ]],
+                ],
+            ],
+            [
+                'code' => 'container_50_50',
+                'name' => 'Контейнер 50/50',
+                'description' => 'Контейнер с двумя колонками по 50%',
+                'icon' => 'heroicons:view-columns',
+                'category' => 'layout',
+                'is_system' => true,
+                'is_container' => true,
+                'fields_schema' => [
+                    ['name' => 'gap', 'type' => 'select', 'label' => 'Отступ между колонками', 'options' => [
+                        ['value' => 'small', 'label' => 'Маленький'],
+                        ['value' => 'medium', 'label' => 'Средний'],
+                        ['value' => 'large', 'label' => 'Большой'],
+                    ]],
+                ],
+            ],
+            [
+                'code' => 'container_33_33_33',
+                'name' => 'Контейнер 33/33/33',
+                'description' => 'Контейнер с тремя равными колонками',
+                'icon' => 'heroicons:view-columns',
+                'category' => 'layout',
+                'is_system' => true,
+                'is_container' => true,
+                'fields_schema' => [
+                    ['name' => 'gap', 'type' => 'select', 'label' => 'Отступ между колонками', 'options' => [
+                        ['value' => 'small', 'label' => 'Маленький'],
+                        ['value' => 'medium', 'label' => 'Средний'],
+                        ['value' => 'large', 'label' => 'Большой'],
+                    ]],
+                ],
+            ],
+            [
+                'code' => 'container_25_75',
+                'name' => 'Контейнер 25/75',
+                'description' => 'Контейнер с колонками 25% и 75%',
+                'icon' => 'heroicons:view-columns',
+                'category' => 'layout',
+                'is_system' => true,
+                'is_container' => true,
+                'fields_schema' => [
+                    ['name' => 'gap', 'type' => 'select', 'label' => 'Отступ между колонками', 'options' => [
+                        ['value' => 'small', 'label' => 'Маленький'],
+                        ['value' => 'medium', 'label' => 'Средний'],
+                        ['value' => 'large', 'label' => 'Большой'],
+                    ]],
+                ],
+            ],
+        ];
+
+        foreach ($blockTypes as $blockType) {
+            DB::table('t_page_block_types')->updateOrInsert(
+                ['code' => $blockType['code']],
+                array_merge($blockType, [
+                    'fields_schema' => json_encode($blockType['fields_schema']),
+                    'is_container' => $blockType['is_container'] ?? false,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ])
+            );
+        }
+    }
+}

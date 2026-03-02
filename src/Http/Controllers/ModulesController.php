@@ -57,6 +57,14 @@ class ModulesController extends Controller
                 'installed' => $this->isInfoBlocksModuleInstalled(),
                 'install_command' => 'holartcms:infoblocks-install',
                 'uninstall_command' => 'holartcms:infoblocks-uninstall',
+            ],
+            [
+                'id' => 'pages',
+                'name' => 'Страницы и СЕО',
+                'description' => 'Модуль для создания статических и динамических страниц с конструктором блоков и SEO-оптимизацией.',
+                'installed' => $this->isPagesModuleInstalled(),
+                'install_command' => 'holartcms:pages-install',
+                'uninstall_command' => 'holartcms:pages-uninstall',
             ]
         ];
 
@@ -119,6 +127,9 @@ class ModulesController extends Controller
                 case 'infoblocks':
                     $exitCode = Artisan::call('holartcms:infoblocks-install');
                     break;
+                case 'pages':
+                    $exitCode = Artisan::call('holartcms:pages-install');
+                    break;
                 default:
                     return response()->json([
                         'success' => false,
@@ -138,7 +149,7 @@ class ModulesController extends Controller
             }
 
             // Log activity
-            $moduleNames = ['shop' => 'Каталог и товары', 'callback' => 'Обратная связь', 'commerce' => 'Коммерция', 'logging' => 'Журнал активности', 'infoblocks' => 'Информационные блоки'];
+            $moduleNames = ['shop' => 'Каталог и товары', 'callback' => 'Обратная связь', 'commerce' => 'Коммерция', 'logging' => 'Журнал активности', 'infoblocks' => 'Информационные блоки', 'pages' => 'Страницы и СЕО'];
             $moduleName = $moduleNames[$moduleId] ?? $moduleId;
             TAdminAction::log('installed', 'module', null, 'Установлен модуль: ' . $moduleName);
 
@@ -193,6 +204,12 @@ class ModulesController extends Controller
                         '--preserve-db' => $preserveDatabase
                     ]);
                     break;
+                case 'pages':
+                    Artisan::call('holartcms:pages-uninstall', [
+                        '--preserve-db' => $preserveDatabase,
+                        '--force' => true
+                    ]);
+                    break;
                 default:
                     return response()->json([
                         'success' => false,
@@ -203,7 +220,7 @@ class ModulesController extends Controller
             $output = Artisan::output();
 
             // Log activity
-            $moduleNames = ['shop' => 'Каталог и товары', 'callback' => 'Обратная связь', 'commerce' => 'Коммерция', 'logging' => 'Журнал активности', 'infoblocks' => 'Информационные блоки'];
+            $moduleNames = ['shop' => 'Каталог и товары', 'callback' => 'Обратная связь', 'commerce' => 'Коммерция', 'logging' => 'Журнал активности', 'infoblocks' => 'Информационные блоки', 'pages' => 'Страницы и СЕО'];
             $moduleName = $moduleNames[$moduleId] ?? $moduleId;
             TAdminAction::log('uninstalled', 'module', null, 'Удален модуль: ' . $moduleName);
 
@@ -275,6 +292,18 @@ class ModulesController extends Controller
                Schema::hasTable('t_info_blocks') &&
                Schema::hasTable('t_info_block_fields') &&
                Schema::hasTable('t_info_block_elements');
+    }
+
+    /**
+     * Check if pages module is installed
+     */
+    private function isPagesModuleInstalled()
+    {
+        return file_exists(app_path('Http/Controllers/PagesController.php')) &&
+               file_exists(app_path('Models/TPage.php')) &&
+               Schema::hasTable('t_pages') &&
+               Schema::hasTable('t_page_blocks') &&
+               Schema::hasTable('t_page_block_types');
     }
 
     /**

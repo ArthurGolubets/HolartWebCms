@@ -31,6 +31,11 @@ import InfoBlockForm from './components/InfoBlockForm.vue';
 import InfoBlockFields from './components/InfoBlockFields.vue';
 import InfoBlockElements from './components/InfoBlockElements.vue';
 import InfoBlockElementForm from './components/InfoBlockElementForm.vue';
+import PagesList from './components/PagesList.vue';
+import PageForm from './components/PageForm.vue';
+import PageBuilder from './components/PageBuilder.vue';
+import PageBlockTypesList from './components/PageBlockTypesList.vue';
+import PagesSettings from './components/PagesSettings.vue';
 import Error403 from './components/Error403.vue';
 import Error404 from './components/Error404.vue';
 import './style.css';
@@ -208,6 +213,36 @@ const router = createRouter({
             path: '/infoblocks/:infoBlockId/elements/:elementId/edit',
             name: 'infoblock-element-edit',
             component: InfoBlockElementForm
+        },
+        {
+            path: '/pages',
+            name: 'pages',
+            component: PagesList
+        },
+        {
+            path: '/pages/create',
+            name: 'page-create',
+            component: PageForm
+        },
+        {
+            path: '/pages/:id/edit',
+            name: 'page-edit',
+            component: PageForm
+        },
+        {
+            path: '/pages/:id/builder',
+            name: 'page-builder',
+            component: PageBuilder
+        },
+        {
+            path: '/page-block-types',
+            name: 'page-block-types',
+            component: PageBlockTypesList
+        },
+        {
+            path: '/pages-settings',
+            name: 'pages-settings',
+            component: PagesSettings
         },
         {
             path: '/403',

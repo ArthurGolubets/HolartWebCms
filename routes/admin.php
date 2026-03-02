@@ -37,6 +37,9 @@ Route::middleware(['admin.auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('holart-cms.dashboard');
     Route::post('logout', [LoginController::class, 'logout'])->name('holart-cms.logout');
 
+    // Page Viewer Route (must be before API routes to avoid conflicts)
+    Route::get('viewer/{slug}', [\HolartWeb\HolartCMS\Http\Controllers\Pages\PageViewerController::class, 'preview'])->where('slug', '.*');
+
     // API Routes
     Route::prefix('api')->group(function () {
         Route::get('me', [DashboardController::class, 'me']);
@@ -213,6 +216,42 @@ Route::middleware(['admin.auth'])->group(function () {
             Route::post('infoblocks/{infoBlockId}/elements', [$infoBlockElementsController, 'store']);
             Route::put('infoblocks/{infoBlockId}/elements/{id}', [$infoBlockElementsController, 'update']);
             Route::delete('infoblocks/{infoBlockId}/elements/{id}', [$infoBlockElementsController, 'destroy']);
+        }
+
+        // Pages routes - only if pages module is installed
+        $pagesControllerPath = app_path('Http/Controllers/PagesController.php');
+        if (file_exists($pagesControllerPath)) {
+            $pagesController = 'App\\Http\\Controllers\\PagesController';
+            $pageBlocksController = 'App\\Http\\Controllers\\PageBlocksController';
+            $pageBlockTypesController = 'App\\Http\\Controllers\\PageBlockTypesController';
+            $pageViewerController = 'App\\Http\\Controllers\\PageViewerController';
+
+            // Pages routes
+            Route::get('pages', [$pagesController, 'index']);
+            Route::get('pages/{id}', [$pagesController, 'show']);
+            Route::post('pages', [$pagesController, 'store']);
+            Route::put('pages/{id}', [$pagesController, 'update']);
+            Route::delete('pages/{id}', [$pagesController, 'destroy']);
+            Route::post('pages/{id}/duplicate', [$pagesController, 'duplicate']);
+            Route::post('pages/{id}/toggle-publish', [$pagesController, 'togglePublish']);
+            Route::post('pages/generate-slug', [$pagesController, 'generateSlug']);
+
+            // Page Blocks routes
+            Route::get('pages/{pageId}/blocks', [$pageBlocksController, 'index']);
+            Route::get('pages/{pageId}/blocks/{id}', [$pageBlocksController, 'show']);
+            Route::post('pages/{pageId}/blocks', [$pageBlocksController, 'store']);
+            Route::put('pages/{pageId}/blocks/{id}', [$pageBlocksController, 'update']);
+            Route::delete('pages/{pageId}/blocks/{id}', [$pageBlocksController, 'destroy']);
+            Route::post('pages/{pageId}/blocks/reorder', [$pageBlocksController, 'reorder']);
+
+            // Page Block Types routes
+            Route::get('page-block-types', [$pageBlockTypesController, 'index']);
+            Route::get('page-block-types/{id}', [$pageBlockTypesController, 'show']);
+            Route::post('page-block-types', [$pageBlockTypesController, 'store']);
+            Route::put('page-block-types/{id}', [$pageBlockTypesController, 'update']);
+            Route::delete('page-block-types/{id}', [$pageBlockTypesController, 'destroy']);
+            Route::post('page-block-types/create-template', [$pageBlockTypesController, 'createTemplate']);
+            Route::delete('page-block-types/{id}/template', [$pageBlockTypesController, 'deleteTemplate']);
         }
     });
 

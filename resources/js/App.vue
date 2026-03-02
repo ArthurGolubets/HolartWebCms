@@ -163,6 +163,37 @@
           </div>
         </div>
 
+        <!-- Pages & SEO Group (only if pages module is installed) -->
+        <div v-if="pagesModuleInstalled" class="mb-1">
+          <button @click="toggleMenuGroup('pages')" class="w-full flex items-center px-3 py-2.5 text-gray-300 hover:bg-gray-800 hover:text-white rounded-md transition-colors" :class="isCollapsed ? 'justify-center' : 'justify-between'" :title="isCollapsed ? 'Страницы и СЕО' : ''">
+            <div class="flex items-center">
+              <svg class="w-5 h-5" :class="isCollapsed ? '' : 'mr-3'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+              <span v-if="!isCollapsed">Страницы и СЕО</span>
+            </div>
+            <svg v-if="!isCollapsed" class="w-4 h-4 transition-transform" :class="{ 'rotate-180': menuGroups.pages }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div v-if="menuGroups.pages && !isCollapsed" class="ml-3 mt-1 space-y-1">
+            <router-link to="/pages" v-slot="{ isActive }" custom>
+              <a @click="$router.push('/pages'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                Список страниц
+              </a>
+            </router-link>
+            <router-link to="/page-block-types" v-slot="{ isActive }" custom>
+              <a @click="$router.push('/page-block-types'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z"/></svg>
+                Типы блоков
+              </a>
+            </router-link>
+            <router-link to="/pages-settings" v-slot="{ isActive }" custom>
+              <a @click="$router.push('/pages-settings'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                Настройки
+              </a>
+            </router-link>
+          </div>
+        </div>
+
         <!-- Settings Group (only for super_admin and administrator) -->
         <div v-if="canAccessSettings" class="mb-1">
           <button @click="toggleMenuGroup('settings')" class="w-full flex items-center px-3 py-2.5 text-gray-300 hover:bg-gray-800 hover:text-white rounded-md transition-colors" :class="isCollapsed ? 'justify-center' : 'justify-between'" :title="isCollapsed ? 'Настройки' : ''">
@@ -368,6 +399,7 @@ const menuGroups = ref({
   callback: false,
   commerce: false,
   infoblocks: false,
+  pages: false,
 });
 
 const adminUser = ref({
@@ -380,6 +412,7 @@ const shopModuleInstalled = ref(false);
 const callbackModuleInstalled = ref(false);
 const commerceModuleInstalled = ref(false);
 const infoblocksModuleInstalled = ref(false);
+const pagesModuleInstalled = ref(false);
 const favoriteInfoBlocks = ref([]);
 
 const roleLabel = computed(() => {
@@ -520,6 +553,9 @@ const loadModulesStatus = async () => {
 
       const infoblocksModule = data.modules?.find(m => m.id === 'infoblocks');
       infoblocksModuleInstalled.value = infoblocksModule?.installed || false;
+
+      const pagesModule = data.modules?.find(m => m.id === 'pages');
+      pagesModuleInstalled.value = pagesModule?.installed || false;
 
       // Load favorite infoblocks if module is installed
       if (infoblocksModuleInstalled.value) {
