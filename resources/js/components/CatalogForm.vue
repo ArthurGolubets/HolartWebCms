@@ -11,93 +11,126 @@
       </h2>
     </div>
 
+    <!-- Tabs Navigation -->
+    <div class="mb-6 border-b border-gray-200 dark:border-gray-700">
+      <nav class="-mb-px flex space-x-8">
+        <button
+          v-for="tab in tabs"
+          :key="tab.id"
+          @click="activeTab = tab.id"
+          type="button"
+          :class="[
+            activeTab === tab.id
+              ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300',
+            'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'
+          ]"
+        >
+          {{ tab.label }}
+        </button>
+      </nav>
+    </div>
+
     <form @submit.prevent="handleSubmit" class="space-y-6">
-      <!-- Main Info -->
-      <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Основная информация</h3>
+      <!-- Main Info Tab -->
+      <div v-show="activeTab === 'main'" class="space-y-6">
+        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Основная информация</h3>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Родительская категория</label>
+              <input
+                v-model="categorySearch"
+                @input="filterCategories"
+                type="text"
+                placeholder="Поиск категории..."
+                class="w-full px-4 py-2 mb-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
+              >
+              <select
+                v-model="form.parent_id"
+                class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
+              >
+                <option :value="null">Корневая категория</option>
+                <option v-for="cat in filteredCategories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+              </select>
+            </div>
 
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Родительская категория</label>
-            <input
-              v-model="categorySearch"
-              @input="filterCategories"
-              type="text"
-              placeholder="Поиск категории..."
-              class="w-full px-4 py-2 mb-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
-            >
-            <select
-              v-model="form.parent_id"
-              class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
-            >
-              <option :value="null">Корневая категория</option>
-              <option v-for="cat in filteredCategories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-            </select>
-          </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Название *</label>
+              <input
+                v-model="form.name"
+                @input="generateSlug"
+                type="text"
+                required
+                class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
+              >
+            </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Название *</label>
-            <input
-              v-model="form.name"
-              @input="generateSlug"
-              type="text"
-              required
-              class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
-            >
-          </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Slug *</label>
+              <input
+                v-model="form.slug"
+                type="text"
+                required
+                class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
+              >
+            </div>
 
-          <div>
-            <ImageUpload v-model="form.image" label="Изображение категории" />
-          </div>
-        </div>
-      </div>
-
-      <!-- SEO -->
-      <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">SEO</h3>
-
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Title</label>
-            <input
-              v-model="form.title"
-              type="text"
-              class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
-            >
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
-            <textarea
-              v-model="form.description"
-              rows="3"
-              class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
-            ></textarea>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Keywords</label>
-            <input
-              v-model="form.keywords"
-              type="text"
-              placeholder="Через запятую"
-              class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
-            >
+            <div>
+              <ImageUpload v-model="form.image" label="Изображение категории" />
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Content -->
-      <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Контент</h3>
+      <!-- SEO Tab -->
+      <div v-show="activeTab === 'seo'" class="space-y-6">
+        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">SEO</h3>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Title</label>
+              <input
+                v-model="form.title"
+                type="text"
+                class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
+              >
+            </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Описание категории</label>
-          <textarea
-            v-model="form.content"
-            rows="10"
-            class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white font-mono text-sm"
-          ></textarea>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
+              <textarea
+                v-model="form.description"
+                rows="3"
+                class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
+              ></textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Keywords</label>
+              <input
+                v-model="form.keywords"
+                type="text"
+                placeholder="Через запятую"
+                class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Tab -->
+      <div v-show="activeTab === 'content'" class="space-y-6">
+        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+          <TinyMCEEditor v-model="form.content" label="Описание категории" :height="400" />
+        </div>
+      </div>
+
+      <!-- Filters Tab (only for edit mode) -->
+      <div v-show="activeTab === 'filters'" class="space-y-6">
+        <CatalogFiltersBlock v-if="isEdit && route.params.id" :catalogId="route.params.id" />
+        <div v-else class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+          <p class="text-gray-500 dark:text-gray-400">Сохраните категорию, чтобы управлять фильтрами</p>
         </div>
       </div>
 
@@ -129,6 +162,8 @@ import { useRoute, useRouter } from 'vue-router';
 import { useModal } from '../composables/useModal';
 import { useTheme } from '../composables/useTheme';
 import ImageUpload from './ImageUpload.vue';
+import TinyMCEEditor from './TinyMCEEditor.vue';
+import CatalogFiltersBlock from './CatalogFiltersBlock.vue';
 
 const { success, error } = useModal();
 const { buttonStyle } = useTheme();
@@ -140,6 +175,14 @@ const isEdit = computed(() => !!route.params.id);
 const availableCategories = ref([]);
 const categorySearch = ref('');
 const filteredCategories = ref([]);
+const activeTab = ref('main');
+
+const tabs = [
+  { id: 'main', label: 'Основное' },
+  { id: 'seo', label: 'SEO' },
+  { id: 'content', label: 'Контент' },
+  { id: 'filters', label: 'Фильтры' }
+];
 
 const form = ref({
   parent_id: null,

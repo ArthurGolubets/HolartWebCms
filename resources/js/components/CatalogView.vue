@@ -67,6 +67,11 @@
       </div>
     </div>
 
+    <!-- Filters Block -->
+    <div class="mb-6">
+      <CatalogFiltersBlock :catalogId="catalog.id" />
+    </div>
+
     <!-- Products List -->
     <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
       <div class="flex items-center justify-between mb-4">
@@ -118,6 +123,7 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useModal } from '../composables/useModal';
 import { useTheme } from '../composables/useTheme';
+import CatalogFiltersBlock from './CatalogFiltersBlock.vue';
 
 const { error } = useModal();
 const { buttonStyle } = useTheme();

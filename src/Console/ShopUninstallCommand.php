@@ -39,7 +39,7 @@ class ShopUninstallCommand extends Command
         // Step 1: Remove Models
         $this->info('Step 1: Removing shop models...');
         $appModelsPath = app_path('Models');
-        $models = ['TCatalog.php', 'TProduct.php', 'TProductVariant.php'];
+        $models = ['TCatalog.php', 'TProduct.php', 'TProductVariant.php', 'TFilter.php', 'TFilterValue.php'];
 
         foreach ($models as $model) {
             $path = $appModelsPath . '/' . $model;
@@ -53,7 +53,7 @@ class ShopUninstallCommand extends Command
         // Step 2: Remove Controllers
         $this->info('Step 2: Removing shop controllers...');
         $appControllersPath = app_path('Http/Controllers');
-        $controllers = ['CatalogController.php', 'ProductController.php'];
+        $controllers = ['CatalogController.php', 'ProductController.php', 'FilterController.php'];
 
         foreach ($controllers as $controller) {
             $path = $appControllersPath . '/' . $controller;
@@ -71,6 +71,23 @@ class ShopUninstallCommand extends Command
             try {
                 Schema::disableForeignKeyConstraints();
 
+                // Drop filter-related tables first (they have foreign keys)
+                if (Schema::hasTable('t_product_filter_values')) {
+                    Schema::dropIfExists('t_product_filter_values');
+                    $this->info('✓ Dropped t_product_filter_values table');
+                }
+
+                if (Schema::hasTable('t_filter_values')) {
+                    Schema::dropIfExists('t_filter_values');
+                    $this->info('✓ Dropped t_filter_values table');
+                }
+
+                if (Schema::hasTable('t_filters')) {
+                    Schema::dropIfExists('t_filters');
+                    $this->info('✓ Dropped t_filters table');
+                }
+
+                // Then drop product and catalog tables
                 if (Schema::hasTable('t_product_variants')) {
                     Schema::dropIfExists('t_product_variants');
                     $this->info('✓ Dropped t_product_variants table');
@@ -99,6 +116,9 @@ class ShopUninstallCommand extends Command
                 '2024_01_01_000011_create_t_products_table.php',
                 '2024_01_01_000012_create_t_product_variants_table.php',
                 '2024_01_01_000013_add_main_image_to_products.php',
+                '2026_03_03_000070_create_t_filters_table.php',
+                '2026_03_03_000071_create_t_filter_values_table.php',
+                '2026_03_03_000072_create_t_product_filter_values_table.php',
             ];
 
             try {

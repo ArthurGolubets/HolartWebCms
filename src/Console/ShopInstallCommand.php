@@ -47,13 +47,31 @@ class ShopInstallCommand extends Command
 
         $appModelsPath = app_path('Models');
 
-        $models = ['TCatalog.php', 'TProduct.php', 'TProductVariant.php'];
+        $models = ['TCatalog.php', 'TProduct.php', 'TProductVariant.php', 'TFilter.php', 'TFilterValue.php'];
         foreach ($models as $model) {
             $source = $packagePath . '/src/Models/Shop/' . $model;
             $destination = $appModelsPath . '/' . $model;
 
             if (file_exists($source)) {
-                copy($source, $destination);
+                // Update namespace from package to app for models
+                $content = file_get_contents($source);
+                $content = str_replace(
+                    'namespace HolartWeb\HolartCMS\Models\Shop;',
+                    'namespace App\Models;',
+                    $content
+                );
+                // Update model references
+                $content = str_replace(
+                    'HolartWeb\HolartCMS\Models\Shop\TFilter',
+                    'App\Models\TFilter',
+                    $content
+                );
+                $content = str_replace(
+                    'HolartWeb\HolartCMS\Models\Shop\TFilterValue',
+                    'App\Models\TFilterValue',
+                    $content
+                );
+                file_put_contents($destination, $content);
                 $this->info("✓ Copied {$model}");
             } else {
                 $this->warn("⚠ Source file not found: {$source}");
@@ -65,7 +83,7 @@ class ShopInstallCommand extends Command
         $this->info('Step 3: Copying shop controllers...');
         $appControllersPath = app_path('Http/Controllers');
 
-        $controllers = ['CatalogController.php', 'ProductController.php'];
+        $controllers = ['CatalogController.php', 'ProductController.php', 'FilterController.php'];
         foreach ($controllers as $controller) {
             $source = $packagePath . '/src/Http/Controllers/Shop/' . $controller;
             $destination = $appControllersPath . '/' . $controller;
@@ -98,6 +116,9 @@ class ShopInstallCommand extends Command
             '2024_01_01_000011_create_t_products_table.php',
             '2024_01_01_000012_create_t_product_variants_table.php',
             '2024_01_01_000013_add_main_image_to_products.php',
+            '2026_03_03_000070_create_t_filters_table.php',
+            '2026_03_03_000071_create_t_filter_values_table.php',
+            '2026_03_03_000072_create_t_product_filter_values_table.php',
         ];
 
         foreach ($migrationFiles as $file) {

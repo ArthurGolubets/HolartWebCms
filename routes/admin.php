@@ -280,6 +280,28 @@ Route::middleware(['admin.auth'])->group(function () {
         Route::delete('menu-items/{id}', [$menuItemsController, 'destroy']);
         Route::post('menu-items/reorder', [$menuItemsController, 'reorder']);
         Route::post('menu-items/{id}/toggle-active', [$menuItemsController, 'toggleActive']);
+
+        // Filter routes (only if shop module is installed)
+        $filterControllerPath = app_path('Http/Controllers/FilterController.php');
+        if (file_exists($filterControllerPath)) {
+            $filterController = 'App\\Http\\Controllers\\FilterController';
+
+            // Specific routes MUST come before generic {id} routes
+            Route::get('filters/for-catalog/{catalogId}', [$filterController, 'forCatalog']);
+            Route::post('filters/generate-code', [$filterController, 'generateCode']);
+
+            // Filter values routes
+            Route::post('filters/{filterId}/values', [$filterController, 'addValue']);
+            Route::put('filters/{filterId}/values/{valueId}', [$filterController, 'updateValue']);
+            Route::delete('filters/{filterId}/values/{valueId}', [$filterController, 'deleteValue']);
+
+            // Generic CRUD routes
+            Route::get('filters', [$filterController, 'index']);
+            Route::get('filters/{id}', [$filterController, 'show']);
+            Route::post('filters', [$filterController, 'store']);
+            Route::put('filters/{id}', [$filterController, 'update']);
+            Route::delete('filters/{id}', [$filterController, 'destroy']);
+        }
     });
 
     // SPA route - catch all for Vue Router

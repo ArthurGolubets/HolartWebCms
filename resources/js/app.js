@@ -41,6 +41,9 @@ import MenuView from './components/MenuView.vue';
 import MenuCreate from './components/MenuCreate.vue';
 import MenuEdit from './components/MenuEdit.vue';
 import MenuBuilder from './components/MenuBuilder.vue';
+import FiltersList from './components/FiltersList.vue';
+import FilterForm from './components/FilterForm.vue';
+import FilterView from './components/FilterView.vue';
 import Error403 from './components/Error403.vue';
 import Error404 from './components/Error404.vue';
 import './style.css';
@@ -275,6 +278,26 @@ const router = createRouter({
             component: MenuBuilder
         },
         {
+            path: '/filters',
+            name: 'filters',
+            component: FiltersList
+        },
+        {
+            path: '/filters/create',
+            name: 'filter-create',
+            component: FilterForm
+        },
+        {
+            path: '/filters/:id',
+            name: 'filter-view',
+            component: FilterView
+        },
+        {
+            path: '/filters/:id/edit',
+            name: 'filter-edit',
+            component: FilterForm
+        },
+        {
             path: '/403',
             name: 'error-403',
             component: Error403
@@ -317,7 +340,7 @@ router.beforeEach(async (to, from, next) => {
         }
 
         // Check if accessing shop module routes
-        const shopRoutes = ['catalog', 'catalog-create', 'catalog-view', 'catalog-edit', 'products', 'product-create', 'product-view', 'product-edit'];
+        const shopRoutes = ['catalog', 'catalog-create', 'catalog-view', 'catalog-edit', 'products', 'product-create', 'product-view', 'product-edit', 'filters', 'filter-create', 'filter-view', 'filter-edit'];
         if (shopRoutes.includes(to.name)) {
             // Check if shop module is installed
             const modulesResponse = await fetch('/admin/api/modules', {

@@ -57,13 +57,34 @@ class ProductController extends Controller
     }
 
     /**
-     * Get single product
+     * Get single product with filters
      */
     public function show($id): JsonResponse
     {
         $product = TProduct::with(['catalog', 'variants'])->findOrFail($id);
 
-        return response()->json($product);
+        // Get available filters for this product's catalog
+        $availableFilters = [];
+        if (class_exists('HolartWeb\HolartCMS\Models\Shop\TFilter') && $product->catalog_id) {
+            $filterClass = 'HolartWeb\HolartCMS\Models\Shop\TFilter';
+            $availableFilters = $filterClass::with('values')
+                ->forCatalog($product->catalog_id)
+                ->active()
+                ->orderBy('sort')
+                ->get();
+        }
+
+        // Get currently assigned filter values
+        $assignedFilters = [];
+        if (method_exists($product, 'getFiltersWithValues')) {
+            $assignedFilters = $product->getFiltersWithValues();
+        }
+
+        return response()->json([
+            'product' => $product,
+            'available_filters' => $availableFilters,
+            'assigned_filters' => $assignedFilters,
+        ]);
     }
 
     /**
@@ -93,6 +114,8 @@ class ProductController extends Controller
             'variants.*.price' => 'required|numeric|min:0',
             'variants.*.old_price' => 'nullable|numeric|min:0',
             'variants.*.attributes' => 'nullable|array',
+            'filter_values' => 'nullable|array',
+            'filter_values.*' => 'exists:t_filter_values,id',
         ]);
 
         // Generate slug if not provided
@@ -104,11 +127,20 @@ class ProductController extends Controller
         $variants = $validated['variants'] ?? [];
         unset($validated['variants']);
 
+        // Extract filter values
+        $filterValues = $validated['filter_values'] ?? [];
+        unset($validated['filter_values']);
+
         $product = TProduct::create($validated);
 
         // Create variants if provided
         foreach ($variants as $variantData) {
             $product->variants()->create($variantData);
+        }
+
+        // Sync filter values if provided
+        if (!empty($filterValues) && method_exists($product, 'syncFilterValues')) {
+            $product->syncFilterValues($filterValues);
         }
 
         // Log activity
@@ -142,6 +174,8 @@ class ProductController extends Controller
             'content' => 'nullable|string',
             'gallery' => 'nullable|array',
             'variants' => 'nullable|array',
+            'filter_values' => 'nullable|array',
+            'filter_values.*' => 'exists:t_filter_values,id',
         ]);
 
         // Handle variants update
@@ -155,6 +189,16 @@ class ProductController extends Controller
             // Create new variants
             foreach ($variants as $variantData) {
                 $product->variants()->create($variantData);
+            }
+        }
+
+        // Handle filter values update
+        if (isset($validated['filter_values'])) {
+            $filterValues = $validated['filter_values'];
+            unset($validated['filter_values']);
+
+            if (method_exists($product, 'syncFilterValues')) {
+                $product->syncFilterValues($filterValues);
             }
         }
 

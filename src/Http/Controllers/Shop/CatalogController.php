@@ -64,16 +64,28 @@ class CatalogController extends Controller
     }
 
     /**
-     * Get single catalog with products
+     * Get single catalog with products and filters
      */
     public function show($id): JsonResponse
     {
         $catalog = TCatalog::with(['parent', 'children', 'products.variants'])
             ->findOrFail($id);
 
+        // Get filters for this catalog
+        $filters = [];
+        if (class_exists('HolartWeb\HolartCMS\Models\Shop\TFilter')) {
+            $filterClass = 'HolartWeb\HolartCMS\Models\Shop\TFilter';
+            $filters = $filterClass::with('values')
+                ->where('catalog_id', $id)
+                ->orderBy('sort')
+                ->orderBy('name')
+                ->get();
+        }
+
         return response()->json([
             'catalog' => $catalog,
             'breadcrumbs' => $catalog->getBreadcrumbs(),
+            'filters' => $filters,
         ]);
     }
 

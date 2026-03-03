@@ -64,6 +64,49 @@ class TProduct extends Model
     }
 
     /**
+     * Get filter values assigned to this product
+     */
+    public function filterValues()
+    {
+        return $this->belongsToMany(
+            'HolartWeb\HolartCMS\Models\Shop\TFilterValue',
+            't_product_filter_values',
+            'product_id',
+            'filter_value_id'
+        )->withTimestamps();
+    }
+
+    /**
+     * Get filters with values for this product
+     */
+    public function getFiltersWithValues()
+    {
+        $filterValues = $this->filterValues()->with('filter')->get();
+
+        $filters = [];
+        foreach ($filterValues as $filterValue) {
+            $filterId = $filterValue->filter->id;
+            if (!isset($filters[$filterId])) {
+                $filters[$filterId] = [
+                    'filter' => $filterValue->filter,
+                    'values' => []
+                ];
+            }
+            $filters[$filterId]['values'][] = $filterValue;
+        }
+
+        return array_values($filters);
+    }
+
+    /**
+     * Sync filter values for this product
+     */
+    public function syncFilterValues(array $filterValueIds)
+    {
+        $this->filterValues()->sync($filterValueIds);
+    }
+
+    /**
      * Get discount percentage
      */
     public function getDiscountPercentageAttribute(): ?int
