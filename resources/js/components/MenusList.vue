@@ -261,10 +261,18 @@ const visiblePages = computed(() => {
 const loadMenus = async (page = 1) => {
   loading.value = true;
   try {
-    const params = new URLSearchParams({
-      page,
-      ...filters.value,
-    });
+    // Build params object, excluding empty values
+    const params = new URLSearchParams({ page });
+
+    if (filters.value.search) {
+      params.append('search', filters.value.search);
+    }
+    if (filters.value.location) {
+      params.append('location', filters.value.location);
+    }
+    if (filters.value.is_active !== '') {
+      params.append('is_active', filters.value.is_active);
+    }
 
     const response = await fetch(`/admin/api/menus?${params}`, {
       headers: {
@@ -274,13 +282,16 @@ const loadMenus = async (page = 1) => {
 
     if (response.ok) {
       const data = await response.json();
-      menus.value = data.data;
+      console.log('Menus API response:', data);
+      menus.value = data.data || [];
       pagination.value = {
-        current_page: data.current_page,
-        last_page: data.last_page,
-        per_page: data.per_page,
-        total: data.total,
+        current_page: data.current_page || 1,
+        last_page: data.last_page || 1,
+        per_page: data.per_page || 20,
+        total: data.total || 0,
       };
+    } else {
+      console.error('Failed to load menus:', response.status, response.statusText);
     }
   } catch (error) {
     console.error('Failed to load menus:', error);

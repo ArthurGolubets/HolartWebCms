@@ -91,54 +91,103 @@
 
         <!-- Header Template Settings -->
         <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Шаблон шапки сайта</h3>
-          <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Выберите шаблон для шапки вашего сайта</p>
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Шаблон шапки сайта</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Выберите дизайн и настройте параметры шапки вашего сайта</p>
 
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+            <!-- Custom Header -->
+            <div
+              @click="selectHeaderTemplate('custom')"
+              :class="[
+                'relative rounded-xl cursor-pointer transition-all duration-200 overflow-hidden group',
+                settings.header_template === 'custom'
+                  ? 'ring-2 ring-purple-500 shadow-xl'
+                  : 'ring-1 ring-gray-200 dark:ring-gray-700 hover:ring-gray-300 dark:hover:ring-gray-600 hover:shadow-lg'
+              ]"
+            >
+              <!-- Preview -->
+              <div class="relative bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/10 p-4 flex items-center justify-center h-32">
+                <div class="text-center">
+                  <svg class="w-12 h-12 mx-auto text-purple-400 dark:text-purple-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z"/>
+                  </svg>
+                  <p class="text-xs text-purple-600 dark:text-purple-400 font-medium">Своя шапка</p>
+                </div>
+                <!-- Selected Badge -->
+                <div v-if="settings.header_template === 'custom'" class="absolute top-2 right-2 bg-purple-500 text-white rounded-full p-1.5 shadow-lg">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Info -->
+              <div class="bg-white dark:bg-gray-800 p-4 border-t border-gray-100 dark:border-gray-700">
+                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Без шаблона</h4>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Создайте свою шапку</p>
+              </div>
+
+              <!-- Settings Panel -->
+              <div v-if="settings.header_template === 'custom'" class="bg-purple-50 dark:bg-purple-900/10 border-t border-purple-100 dark:border-purple-900/30 p-4 space-y-3">
+                <div class="text-xs text-gray-600 dark:text-gray-400">
+                  <p class="mb-2">Вы можете создать собственную шапку используя:</p>
+                  <ul class="list-disc list-inside space-y-1 text-xs">
+                    <li>HTML/CSS код</li>
+                    <li>Blade шаблоны Laravel</li>
+                    <li>Конструктор блоков</li>
+                  </ul>
+                  <p class="mt-3 text-xs">
+                    <span class="font-medium">Файл:</span>
+                    <code class="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded text-xs">resources/views/partials/custom-header.blade.php</code>
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <!-- Header Template 1 -->
             <div
               @click="selectHeaderTemplate('header1')"
               :class="[
-                'relative border-2 rounded-lg cursor-pointer transition-all hover:shadow-lg',
+                'relative rounded-xl cursor-pointer transition-all duration-200 overflow-hidden group',
                 settings.header_template === 'header1'
-                  ? 'border-blue-500 shadow-lg'
-                  : 'border-gray-300 dark:border-gray-600'
+                  ? 'ring-2 ring-blue-500 shadow-xl'
+                  : 'ring-1 ring-gray-200 dark:ring-gray-700 hover:ring-gray-300 dark:hover:ring-gray-600 hover:shadow-lg'
               ]"
             >
-              <div class="aspect-video bg-gray-100 dark:bg-gray-700 rounded-t-lg overflow-hidden">
-                <!-- Превью шаблона 1 -->
-                <div class="p-3 space-y-2">
-                  <div class="bg-white dark:bg-gray-600 h-8 rounded flex items-center justify-center">
-                    <div class="w-16 h-4 bg-gray-300 dark:bg-gray-500 rounded"></div>
+              <!-- Preview -->
+              <div class="relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 p-4">
+                <div class="bg-white dark:bg-gray-700 rounded-lg shadow-sm p-3 space-y-2">
+                  <div class="flex items-center justify-center h-6 bg-gradient-to-r from-blue-100 to-blue-50 dark:from-blue-900/30 dark:to-blue-800/20 rounded">
+                    <div class="w-12 h-3 bg-blue-300 dark:bg-blue-600 rounded"></div>
                   </div>
-                  <div class="bg-white dark:bg-gray-600 h-6 rounded flex gap-2 px-2">
-                    <div class="flex-1 bg-gray-300 dark:bg-gray-500 rounded"></div>
-                    <div class="flex-1 bg-gray-300 dark:bg-gray-500 rounded"></div>
-                    <div class="flex-1 bg-gray-300 dark:bg-gray-500 rounded"></div>
+                  <div class="flex gap-2 h-5">
+                    <div class="flex-1 bg-gray-200 dark:bg-gray-600 rounded"></div>
+                    <div class="flex-1 bg-gray-200 dark:bg-gray-600 rounded"></div>
+                    <div class="flex-1 bg-gray-200 dark:bg-gray-600 rounded"></div>
                   </div>
+                </div>
+                <!-- Selected Badge -->
+                <div v-if="settings.header_template === 'header1'" class="absolute top-2 right-2 bg-blue-500 text-white rounded-full p-1.5 shadow-lg">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
                 </div>
               </div>
-              <div class="p-4">
-                <div class="flex items-start justify-between">
-                  <div>
-                    <h4 class="font-semibold text-gray-900 dark:text-white">Классический</h4>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Логотип сверху, меню снизу</p>
-                  </div>
-                  <div v-if="settings.header_template === 'header1'" class="text-blue-600">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                    </svg>
-                  </div>
-                </div>
-                <!-- Settings for header1 -->
-                <div v-if="settings.header_template === 'header1'" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-3">
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Меню шапки</label>
-                    <select v-model="headerTemplateSettings.header1.menu_id" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded text-sm">
-                      <option :value="null">Без меню</option>
-                      <option v-for="menu in headerMenus" :key="menu.id" :value="menu.id">{{ menu.name }}</option>
-                    </select>
-                  </div>
+
+              <!-- Info -->
+              <div class="bg-white dark:bg-gray-800 p-4 border-t border-gray-100 dark:border-gray-700">
+                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Классический</h4>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Логотип сверху, меню снизу</p>
+              </div>
+
+              <!-- Settings Panel -->
+              <div v-if="settings.header_template === 'header1'" class="bg-blue-50 dark:bg-blue-900/10 border-t border-blue-100 dark:border-blue-900/30 p-4 space-y-3">
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">Меню шапки</label>
+                  <select v-model="headerTemplateSettings.header1.menu_id" class="w-full px-3 py-2 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600">
+                    <option :value="null">Без меню</option>
+                    <option v-for="menu in headerMenus" :key="menu.id" :value="menu.id">{{ menu.name }}</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -147,57 +196,62 @@
             <div
               @click="selectHeaderTemplate('header2')"
               :class="[
-                'relative border-2 rounded-lg cursor-pointer transition-all hover:shadow-lg',
+                'relative rounded-xl cursor-pointer transition-all duration-200 overflow-hidden group',
                 settings.header_template === 'header2'
-                  ? 'border-blue-500 shadow-lg'
-                  : 'border-gray-300 dark:border-gray-600'
+                  ? 'ring-2 ring-blue-500 shadow-xl'
+                  : 'ring-1 ring-gray-200 dark:ring-gray-700 hover:ring-gray-300 dark:hover:ring-gray-600 hover:shadow-lg'
               ]"
             >
-              <div class="aspect-video bg-gray-100 dark:bg-gray-700 rounded-t-lg overflow-hidden">
-                <!-- Превью шаблона 2 -->
-                <div class="p-3">
-                  <div class="bg-white dark:bg-gray-600 h-10 rounded flex items-center justify-between px-3">
-                    <div class="w-12 h-4 bg-gray-300 dark:bg-gray-500 rounded"></div>
-                    <div class="flex gap-2">
-                      <div class="w-12 h-3 bg-gray-300 dark:bg-gray-500 rounded"></div>
-                      <div class="w-12 h-3 bg-gray-300 dark:bg-gray-500 rounded"></div>
-                      <div class="w-12 h-3 bg-gray-300 dark:bg-gray-500 rounded"></div>
+              <!-- Preview -->
+              <div class="relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 p-4">
+                <div class="bg-white dark:bg-gray-700 rounded-lg shadow-sm p-3">
+                  <div class="flex items-center justify-between h-8">
+                    <div class="w-10 h-4 bg-gradient-to-r from-blue-300 to-blue-400 dark:from-blue-600 dark:to-blue-500 rounded"></div>
+                    <div class="flex gap-1.5">
+                      <div class="w-10 h-2.5 bg-gray-200 dark:bg-gray-600 rounded"></div>
+                      <div class="w-10 h-2.5 bg-gray-200 dark:bg-gray-600 rounded"></div>
+                      <div class="w-10 h-2.5 bg-gray-200 dark:bg-gray-600 rounded"></div>
                     </div>
                   </div>
+                </div>
+                <!-- Selected Badge -->
+                <div v-if="settings.header_template === 'header2'" class="absolute top-2 right-2 bg-blue-500 text-white rounded-full p-1.5 shadow-lg">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
                 </div>
               </div>
-              <div class="p-4">
-                <div class="flex items-start justify-between">
-                  <div>
-                    <h4 class="font-semibold text-gray-900 dark:text-white">Горизонтальный</h4>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Логотип слева, меню справа</p>
-                  </div>
-                  <div v-if="settings.header_template === 'header2'" class="text-blue-600">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                    </svg>
-                  </div>
+
+              <!-- Info -->
+              <div class="bg-white dark:bg-gray-800 p-4 border-t border-gray-100 dark:border-gray-700">
+                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Горизонтальный</h4>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Логотип слева, меню справа</p>
+              </div>
+
+              <!-- Settings Panel -->
+              <div v-if="settings.header_template === 'header2'" class="bg-blue-50 dark:bg-blue-900/10 border-t border-blue-100 dark:border-blue-900/30 p-4 space-y-3">
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">Меню шапки</label>
+                  <select v-model="headerTemplateSettings.header2.menu_id" class="w-full px-3 py-2 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600">
+                    <option :value="null">Без меню</option>
+                    <option v-for="menu in headerMenus" :key="menu.id" :value="menu.id">{{ menu.name }}</option>
+                  </select>
                 </div>
-                <div v-if="settings.header_template === 'header2'" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-3">
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Меню шапки</label>
-                    <select v-model="headerTemplateSettings.header2.menu_id" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded text-sm">
-                      <option :value="null">Без меню</option>
-                      <option v-for="menu in headerMenus" :key="menu.id" :value="menu.id">{{ menu.name }}</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Дополнительные кнопки</label>
-                    <div class="space-y-2">
-                      <label class="flex items-center">
-                        <input v-model="headerTemplateSettings.header2.show_cart" type="checkbox" class="mr-2 rounded">
-                        <span class="text-sm">Корзина</span>
-                      </label>
-                      <label class="flex items-center">
-                        <input v-model="headerTemplateSettings.header2.show_account" type="checkbox" class="mr-2 rounded">
-                        <span class="text-sm">Личный кабинет</span>
-                      </label>
-                    </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Дополнительные кнопки</label>
+                  <div class="space-y-2">
+                    <label class="flex items-center justify-between cursor-pointer p-2 rounded-lg hover:bg-white/50 dark:hover:bg-gray-800/50 transition-colors">
+                      <span class="text-xs text-gray-700 dark:text-gray-300">Корзина</span>
+                      <button @click.stop="headerTemplateSettings.header2.show_cart = !headerTemplateSettings.header2.show_cart" type="button" :class="headerTemplateSettings.header2.show_cart ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600'" class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors">
+                        <span :class="headerTemplateSettings.header2.show_cart ? 'translate-x-5' : 'translate-x-1'" class="inline-block h-3 w-3 transform rounded-full bg-white transition-transform" />
+                      </button>
+                    </label>
+                    <label class="flex items-center justify-between cursor-pointer p-2 rounded-lg hover:bg-white/50 dark:hover:bg-gray-800/50 transition-colors">
+                      <span class="text-xs text-gray-700 dark:text-gray-300">Личный кабинет</span>
+                      <button @click.stop="headerTemplateSettings.header2.show_account = !headerTemplateSettings.header2.show_account" type="button" :class="headerTemplateSettings.header2.show_account ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600'" class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors">
+                        <span :class="headerTemplateSettings.header2.show_account ? 'translate-x-5' : 'translate-x-1'" class="inline-block h-3 w-3 transform rounded-full bg-white transition-transform" />
+                      </button>
+                    </label>
                   </div>
                 </div>
               </div>
@@ -265,7 +319,7 @@
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Шаблон футера сайта</h3>
           <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Выберите шаблон для футера вашего сайта</p>
 
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
             <!-- Footer Template 1 -->
             <div
               @click="selectFooterTemplate('footer1')"
@@ -414,6 +468,45 @@
                       <input v-model="footerTemplateSettings.footer3.social_telegram" type="url" placeholder="Telegram URL" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded text-sm">
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Custom Footer Template -->
+            <div
+              @click="selectFooterTemplate('custom')"
+              :class="[
+                'relative rounded-xl cursor-pointer transition-all duration-200 overflow-hidden group',
+                settings.footer_template === 'custom'
+                  ? 'ring-2 ring-purple-500 shadow-xl'
+                  : 'ring-1 ring-gray-200 dark:ring-gray-700 hover:ring-gray-300 dark:hover:ring-gray-600 hover:shadow-lg'
+              ]"
+            >
+              <!-- Preview -->
+              <div class="relative bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-6 flex flex-col items-center justify-center min-h-[120px]">
+                <svg class="w-12 h-12 text-purple-500 dark:text-purple-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
+                </svg>
+                <p class="text-xs font-medium text-purple-600 dark:text-purple-400">Свой футер</p>
+                <!-- Selected Badge -->
+                <div v-if="settings.footer_template === 'custom'" class="absolute top-2 right-2 bg-purple-500 text-white rounded-full p-1.5 shadow-lg">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Info -->
+              <div class="bg-white dark:bg-gray-800 p-4 border-t border-gray-100 dark:border-gray-700">
+                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Кастомный</h4>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Создайте свой футер</p>
+              </div>
+
+              <!-- Settings Panel -->
+              <div v-if="settings.footer_template === 'custom'" class="bg-purple-50 dark:bg-purple-900/10 border-t border-purple-100 dark:border-purple-900/30 p-4">
+                <div class="bg-purple-100 dark:bg-purple-900/20 rounded-lg p-3">
+                  <p class="text-xs font-medium text-purple-900 dark:text-purple-300 mb-1">Создайте файл:</p>
+                  <p class="text-xs font-mono text-purple-700 dark:text-purple-400 break-all">resources/views/partials/custom-footer.blade.php</p>
                 </div>
               </div>
             </div>

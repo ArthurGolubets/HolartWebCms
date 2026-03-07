@@ -73,7 +73,20 @@ class OrdersController extends Controller
             ], 422);
         }
 
-        $order = TOrders::create($request->except('items'));
+        // Calculate prices
+        $goodsPrice = collect($request->items)->sum('total_price');
+        $deliveryPrice = $request->get('delivery_price', 0);
+        $promocodeDiscount = $request->get('promocode_discount', 0);
+        $totalPrice = $goodsPrice + $deliveryPrice - $promocodeDiscount;
+
+        // Create order with calculated prices
+        $orderData = $request->except('items');
+        $orderData['goods_price'] = $goodsPrice;
+        $orderData['delivery_price'] = $deliveryPrice;
+        $orderData['promocode_discount'] = $promocodeDiscount;
+        $orderData['total_price'] = $totalPrice;
+
+        $order = TOrders::create($orderData);
 
         // Create order items
         foreach ($request->items as $item) {

@@ -1,126 +1,181 @@
 <template>
-  <div class="container-fluid">
-    <div v-if="loading" class="text-center py-5">
-      <div class="spinner-border" role="status">
-        <span class="visually-hidden">Загрузка...</span>
-      </div>
+  <div>
+    <div v-if="loading" class="flex justify-center items-center py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
     </div>
 
     <div v-else-if="menu">
       <!-- Header -->
-      <div class="d-flex justify-content-between align-items-center mb-4">
+      <div class="flex justify-between items-center mb-6">
         <div>
-          <h1 class="h3 mb-1">{{ menu.name }}</h1>
-          <p class="text-muted mb-0">
-            <span class="badge" :class="menu.location === 'header' ? 'bg-primary' : 'bg-secondary'">
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ menu.name }}</h1>
+          <div class="flex items-center gap-2 mt-2">
+            <span
+              :class="[
+                'px-2 py-1 text-xs font-medium rounded',
+                menu.location === 'header'
+                  ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                  : 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+              ]"
+            >
               {{ menu.location === 'header' ? 'Шапка' : 'Подвал' }}
             </span>
-            <code class="ms-2">{{ menu.code }}</code>
-          </p>
+            <code class="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded font-mono">{{ menu.code }}</code>
+          </div>
         </div>
-        <div>
-          <button @click="addItem(null)" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Добавить пункт
-          </button>
-          <button @click="$router.push('/menus')" class="btn btn-outline-secondary ms-2">
-            <i class="bi bi-arrow-left"></i> Назад
-          </button>
+        <div class="flex gap-3">
+          <ThemeButton @click="addItem(null)" variant="primary">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Добавить пункт
+          </ThemeButton>
+          <ThemeButton @click="$router.push('/menus')" variant="secondary">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Назад
+          </ThemeButton>
         </div>
       </div>
 
       <!-- Menu Items -->
-      <div class="card">
-        <div class="card-body">
-          <div v-if="items.length === 0" class="text-center py-5">
-            <p class="text-muted">Пункты меню не созданы</p>
-            <button @click="addItem(null)" class="btn btn-primary">
-              <i class="bi bi-plus-circle"></i> Добавить первый пункт
-            </button>
+      <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
+        <div class="p-6">
+          <div v-if="items.length === 0" class="text-center py-12">
+            <svg class="mx-auto h-16 w-16 text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+            <p class="text-gray-600 dark:text-gray-400 mb-4">Пункты меню не созданы</p>
+            <ThemeButton @click="addItem(null)" variant="primary">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+              </svg>
+              Добавить первый пункт
+            </ThemeButton>
           </div>
 
-          <div v-else class="menu-items-tree">
+          <div v-else class="space-y-3">
             <draggable
               v-model="items"
               :options="{ group: 'menu-items', handle: '.drag-handle' }"
               @end="onDragEnd"
+              item-key="id"
             >
-              <div v-for="item in items" :key="item.id" class="menu-item-wrapper">
-                <div class="menu-item">
-                  <div class="menu-item-content">
-                    <span class="drag-handle">
-                      <i class="bi bi-grip-vertical"></i>
+              <template #item="{ element: item }">
+              <div class="mb-3">
+                <div class="bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div class="flex items-center gap-4">
+                    <span class="drag-handle cursor-move text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/>
+                      </svg>
                     </span>
-                    <div class="menu-item-info">
-                      <strong>{{ item.title }}</strong>
-                      <div class="small text-muted">
-                        {{ item.url || item.route || '—' }}
-                        <span v-if="item.target === '_blank'" class="badge bg-info ms-1">Новая вкладка</span>
+                    <div class="flex-1">
+                      <div class="font-semibold text-gray-900 dark:text-white">{{ item.title }}</div>
+                      <div class="text-sm text-gray-600 dark:text-gray-400 mt-1 flex items-center gap-2">
+                        <span>{{ item.url || item.route || '—' }}</span>
+                        <span v-if="item.target === '_blank'" class="px-2 py-0.5 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded">
+                          Новая вкладка
+                        </span>
                       </div>
                     </div>
-                    <div class="menu-item-actions">
+                    <div class="flex items-center gap-2">
                       <button
                         @click="toggleItemActive(item)"
-                        class="btn btn-sm"
-                        :class="item.is_active ? 'btn-success' : 'btn-warning'"
+                        :class="[
+                          'p-2 rounded-lg transition-colors',
+                          item.is_active
+                            ? 'text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20'
+                            : 'text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700'
+                        ]"
                         :title="item.is_active ? 'Активно' : 'Неактивно'"
                       >
-                        <i class="bi" :class="item.is_active ? 'bi-eye' : 'bi-eye-slash'"></i>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path v-if="item.is_active" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                          <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+                        </svg>
                       </button>
-                      <button @click="addItem(item)" class="btn btn-sm btn-outline-primary" title="Добавить подпункт">
-                        <i class="bi bi-plus"></i>
+                      <button @click="addItem(item)" class="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors" title="Добавить подпункт">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
                       </button>
-                      <button @click="editItem(item)" class="btn btn-sm btn-outline-secondary" title="Редактировать">
-                        <i class="bi bi-pencil"></i>
+                      <button @click="editItem(item)" class="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors" title="Редактировать">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
                       </button>
-                      <button @click="confirmDeleteItem(item)" class="btn btn-sm btn-outline-danger" title="Удалить">
-                        <i class="bi bi-trash"></i>
+                      <button @click="confirmDeleteItem(item)" class="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Удалить">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
                       </button>
                     </div>
                   </div>
                 </div>
 
                 <!-- Child Items -->
-                <div v-if="item.children && item.children.length > 0" class="menu-children">
+                <div v-if="item.children && item.children.length > 0" class="ml-12 mt-2 pl-4 border-l-2 border-gray-300 dark:border-gray-600 space-y-2">
                   <draggable
                     v-model="item.children"
                     :options="{ group: 'menu-items', handle: '.drag-handle' }"
                     @end="onDragEnd"
+                    item-key="id"
                   >
-                    <div v-for="child in item.children" :key="child.id" class="menu-item-wrapper">
-                      <div class="menu-item child-item">
-                        <div class="menu-item-content">
-                          <span class="drag-handle">
-                            <i class="bi bi-grip-vertical"></i>
+                    <template #item="{ element: child }">
+                    <div class="mb-2">
+                      <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 hover:shadow-sm transition-shadow">
+                        <div class="flex items-center gap-3">
+                          <span class="drag-handle cursor-move text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/>
+                            </svg>
                           </span>
-                          <div class="menu-item-info">
-                            <strong>{{ child.title }}</strong>
-                            <div class="small text-muted">
-                              {{ child.url || child.route || '—' }}
-                              <span v-if="child.target === '_blank'" class="badge bg-info ms-1">Новая вкладка</span>
+                          <div class="flex-1">
+                            <div class="font-medium text-sm text-gray-900 dark:text-white">{{ child.title }}</div>
+                            <div class="text-xs text-gray-600 dark:text-gray-400 mt-0.5 flex items-center gap-2">
+                              <span>{{ child.url || child.route || '—' }}</span>
+                              <span v-if="child.target === '_blank'" class="px-1.5 py-0.5 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded">
+                                Новая вкладка
+                              </span>
                             </div>
                           </div>
-                          <div class="menu-item-actions">
+                          <div class="flex items-center gap-1">
                             <button
                               @click="toggleItemActive(child)"
-                              class="btn btn-sm"
-                              :class="child.is_active ? 'btn-success' : 'btn-warning'"
+                              :class="[
+                                'p-1.5 rounded transition-colors',
+                                child.is_active
+                                  ? 'text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20'
+                                  : 'text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700'
+                              ]"
                               :title="child.is_active ? 'Активно' : 'Неактивно'"
                             >
-                              <i class="bi" :class="child.is_active ? 'bi-eye' : 'bi-eye-slash'"></i>
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path v-if="child.is_active" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+                              </svg>
                             </button>
-                            <button @click="editItem(child)" class="btn btn-sm btn-outline-secondary" title="Редактировать">
-                              <i class="bi bi-pencil"></i>
+                            <button @click="editItem(child)" class="p-1.5 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors" title="Редактировать">
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                              </svg>
                             </button>
-                            <button @click="confirmDeleteItem(child)" class="btn btn-sm btn-outline-danger" title="Удалить">
-                              <i class="bi bi-trash"></i>
+                            <button @click="confirmDeleteItem(child)" class="p-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors" title="Удалить">
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                              </svg>
                             </button>
                           </div>
                         </div>
                       </div>
                     </div>
+                    </template>
                   </draggable>
                 </div>
               </div>
+              </template>
             </draggable>
           </div>
         </div>
@@ -128,68 +183,70 @@
     </div>
 
     <!-- Create/Edit Item Modal -->
-    <Modal v-if="showItemModal" @close="closeItemModal">
+    <Modal v-if="showItemModal" @close="closeItemModal" size="large">
       <template #header>
-        <h5 class="modal-title">{{ itemFormData.id ? 'Редактировать пункт' : 'Создать пункт' }}</h5>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+          {{ itemFormData.id ? 'Редактировать пункт' : 'Создать пункт' }}
+        </h3>
       </template>
       <template #body>
-        <form @submit.prevent="saveItem">
-          <div class="mb-3">
-            <label class="form-label">Название *</label>
-            <input v-model="itemFormData.title" type="text" class="form-control" required />
+        <form @submit.prevent="saveItem" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Название *</label>
+            <input v-model="itemFormData.title" type="text" required class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white" placeholder="Главная" />
           </div>
 
-          <div class="mb-3">
-            <label class="form-label">URL</label>
-            <input v-model="itemFormData.url" type="text" class="form-control" placeholder="/catalog" />
-            <small class="form-text text-muted">Абсолютный или относительный URL</small>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">URL</label>
+            <input v-model="itemFormData.url" type="text" class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white" placeholder="/catalog" />
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Абсолютный или относительный URL</p>
           </div>
 
-          <div class="mb-3">
-            <label class="form-label">Route (Laravel)</label>
-            <input v-model="itemFormData.route" type="text" class="form-control" placeholder="catalog.index" />
-            <small class="form-text text-muted">Имя роута Laravel (если указано, URL игнорируется)</small>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Route (Laravel)</label>
+            <input v-model="itemFormData.route" type="text" class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white" placeholder="catalog.index" />
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Имя роута Laravel (если указано, URL игнорируется)</p>
           </div>
 
-          <div class="mb-3">
-            <label class="form-label">Открывать в</label>
-            <select v-model="itemFormData.target" class="form-select">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Открывать в</label>
+            <select v-model="itemFormData.target" class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white">
               <option value="_self">Той же вкладке</option>
               <option value="_blank">Новой вкладке</option>
             </select>
           </div>
 
-          <div class="mb-3">
-            <label class="form-label">Порядок сортировки</label>
-            <input v-model.number="itemFormData.sort" type="number" class="form-control" />
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Порядок сортировки</label>
+            <input v-model.number="itemFormData.sort" type="number" class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white" />
           </div>
 
-          <div class="mb-3 form-check">
-            <input v-model="itemFormData.is_active" type="checkbox" class="form-check-input" id="itemIsActive" />
-            <label class="form-check-label" for="itemIsActive">Активно</label>
+          <div class="flex items-center">
+            <input v-model="itemFormData.is_active" type="checkbox" id="itemIsActive" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+            <label for="itemIsActive" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">Активно</label>
           </div>
         </form>
       </template>
       <template #footer>
-        <button @click="closeItemModal" type="button" class="btn btn-secondary">Отмена</button>
-        <button @click="saveItem" type="button" class="btn btn-primary">Сохранить</button>
+        <ThemeButton @click="closeItemModal" variant="secondary">Отмена</ThemeButton>
+        <ThemeButton @click="saveItem" variant="primary">Сохранить</ThemeButton>
       </template>
     </Modal>
 
     <!-- Delete Confirmation Modal -->
     <Modal v-if="deleteItemModal.show" @close="deleteItemModal.show = false">
       <template #header>
-        <h5 class="modal-title">Подтверждение удаления</h5>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Подтверждение удаления</h3>
       </template>
       <template #body>
-        <p>Вы действительно хотите удалить пункт <strong>{{ deleteItemModal.item?.title }}</strong>?</p>
-        <p v-if="deleteItemModal.item?.children?.length > 0" class="text-danger">
+        <p class="text-gray-700 dark:text-gray-300">Вы действительно хотите удалить пункт <strong>{{ deleteItemModal.item?.title }}</strong>?</p>
+        <p v-if="deleteItemModal.item?.children?.length > 0" class="mt-2 text-sm text-red-600 dark:text-red-400">
           Все подпункты также будут удалены.
         </p>
       </template>
       <template #footer>
-        <button @click="deleteItemModal.show = false" type="button" class="btn btn-secondary">Отмена</button>
-        <button @click="confirmDeleteMenuItem" type="button" class="btn btn-danger">Удалить</button>
+        <ThemeButton @click="deleteItemModal.show = false" variant="secondary">Отмена</ThemeButton>
+        <ThemeButton @click="confirmDeleteMenuItem" variant="danger">Удалить</ThemeButton>
       </template>
     </Modal>
   </div>
@@ -200,6 +257,7 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import draggable from 'vuedraggable';
 import Modal from './Modal.vue';
+import ThemeButton from './ThemeButton.vue';
 
 const route = useRoute();
 const menuId = route.params.id;
@@ -410,57 +468,3 @@ onMounted(() => {
   loadMenu();
 });
 </script>
-
-<style scoped>
-.menu-items-tree {
-  min-height: 200px;
-}
-
-.menu-item-wrapper {
-  margin-bottom: 8px;
-}
-
-.menu-item {
-  background: #fff;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  padding: 12px;
-  transition: box-shadow 0.2s;
-}
-
-.menu-item:hover {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.child-item {
-  background: #f8f9fa;
-}
-
-.menu-item-content {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.drag-handle {
-  cursor: move;
-  color: #6c757d;
-  font-size: 1.2rem;
-}
-
-.menu-item-info {
-  flex: 1;
-}
-
-.menu-item-actions {
-  display: flex;
-  gap: 4px;
-}
-
-.menu-children {
-  margin-left: 40px;
-  margin-top: 8px;
-  padding-left: 20px;
-  border-left: 2px solid #dee2e6;
-}
-</style>

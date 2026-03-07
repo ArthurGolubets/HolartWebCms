@@ -35,7 +35,7 @@
     </div>
 
     <!-- Info Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <div class="mb-6">
       <!-- Main Info -->
       <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Основная информация</h3>
@@ -92,31 +92,6 @@
             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Описание</dt>
             <dd class="text-base text-gray-900 dark:text-white mt-1">{{ menu.description }}</dd>
           </div>
-        </dl>
-      </div>
-
-      <!-- Statistics -->
-      <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Статистика</h3>
-        <dl class="space-y-4">
-          <div class="flex items-center justify-between p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-            <div>
-              <dt class="text-sm font-medium text-blue-600 dark:text-blue-400">Всего пунктов</dt>
-              <dd class="text-3xl font-bold text-blue-900 dark:text-blue-300 mt-1">{{ totalItems }}</dd>
-            </div>
-            <svg class="w-12 h-12 text-blue-600 dark:text-blue-400 opacity-50" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
-            </svg>
-          </div>
-          <div class="flex items-center justify-between p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-            <div>
-              <dt class="text-sm font-medium text-green-600 dark:text-green-400">Активных пунктов</dt>
-              <dd class="text-3xl font-bold text-green-900 dark:text-green-300 mt-1">{{ activeItems }}</dd>
-            </div>
-            <svg class="w-12 h-12 text-green-600 dark:text-green-400 opacity-50" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-            </svg>
-          </div>
           <div>
             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Создано</dt>
             <dd class="text-base text-gray-900 dark:text-white mt-1">{{ formatDate(menu.created_at) }}</dd>
@@ -150,7 +125,7 @@
       </div>
 
       <div v-else class="space-y-2">
-        <MenuItem v-for="item in menuItems" :key="item.id" :item="item" :level="0" />
+        <MenuItemView v-for="item in menuItems" :key="item.id" :item="item" :level="0" />
       </div>
     </div>
   </div>
@@ -164,41 +139,15 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import ThemeButton from './ThemeButton.vue';
+import MenuItemView from './MenuItemView.vue';
 
 const route = useRoute();
 const menu = ref(null);
 const menuItems = ref([]);
 const loading = ref(true);
-
-const totalItems = computed(() => {
-  const countItems = (items) => {
-    let count = items.length;
-    items.forEach(item => {
-      if (item.children && item.children.length > 0) {
-        count += countItems(item.children);
-      }
-    });
-    return count;
-  };
-  return countItems(menuItems.value);
-});
-
-const activeItems = computed(() => {
-  const countActive = (items) => {
-    let count = 0;
-    items.forEach(item => {
-      if (item.is_active) count++;
-      if (item.children && item.children.length > 0) {
-        count += countActive(item.children);
-      }
-    });
-    return count;
-  };
-  return countActive(menuItems.value);
-});
 
 const loadMenu = async () => {
   loading.value = true;
@@ -209,8 +158,10 @@ const loadMenu = async () => {
 
     if (response.ok) {
       const data = await response.json();
+      console.log('Menu view data:', data);
       menu.value = data.menu;
       menuItems.value = data.items || [];
+      console.log('Menu items:', menuItems.value);
     }
   } catch (error) {
     console.error('Failed to load menu:', error);
@@ -229,44 +180,6 @@ const formatDate = (dateString) => {
     hour: '2-digit',
     minute: '2-digit'
   });
-};
-
-// Recursive component for menu items
-const MenuItem = {
-  name: 'MenuItem',
-  props: {
-    item: Object,
-    level: Number
-  },
-  template: `
-    <div :style="{ marginLeft: (level * 32) + 'px' }" class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-      <svg v-if="level > 0" class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-      </svg>
-      <div class="flex-1">
-        <div class="flex items-center gap-2">
-          <span class="font-medium text-gray-900 dark:text-white">{{ item.title }}</span>
-          <span v-if="!item.is_active" class="text-xs px-2 py-0.5 bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300 rounded">
-            Неактивно
-          </span>
-        </div>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          <span v-if="item.url">URL: {{ item.url }}</span>
-          <span v-else-if="item.route">Route: {{ item.route }}</span>
-          <span v-if="item.target === '_blank'" class="ml-2">(Новое окно)</span>
-        </p>
-      </div>
-      <span class="text-sm text-gray-500 dark:text-gray-400">
-        Сортировка: {{ item.sort }}
-      </span>
-    </div>
-    <template v-if="item.children && item.children.length > 0">
-      <MenuItem v-for="child in item.children" :key="child.id" :item="child" :level="level + 1" />
-    </template>
-  `,
-  components: {
-    MenuItem: 'self'
-  }
 };
 
 onMounted(() => {

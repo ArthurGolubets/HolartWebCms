@@ -185,13 +185,39 @@ class CatalogController extends Controller
     }
 
     /**
-     * Get children of a catalog
+     * Get children of a catalog with full tree structure
      */
     public function children($id): JsonResponse
     {
         $catalog = TCatalog::findOrFail($id);
-        $children = $catalog->children()->with('products')->get();
+
+        // Load children recursively with products and counts
+        $children = $catalog->children()
+            ->with(['products'])
+            ->withCount(['children', 'products'])
+            ->get();
+
+        // Recursively load all descendants
+        foreach ($children as $child) {
+            $this->loadDescendants($child);
+        }
 
         return response()->json($children);
+    }
+
+    /**
+     * Recursively load all descendants for a catalog
+     */
+    private function loadDescendants($catalog): void
+    {
+        if ($catalog->children_count > 0) {
+            $catalog->load(['children' => function($query) {
+                $query->with('products')->withCount(['children', 'products']);
+            }]);
+
+            foreach ($catalog->children as $child) {
+                $this->loadDescendants($child);
+            }
+        }
     }
 }

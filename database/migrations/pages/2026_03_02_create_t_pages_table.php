@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('t_pages', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('header_template')->nullable() ;// TODO: Убрать!
+            $table->string('footer_template')->nullable() ;// TODO: Убрать!
             $table->string('slug')->unique();
             $table->enum('type', ['static', 'dynamic'])->default('static');
             $table->longText('content')->nullable()->comment('For static pages');

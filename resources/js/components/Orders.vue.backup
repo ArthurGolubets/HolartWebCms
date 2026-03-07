@@ -15,10 +15,8 @@
           <select v-model="filters.payment_status" @change="loadOrders" class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md">
             <option value="">Все</option>
             <option value="pending">Ожидает оплаты</option>
-            <option value="paid">Оплачен</option>
-            <option value="failed">Ошибка оплаты</option>
+            <option value="success">Оплачен</option>
             <option value="canceled">Отменен</option>
-            <option value="refunded">Возврат</option>
           </select>
         </div>
         <div>
@@ -51,7 +49,7 @@
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Email</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Телефон</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Сумма</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Статусы</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Статус</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Доставка</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Дата</th>
             <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Действия</th>
@@ -69,18 +67,13 @@
             <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">{{ order.name }}</td>
             <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">{{ order.email }}</td>
             <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">{{ order.phone }}</td>
-            <td class="px-6 py-4 text-sm font-semibold text-gray-900 dark:text-white">{{ formatPrice(order.total_price || 0) }}</td>
+            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">{{ formatPrice(order.calculated_total_price || 0) }}</td>
             <td class="px-6 py-4">
-              <div class="flex flex-col gap-1">
-                <span class="px-2 py-1 text-xs rounded-full w-fit" :class="getPaymentStatusClass(order.payment_status)">
-                  {{ getPaymentStatusLabel(order.payment_status) }}
-                </span>
-                <span class="px-2 py-1 text-xs rounded-full w-fit" :class="getDeliveryStatusClass(order.delivery_status)">
-                  {{ getDeliveryStatusLabel(order.delivery_status) }}
-                </span>
-              </div>
+              <span class="px-2 py-1 text-xs rounded-full" :class="getStatusClass(order.payment_status)">
+                {{ getStatusLabel(order.payment_status) }}
+              </span>
             </td>
-            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">{{ getDeliveryTypeLabel(order.delivery_type) }}</td>
+            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">{{ getDeliveryLabel(order.delivery_type) }}</td>
             <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">{{ formatDate(order.created_at) }}</td>
             <td class="px-6 py-4 text-sm text-right space-x-2">
               <button @click="$router.push(`/orders/${order.id}`)" class="text-blue-600 hover:text-blue-800">Просмотр</button>
@@ -168,53 +161,25 @@ const formatDate = (date) => {
   return new Date(date).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' });
 };
 
-const getPaymentStatusLabel = (status) => {
+const getStatusLabel = (status) => {
   const labels = {
     pending: 'Ожидает оплаты',
-    paid: 'Оплачен',
     success: 'Оплачен',
-    failed: 'Ошибка оплаты',
-    canceled: 'Отменен',
-    refunded: 'Возврат'
+    canceled: 'Отменен'
   };
   return labels[status] || status;
 };
 
-const getPaymentStatusClass = (status) => {
+const getStatusClass = (status) => {
   const classes = {
-    pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-    paid: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-    success: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-    failed: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-    canceled: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-    refunded: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+    pending: 'bg-yellow-100 text-yellow-800',
+    success: 'bg-green-100 text-green-800',
+    canceled: 'bg-red-100 text-red-800'
   };
-  return classes[status] || 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+  return classes[status] || 'bg-gray-100 text-gray-800';
 };
 
-const getDeliveryStatusLabel = (status) => {
-  const labels = {
-    pending: 'Ожидает',
-    processing: 'В обработке',
-    shipped: 'Отправлен',
-    delivered: 'Доставлен',
-    cancelled: 'Отменён'
-  };
-  return labels[status] || status;
-};
-
-const getDeliveryStatusClass = (status) => {
-  const classes = {
-    pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-    processing: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-    shipped: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-    delivered: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-    cancelled: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-  };
-  return classes[status] || 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
-};
-
-const getDeliveryTypeLabel = (type) => {
+const getDeliveryLabel = (type) => {
   const labels = {
     pickup: 'Самовывоз',
     courier: 'Курьер',

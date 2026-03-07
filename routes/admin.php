@@ -13,6 +13,8 @@ use HolartWeb\HolartCMS\Http\Controllers\LogsController;
 use HolartWeb\HolartCMS\Http\Controllers\ModulesController;
 use HolartWeb\HolartCMS\Http\Controllers\EnvironmentController;
 use HolartWeb\HolartCMS\Http\Controllers\ImageUploadController;
+use HolartWeb\HolartCMS\Http\Controllers\DashboardMetricsController;
+use HolartWeb\HolartCMS\Http\Controllers\DashboardWidgetsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +47,19 @@ Route::middleware(['admin.auth'])->group(function () {
     Route::prefix('api')->group(function () {
         Route::get('me', [DashboardController::class, 'me']);
         Route::get('search', [SearchController::class, 'search']);
+
+        // Dashboard metrics routes
+        Route::get('dashboard/metrics', [DashboardMetricsController::class, 'index']);
+        Route::get('dashboard/metrics/{type}', [DashboardMetricsController::class, 'show']);
+
+        // Dashboard widgets routes
+        Route::get('dashboard/widgets', [DashboardWidgetsController::class, 'index']);
+        Route::get('dashboard/widgets/available-types', [DashboardWidgetsController::class, 'availableTypes']);
+        Route::post('dashboard/widgets', [DashboardWidgetsController::class, 'store']);
+        Route::put('dashboard/widgets/{id}', [DashboardWidgetsController::class, 'update']);
+        Route::delete('dashboard/widgets/{id}', [DashboardWidgetsController::class, 'destroy']);
+        Route::post('dashboard/widgets/reorder', [DashboardWidgetsController::class, 'reorder']);
+        Route::post('dashboard/widgets/reset', [DashboardWidgetsController::class, 'reset']);
 
         // Image upload routes
         Route::post('upload/image', [ImageUploadController::class, 'upload']);
