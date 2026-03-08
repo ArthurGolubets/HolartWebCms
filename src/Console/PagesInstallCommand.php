@@ -230,6 +230,81 @@ class PagesInstallCommand extends Command
             }
         }
 
+        // Create custom header template if not exists
+        $customHeaderPath = $headersDestination . '/custom.blade.php';
+        if (!file_exists($customHeaderPath)) {
+            $customHeaderContent = <<<'BLADE'
+{{-- Custom Header Template --}}
+@php
+    use HolartWeb\HolartCMS\Models\TPanelSettings;
+    use HolartWeb\HolartCMS\Models\Menus\TMenu;
+
+    $logoPath = TPanelSettings::get('logo_path');
+    $siteName = TPanelSettings::get('site_name', 'HolartCMS');
+    $logoWidth = TPanelSettings::get('logo_width');
+
+    // Get custom header settings
+    $headerSettings = TPanelSettings::get('header_template_settings', []);
+    $customSettings = is_array($headerSettings) && isset($headerSettings['custom']) ? $headerSettings['custom'] : [];
+
+    $menuId = $customSettings['menu_id'] ?? null;
+    $menu = $menuId ? TMenu::with(['rootItems' => function ($query) {
+        $query->where('is_active', true)
+            ->with(['children' => function ($q) {
+                $q->where('is_active', true)->orderBy('sort');
+            }]);
+    }])->where('id', $menuId)->where('is_active', true)->first() : null;
+
+    $bgColor = $customSettings['bg_color'] ?? '#ffffff';
+    $textColor = $customSettings['text_color'] ?? '#212529';
+    $linkColor = $customSettings['link_color'] ?? '#495057';
+    $linkHoverColor = $customSettings['link_hover_color'] ?? '#0d6efd';
+@endphp
+
+<header class="custom-header" style="background-color: {{ $bgColor }}; color: {{ $textColor }};">
+    <div class="container mx-auto px-4 py-4">
+        <div class="flex items-center justify-between">
+            <!-- Logo -->
+            <a href="/" class="logo">
+                @if($logoPath)
+                    <img
+                        src="{{ asset('storage/' . $logoPath) }}"
+                        alt="{{ $siteName }}"
+                        style="max-height: 50px; @if($logoWidth) width: {{ $logoWidth }}px; @endif"
+                    />
+                @else
+                    <span class="text-xl font-bold">{{ $siteName }}</span>
+                @endif
+            </a>
+
+            <!-- Menu -->
+            @if($menu && $menu->rootItems->count() > 0)
+            <nav>
+                <ul class="flex gap-6">
+                    @foreach($menu->rootItems as $item)
+                        <li>
+                            <a href="{{ $item->url }}" style="color: {{ $linkColor }};">
+                                {{ $item->title }}
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            </nav>
+            @endif
+        </div>
+    </div>
+</header>
+
+<style>
+.custom-header a:hover {
+    color: {{ $linkHoverColor }};
+}
+</style>
+BLADE;
+            file_put_contents($customHeaderPath, $customHeaderContent);
+            $this->info("✓ Created custom.blade.php header template");
+        }
+
         // Copy footer templates
         $footersSource = $packagePath . '/resources/views/layouts/footers';
         $footersDestination = resource_path('views/layouts/footers');
@@ -249,6 +324,72 @@ class PagesInstallCommand extends Command
             } else {
                 $this->warn("⚠ Source file not found: {$source}");
             }
+        }
+
+        // Create custom footer template if not exists
+        $customFooterPath = $footersDestination . '/custom.blade.php';
+        if (!file_exists($customFooterPath)) {
+            $customFooterContent = <<<'BLADE'
+{{-- Custom Footer Template --}}
+@php
+    use HolartWeb\HolartCMS\Models\TPanelSettings;
+    use HolartWeb\HolartCMS\Models\Menus\TMenu;
+
+    $logoPath = TPanelSettings::get('logo_path');
+    $siteName = TPanelSettings::get('site_name', 'HolartCMS');
+
+    // Get custom footer settings
+    $footerSettings = TPanelSettings::get('footer_template_settings', []);
+    $customSettings = is_array($footerSettings) && isset($footerSettings['custom']) ? $footerSettings['custom'] : [];
+
+    $menuId = $customSettings['menu_id'] ?? null;
+    $menu = $menuId ? TMenu::with(['rootItems' => function ($query) {
+        $query->where('is_active', true)
+            ->with(['children' => function ($q) {
+                $q->where('is_active', true)->orderBy('sort');
+            }]);
+    }])->where('id', $menuId)->where('is_active', true)->first() : null;
+
+    $bgColor = $customSettings['bg_color'] ?? '#ffffff';
+    $textColor = $customSettings['text_color'] ?? '#212529';
+    $linkColor = $customSettings['link_color'] ?? '#495057';
+    $linkHoverColor = $customSettings['link_hover_color'] ?? '#0d6efd';
+@endphp
+
+<footer class="custom-footer mt-auto" style="background-color: {{ $bgColor }}; color: {{ $textColor }};">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Footer Menu -->
+        @if($menu && $menu->rootItems->count() > 0)
+        <nav class="mb-6">
+            <ul class="flex flex-wrap justify-center gap-6">
+                @foreach($menu->rootItems as $item)
+                    <li>
+                        <a href="{{ $item->url }}" style="color: {{ $linkColor }};">
+                            {{ $item->title }}
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+        </nav>
+        @endif
+
+        <!-- Copyright -->
+        <div class="text-center">
+            <p class="text-sm">
+                © {{ date('Y') }} {{ $siteName }}. Все права защищены.
+            </p>
+        </div>
+    </div>
+</footer>
+
+<style>
+.custom-footer a:hover {
+    color: {{ $linkHoverColor }};
+}
+</style>
+BLADE;
+            file_put_contents($customFooterPath, $customFooterContent);
+            $this->info("✓ Created custom.blade.php footer template");
         }
 
         // Copy main layout files

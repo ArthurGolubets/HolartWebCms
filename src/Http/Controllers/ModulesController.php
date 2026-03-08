@@ -172,10 +172,12 @@ class ModulesController extends Controller
     public function uninstall(Request $request, $moduleId)
     {
         $request->validate([
-            'preserve_database' => 'boolean'
+            'preserve_database' => 'boolean',
+            'remove_components' => 'boolean'
         ]);
 
         $preserveDatabase = $request->input('preserve_database', false);
+        $removeComponents = $request->input('remove_components', false);
 
         try {
             switch ($moduleId) {
@@ -205,10 +207,15 @@ class ModulesController extends Controller
                     ]);
                     break;
                 case 'pages':
-                    Artisan::call('holartcms:pages-uninstall', [
-                        '--preserve-db' => $preserveDatabase,
-                        '--force' => true
-                    ]);
+                    $params = ['--preserve-db' => $preserveDatabase];
+
+                    // If remove_components is explicitly set, use force mode
+                    if ($request->has('remove_components')) {
+                        $params['--force'] = true;
+                        $params['--remove-components'] = $removeComponents;
+                    }
+
+                    Artisan::call('holartcms:pages-uninstall', $params);
                     break;
                 default:
                     return response()->json([

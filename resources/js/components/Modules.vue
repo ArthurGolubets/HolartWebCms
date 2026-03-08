@@ -209,17 +209,33 @@
               Вы уверены, что хотите удалить модуль "{{ uninstallModal.module?.name }}"?
             </p>
 
-            <div class="flex items-start space-x-3 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-              <input
-                v-model="uninstallModal.preserveDatabase"
-                type="checkbox"
-                id="preserve-db"
-                class="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              >
-              <label for="preserve-db" class="text-sm text-yellow-800 dark:text-yellow-300">
-                <span class="font-medium">Сохранить данные в базе данных</span>
-                <p class="mt-1 text-xs">Если эта опция включена, таблицы базы данных и все данные будут сохранены. В противном случае все данные будут удалены безвозвратно.</p>
-              </label>
+            <div class="space-y-3">
+              <div class="flex items-start space-x-3 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                <input
+                  v-model="uninstallModal.preserveDatabase"
+                  type="checkbox"
+                  id="preserve-db"
+                  class="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                >
+                <label for="preserve-db" class="text-sm text-yellow-800 dark:text-yellow-300">
+                  <span class="font-medium">Сохранить данные в базе данных</span>
+                  <p class="mt-1 text-xs">Если эта опция включена, таблицы базы данных и все данные будут сохранены. В противном случае все данные будут удалены безвозвратно.</p>
+                </label>
+              </div>
+
+              <!-- Pages module specific option -->
+              <div v-if="uninstallModal.module?.id === 'pages'" class="flex items-start space-x-3 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                <input
+                  v-model="uninstallModal.removeComponents"
+                  type="checkbox"
+                  id="remove-components"
+                  class="mt-1 h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+                >
+                <label for="remove-components" class="text-sm text-red-800 dark:text-red-300">
+                  <span class="font-medium">Удалить дефолтные компоненты (header, footer, blocks)</span>
+                  <p class="mt-1 text-xs">Если эта опция включена, будут удалены все blade-шаблоны компонентов (header1-3, footer1-3, все блоки). В противном случае шаблоны будут сохранены.</p>
+                </label>
+              </div>
             </div>
           </div>
 
@@ -265,7 +281,8 @@ const updateOutput = ref('');
 const uninstallModal = ref({
   show: false,
   module: null,
-  preserveDatabase: true
+  preserveDatabase: true,
+  removeComponents: false
 });
 
 // Разделение модулей на функциональные и интеграции
@@ -364,7 +381,8 @@ const showUninstallModal = (module) => {
   uninstallModal.value = {
     show: true,
     module: module,
-    preserveDatabase: true
+    preserveDatabase: true,
+    removeComponents: false
   };
 };
 
@@ -372,13 +390,15 @@ const closeUninstallModal = () => {
   uninstallModal.value = {
     show: false,
     module: null,
-    preserveDatabase: true
+    preserveDatabase: true,
+    removeComponents: false
   };
 };
 
 const confirmUninstall = async () => {
   const module = uninstallModal.value.module;
   const preserveDatabase = uninstallModal.value.preserveDatabase;
+  const removeComponents = uninstallModal.value.removeComponents;
 
   processingModules.value[module.id] = true;
   moduleOutputs.value[module.id] = '';
@@ -386,15 +406,23 @@ const confirmUninstall = async () => {
 
   try {
     const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+    const requestBody = {
+      preserve_database: preserveDatabase
+    };
+
+    // Add remove_components parameter for pages module
+    if (module.id === 'pages') {
+      requestBody.remove_components = removeComponents;
+    }
+
     const response = await fetch(`/admin/api/modules/${module.id}/uninstall`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-CSRF-TOKEN': token
       },
-      body: JSON.stringify({
-        preserve_database: preserveDatabase
-      })
+      body: JSON.stringify(requestBody)
     });
 
     const result = await response.json();

@@ -132,7 +132,7 @@ class SettingsController extends Controller
     protected function getType(string $key): string
     {
         return match ($key) {
-            'phones', 'addresses' => 'array',
+            'phones', 'addresses', 'header_template_settings', 'footer_template_settings' => 'json',
             'logo_width', 'logo_height' => 'integer',
             default => 'string',
         };

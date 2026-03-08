@@ -129,17 +129,53 @@
 
               <!-- Settings Panel -->
               <div v-if="settings.header_template === 'custom'" class="bg-purple-50 dark:bg-purple-900/10 border-t border-purple-100 dark:border-purple-900/30 p-4 space-y-3">
-                <div class="text-xs text-gray-600 dark:text-gray-400">
-                  <p class="mb-2">Вы можете создать собственную шапку используя:</p>
-                  <ul class="list-disc list-inside space-y-1 text-xs">
-                    <li>HTML/CSS код</li>
-                    <li>Blade шаблоны Laravel</li>
-                    <li>Конструктор блоков</li>
-                  </ul>
-                  <p class="mt-3 text-xs">
-                    <span class="font-medium">Файл:</span>
-                    <code class="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded text-xs">resources/views/partials/custom-header.blade.php</code>
-                  </p>
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">Меню шапки</label>
+                  <select v-model="headerTemplateSettings.custom.menu_id" class="w-full px-3 py-2 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-600">
+                    <option :value="null">Без меню</option>
+                    <option v-for="menu in headerMenus" :key="menu.id" :value="menu.id">{{ menu.name }}</option>
+                  </select>
+                </div>
+
+                <div class="border-t border-purple-200 dark:border-purple-800 pt-3 mt-3">
+                  <h5 class="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Цветовая схема</h5>
+                  <div class="grid grid-cols-2 gap-2">
+                    <div>
+                      <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Фон</label>
+                      <input v-model="headerTemplateSettings.custom.bg_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                    </div>
+                    <div>
+                      <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Текст</label>
+                      <input v-model="headerTemplateSettings.custom.text_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                    </div>
+                    <div>
+                      <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Ссылки</label>
+                      <input v-model="headerTemplateSettings.custom.link_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                    </div>
+                    <div>
+                      <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Ссылки (hover)</label>
+                      <input v-model="headerTemplateSettings.custom.link_hover_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                    </div>
+                    <div>
+                      <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Кнопки</label>
+                      <input v-model="headerTemplateSettings.custom.button_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="border-t border-purple-200 dark:border-purple-800 pt-3 mt-3">
+                  <div class="text-xs text-gray-600 dark:text-gray-400">
+                    <p class="mb-2 font-medium">Вы можете создать собственную шапку используя:</p>
+                    <ul class="list-disc list-inside space-y-1 text-xs">
+                      <li>HTML/CSS код</li>
+                      <li>Blade шаблоны Laravel</li>
+                      <li>Конструктор блоков</li>
+                    </ul>
+                    <p class="mt-3 text-xs">
+                      <span class="font-medium">Файл:</span>
+                      <code class="bg-purple-100 dark:bg-purple-900/30 px-1.5 py-0.5 rounded text-xs">resources/views/layouts/headers/custom.blade.php</code>
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -188,6 +224,28 @@
                     <option :value="null">Без меню</option>
                     <option v-for="menu in headerMenus" :key="menu.id" :value="menu.id">{{ menu.name }}</option>
                   </select>
+                </div>
+
+                <div class="border-t border-blue-200 dark:border-blue-800 pt-3 mt-3">
+                  <h5 class="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Цветовая схема</h5>
+                  <div class="grid grid-cols-2 gap-2">
+                    <div>
+                      <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Фон</label>
+                      <input v-model="headerTemplateSettings.header1.bg_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                    </div>
+                    <div>
+                      <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Текст</label>
+                      <input v-model="headerTemplateSettings.header1.text_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                    </div>
+                    <div>
+                      <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Ссылки</label>
+                      <input v-model="headerTemplateSettings.header1.link_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                    </div>
+                    <div>
+                      <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Ссылки (hover)</label>
+                      <input v-model="headerTemplateSettings.header1.link_hover_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -254,6 +312,32 @@
                     </label>
                   </div>
                 </div>
+
+                <div class="border-t border-blue-200 dark:border-blue-800 pt-3 mt-3">
+                  <h5 class="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Цветовая схема</h5>
+                  <div class="grid grid-cols-2 gap-2">
+                    <div>
+                      <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Фон</label>
+                      <input v-model="headerTemplateSettings.header2.bg_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                    </div>
+                    <div>
+                      <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Текст</label>
+                      <input v-model="headerTemplateSettings.header2.text_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                    </div>
+                    <div>
+                      <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Ссылки</label>
+                      <input v-model="headerTemplateSettings.header2.link_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                    </div>
+                    <div>
+                      <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Ссылки (hover)</label>
+                      <input v-model="headerTemplateSettings.header2.link_hover_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                    </div>
+                    <div>
+                      <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Кнопки</label>
+                      <input v-model="headerTemplateSettings.header2.button_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -308,6 +392,28 @@
                       <input v-model="headerTemplateSettings.header3.social_telegram" type="url" placeholder="Telegram URL" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded text-sm">
                     </div>
                   </div>
+
+                  <div class="border-t border-gray-200 dark:border-gray-700 pt-3 mt-3">
+                    <h5 class="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Цветовая схема</h5>
+                    <div class="grid grid-cols-2 gap-2">
+                      <div>
+                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Фон</label>
+                        <input v-model="headerTemplateSettings.header3.bg_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                      </div>
+                      <div>
+                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Текст</label>
+                        <input v-model="headerTemplateSettings.header3.text_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                      </div>
+                      <div>
+                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Ссылки</label>
+                        <input v-model="headerTemplateSettings.header3.link_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                      </div>
+                      <div>
+                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Ссылки (hover)</label>
+                        <input v-model="headerTemplateSettings.header3.link_hover_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -320,6 +426,79 @@
           <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Выберите шаблон для футера вашего сайта</p>
 
           <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <!-- Custom Footer Template -->
+            <div
+              @click="selectFooterTemplate('custom')"
+              :class="[
+                'relative rounded-xl cursor-pointer transition-all duration-200 overflow-hidden group',
+                settings.footer_template === 'custom'
+                  ? 'ring-2 ring-purple-500 shadow-xl'
+                  : 'ring-1 ring-gray-200 dark:ring-gray-700 hover:ring-gray-300 dark:hover:ring-gray-600 hover:shadow-lg'
+              ]"
+            >
+              <!-- Preview -->
+              <div class="relative bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-6 flex flex-col items-center justify-center min-h-[120px]">
+                <svg class="w-12 h-12 text-purple-500 dark:text-purple-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
+                </svg>
+                <p class="text-xs font-medium text-purple-600 dark:text-purple-400">Свой футер</p>
+                <!-- Selected Badge -->
+                <div v-if="settings.footer_template === 'custom'" class="absolute top-2 right-2 bg-purple-500 text-white rounded-full p-1.5 shadow-lg">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Info -->
+              <div class="bg-white dark:bg-gray-800 p-4 border-t border-gray-100 dark:border-gray-700">
+                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Кастомный</h4>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Создайте свой футер</p>
+              </div>
+
+              <!-- Settings Panel -->
+              <div v-if="settings.footer_template === 'custom'" class="bg-purple-50 dark:bg-purple-900/10 border-t border-purple-100 dark:border-purple-900/30 p-4 space-y-3">
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">Меню футера</label>
+                  <select v-model="footerTemplateSettings.custom.menu_id" class="w-full px-3 py-2 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-600">
+                    <option :value="null">Без меню</option>
+                    <option v-for="menu in footerMenus" :key="menu.id" :value="menu.id">{{ menu.name }}</option>
+                  </select>
+                </div>
+
+                <div class="border-t border-purple-200 dark:border-purple-800 pt-3 mt-3">
+                  <h5 class="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Цветовая схема</h5>
+                  <div class="grid grid-cols-2 gap-2">
+                    <div>
+                      <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Фон</label>
+                      <input v-model="footerTemplateSettings.custom.bg_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                    </div>
+                    <div>
+                      <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Текст</label>
+                      <input v-model="footerTemplateSettings.custom.text_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                    </div>
+                    <div>
+                      <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Ссылки</label>
+                      <input v-model="footerTemplateSettings.custom.link_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                    </div>
+                    <div>
+                      <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Ссылки (hover)</label>
+                      <input v-model="footerTemplateSettings.custom.link_hover_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                    </div>
+                    <div>
+                      <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Кнопки</label>
+                      <input v-model="footerTemplateSettings.custom.button_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-purple-100 dark:bg-purple-900/20 rounded-lg p-3">
+                  <p class="text-xs font-medium text-purple-900 dark:text-purple-300 mb-1">Создайте файл:</p>
+                  <p class="text-xs font-mono text-purple-700 dark:text-purple-400 break-all">resources/views/layouts/footers/custom.blade.php</p>
+                </div>
+              </div>
+            </div>
+
             <!-- Footer Template 1 -->
             <div
               @click="selectFooterTemplate('footer1')"
@@ -361,6 +540,28 @@
                       <option :value="null">Без меню</option>
                       <option v-for="menu in footerMenus" :key="menu.id" :value="menu.id">{{ menu.name }}</option>
                     </select>
+                  </div>
+
+                  <div class="border-t border-gray-200 dark:border-gray-700 pt-3">
+                    <h5 class="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Цветовая схема</h5>
+                    <div class="grid grid-cols-2 gap-2">
+                      <div>
+                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Фон</label>
+                        <input v-model="footerTemplateSettings.footer1.bg_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                      </div>
+                      <div>
+                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Текст</label>
+                        <input v-model="footerTemplateSettings.footer1.text_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                      </div>
+                      <div>
+                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Ссылки</label>
+                        <input v-model="footerTemplateSettings.footer1.link_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                      </div>
+                      <div>
+                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Ссылки (hover)</label>
+                        <input v-model="footerTemplateSettings.footer1.link_hover_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -413,6 +614,28 @@
                       <option :value="null">Без меню</option>
                       <option v-for="menu in footerMenus" :key="menu.id" :value="menu.id">{{ menu.name }}</option>
                     </select>
+                  </div>
+
+                  <div class="border-t border-gray-200 dark:border-gray-700 pt-3">
+                    <h5 class="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Цветовая схема</h5>
+                    <div class="grid grid-cols-2 gap-2">
+                      <div>
+                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Фон</label>
+                        <input v-model="footerTemplateSettings.footer2.bg_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                      </div>
+                      <div>
+                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Текст</label>
+                        <input v-model="footerTemplateSettings.footer2.text_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                      </div>
+                      <div>
+                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Ссылки</label>
+                        <input v-model="footerTemplateSettings.footer2.link_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                      </div>
+                      <div>
+                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Ссылки (hover)</label>
+                        <input v-model="footerTemplateSettings.footer2.link_hover_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -468,45 +691,28 @@
                       <input v-model="footerTemplateSettings.footer3.social_telegram" type="url" placeholder="Telegram URL" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded text-sm">
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
 
-            <!-- Custom Footer Template -->
-            <div
-              @click="selectFooterTemplate('custom')"
-              :class="[
-                'relative rounded-xl cursor-pointer transition-all duration-200 overflow-hidden group',
-                settings.footer_template === 'custom'
-                  ? 'ring-2 ring-purple-500 shadow-xl'
-                  : 'ring-1 ring-gray-200 dark:ring-gray-700 hover:ring-gray-300 dark:hover:ring-gray-600 hover:shadow-lg'
-              ]"
-            >
-              <!-- Preview -->
-              <div class="relative bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-6 flex flex-col items-center justify-center min-h-[120px]">
-                <svg class="w-12 h-12 text-purple-500 dark:text-purple-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
-                </svg>
-                <p class="text-xs font-medium text-purple-600 dark:text-purple-400">Свой футер</p>
-                <!-- Selected Badge -->
-                <div v-if="settings.footer_template === 'custom'" class="absolute top-2 right-2 bg-purple-500 text-white rounded-full p-1.5 shadow-lg">
-                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                  </svg>
-                </div>
-              </div>
-
-              <!-- Info -->
-              <div class="bg-white dark:bg-gray-800 p-4 border-t border-gray-100 dark:border-gray-700">
-                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Кастомный</h4>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Создайте свой футер</p>
-              </div>
-
-              <!-- Settings Panel -->
-              <div v-if="settings.footer_template === 'custom'" class="bg-purple-50 dark:bg-purple-900/10 border-t border-purple-100 dark:border-purple-900/30 p-4">
-                <div class="bg-purple-100 dark:bg-purple-900/20 rounded-lg p-3">
-                  <p class="text-xs font-medium text-purple-900 dark:text-purple-300 mb-1">Создайте файл:</p>
-                  <p class="text-xs font-mono text-purple-700 dark:text-purple-400 break-all">resources/views/partials/custom-footer.blade.php</p>
+                  <div class="border-t border-gray-200 dark:border-gray-700 pt-3">
+                    <h5 class="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Цветовая схема</h5>
+                    <div class="grid grid-cols-2 gap-2">
+                      <div>
+                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Фон</label>
+                        <input v-model="footerTemplateSettings.footer3.bg_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                      </div>
+                      <div>
+                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Текст</label>
+                        <input v-model="footerTemplateSettings.footer3.text_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                      </div>
+                      <div>
+                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Ссылки</label>
+                        <input v-model="footerTemplateSettings.footer3.link_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                      </div>
+                      <div>
+                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Ссылки (hover)</label>
+                        <input v-model="footerTemplateSettings.footer3.link_hover_color" type="color" class="w-full h-8 rounded cursor-pointer">
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -692,15 +898,17 @@ const headerMenus = ref([]);
 const footerMenus = ref([]);
 
 const headerTemplateSettings = ref({
-  header1: { menu_id: null },
-  header2: { menu_id: null, show_cart: false, show_account: false },
-  header3: { menu_id: null, social_vk: '', social_instagram: '', social_telegram: '' }
+  header1: { menu_id: null, bg_color: '#ffffff', text_color: '#495057', link_color: '#495057', link_hover_color: '#0d6efd' },
+  header2: { menu_id: null, show_cart: false, show_account: false, bg_color: '#ffffff', text_color: '#495057', link_color: '#495057', link_hover_color: '#0d6efd', button_color: '#0d6efd' },
+  header3: { menu_id: null, social_vk: '', social_instagram: '', social_telegram: '', bg_color: '#212529', text_color: '#ffffff', link_color: '#adb5bd', link_hover_color: '#ffffff' },
+  custom: { menu_id: null, bg_color: '#ffffff', text_color: '#212529', link_color: '#495057', link_hover_color: '#0d6efd', button_color: '#0d6efd' }
 });
 
 const footerTemplateSettings = ref({
-  footer1: { menu_id: null },
-  footer2: { menu_id: null },
-  footer3: { menu_id: null, social_vk: '', social_instagram: '', social_telegram: '' }
+  footer1: { menu_id: null, bg_color: '#f8f9fa', text_color: '#6c757d', link_color: '#6c757d', link_hover_color: '#0d6efd' },
+  footer2: { menu_id: null, bg_color: '#212529', text_color: '#ffffff', link_color: '#adb5bd', link_hover_color: '#ffffff' },
+  footer3: { menu_id: null, social_vk: '', social_instagram: '', social_telegram: '', bg_color: '#f8f9fa', text_color: '#6c757d', link_color: '#6c757d', link_hover_color: '#0d6efd' },
+  custom: { menu_id: null, bg_color: '#ffffff', text_color: '#212529', link_color: '#495057', link_hover_color: '#0d6efd', button_color: '#0d6efd' }
 });
 
 const loadingStats = ref(false);
@@ -725,6 +933,38 @@ const loadSettings = async () => {
       header_template: data.header_template || 'header1',
       footer_template: data.footer_template || 'footer1'
     };
+
+    // Load header template settings
+    if (data.header_template_settings) {
+      try {
+        const headerSettings = typeof data.header_template_settings === 'string'
+          ? JSON.parse(data.header_template_settings)
+          : data.header_template_settings;
+
+        if (headerSettings.header1) headerTemplateSettings.value.header1 = { ...headerTemplateSettings.value.header1, ...headerSettings.header1 };
+        if (headerSettings.header2) headerTemplateSettings.value.header2 = { ...headerTemplateSettings.value.header2, ...headerSettings.header2 };
+        if (headerSettings.header3) headerTemplateSettings.value.header3 = { ...headerTemplateSettings.value.header3, ...headerSettings.header3 };
+        if (headerSettings.custom) headerTemplateSettings.value.custom = { ...headerTemplateSettings.value.custom, ...headerSettings.custom };
+      } catch (e) {
+        console.error('Error parsing header template settings:', e);
+      }
+    }
+
+    // Load footer template settings
+    if (data.footer_template_settings) {
+      try {
+        const footerSettings = typeof data.footer_template_settings === 'string'
+          ? JSON.parse(data.footer_template_settings)
+          : data.footer_template_settings;
+
+        if (footerSettings.footer1) footerTemplateSettings.value.footer1 = { ...footerTemplateSettings.value.footer1, ...footerSettings.footer1 };
+        if (footerSettings.footer2) footerTemplateSettings.value.footer2 = { ...footerTemplateSettings.value.footer2, ...footerSettings.footer2 };
+        if (footerSettings.footer3) footerTemplateSettings.value.footer3 = { ...footerTemplateSettings.value.footer3, ...footerSettings.footer3 };
+        if (footerSettings.custom) footerTemplateSettings.value.custom = { ...footerTemplateSettings.value.custom, ...footerSettings.custom };
+      } catch (e) {
+        console.error('Error parsing footer template settings:', e);
+      }
+    }
   } catch (err) {
     console.error('Error fetching settings:', err);
   }
@@ -806,7 +1046,11 @@ const saveAppearance = async () => {
         'Content-Type': 'application/json',
         'X-CSRF-TOKEN': token
       },
-      body: JSON.stringify(settings.value)
+      body: JSON.stringify({
+        ...settings.value,
+        header_template_settings: JSON.stringify(headerTemplateSettings.value),
+        footer_template_settings: JSON.stringify(footerTemplateSettings.value)
+      })
     });
 
     if (!response.ok) {

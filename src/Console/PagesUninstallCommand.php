@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 
 class PagesUninstallCommand extends Command
 {
-    protected $signature = 'holartcms:pages-uninstall {--preserve-db : Preserve database tables and data} {--force : Force uninstall without confirmation}';
+    protected $signature = 'holartcms:pages-uninstall {--preserve-db : Preserve database tables and data} {--force : Force uninstall without confirmation} {--remove-components : Remove default blade components}';
     protected $description = 'Uninstall HolartCMS Pages Module';
 
     public function handle(): int
@@ -189,39 +189,102 @@ class PagesUninstallCommand extends Command
         }
         $this->newLine();
 
-        // Step 5: Remove Blade templates
+        // Step 5: Remove Blade templates (with confirmation)
         $this->info('Step 5: Removing blade templates...');
-        $bladeFiles = [
-            'blocks/hero-1.blade.php',
-            'blocks/hero-2.blade.php',
-            'blocks/text.blade.php',
-            'blocks/rich-text.blade.php',
-            'blocks/cards.blade.php',
-            'blocks/products.blade.php',
-            'blocks/catalogs.blade.php',
-            'blocks/features.blade.php',
-            'blocks/breadcrumbs.blade.php',
-            'blocks/slider.blade.php',
-            'blocks/container-50-50.blade.php',
-            'blocks/container-33-33-33.blade.php',
-            'blocks/container-25-75.blade.php',
-            'page-renderer.blade.php',
-        ];
 
-        $viewsPath = resource_path('views/components');
-        foreach ($bladeFiles as $file) {
-            $filePath = $viewsPath . '/' . $file;
-            if (file_exists($filePath)) {
-                unlink($filePath);
-                $this->info("✓ Removed {$file}");
-            }
+        $removeComponents = false;
+
+        // Check if --remove-components flag is set (from web interface)
+        if ($this->option('remove-components')) {
+            $removeComponents = true;
+        } elseif (!$force) {
+            // Interactive mode - ask user
+            $removeComponents = $this->confirm('Do you want to remove default blade components (header, footer, blocks)?', false);
         }
 
-        // Try to remove empty directories
-        $blocksDir = $viewsPath . '/blocks';
-        if (is_dir($blocksDir) && count(scandir($blocksDir)) == 2) { // only . and ..
-            rmdir($blocksDir);
-            $this->info('✓ Removed blocks directory');
+        if ($removeComponents) {
+            $bladeFiles = [
+                'blocks/hero-1.blade.php',
+                'blocks/hero-2.blade.php',
+                'blocks/text.blade.php',
+                'blocks/rich-text.blade.php',
+                'blocks/cards.blade.php',
+                'blocks/products.blade.php',
+                'blocks/catalogs.blade.php',
+                'blocks/features.blade.php',
+                'blocks/breadcrumbs.blade.php',
+                'blocks/slider.blade.php',
+                'blocks/statsblock.blade.php',
+                'blocks/container-50-50.blade.php',
+                'blocks/container-33-33-33.blade.php',
+                'blocks/container-25-75.blade.php',
+                'page-renderer.blade.php',
+            ];
+
+            $viewsPath = resource_path('views/components');
+            foreach ($bladeFiles as $file) {
+                $filePath = $viewsPath . '/' . $file;
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                    $this->info("✓ Removed {$file}");
+                }
+            }
+
+            // Remove header templates
+            $headerFiles = ['header1.blade.php', 'header2.blade.php', 'header3.blade.php'];
+            $headersPath = resource_path('views/layouts/headers');
+            if (is_dir($headersPath)) {
+                foreach ($headerFiles as $file) {
+                    $filePath = $headersPath . '/' . $file;
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                        $this->info("✓ Removed layouts/headers/{$file}");
+                    }
+                }
+                // Try to remove headers directory if empty
+                if (is_dir($headersPath) && count(scandir($headersPath)) == 2) {
+                    rmdir($headersPath);
+                    $this->info('✓ Removed headers directory');
+                }
+            }
+
+            // Remove footer templates
+            $footerFiles = ['footer1.blade.php', 'footer2.blade.php', 'footer3.blade.php'];
+            $footersPath = resource_path('views/layouts/footers');
+            if (is_dir($footersPath)) {
+                foreach ($footerFiles as $file) {
+                    $filePath = $footersPath . '/' . $file;
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                        $this->info("✓ Removed layouts/footers/{$file}");
+                    }
+                }
+                // Try to remove footers directory if empty
+                if (is_dir($footersPath) && count(scandir($footersPath)) == 2) {
+                    rmdir($footersPath);
+                    $this->info('✓ Removed footers directory');
+                }
+            }
+
+            // Remove main layout files (app.blade.php, simple.blade.php)
+            $layoutFiles = ['app.blade.php', 'simple.blade.php'];
+            $layoutsPath = resource_path('views/layouts');
+            foreach ($layoutFiles as $file) {
+                $filePath = $layoutsPath . '/' . $file;
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                    $this->info("✓ Removed layouts/{$file}");
+                }
+            }
+
+            // Try to remove empty directories
+            $blocksDir = $viewsPath . '/blocks';
+            if (is_dir($blocksDir) && count(scandir($blocksDir)) == 2) { // only . and ..
+                rmdir($blocksDir);
+                $this->info('✓ Removed blocks directory');
+            }
+        } else {
+            $this->info('⊘ Blade templates preserved (skipped removal)');
         }
         $this->newLine();
 
