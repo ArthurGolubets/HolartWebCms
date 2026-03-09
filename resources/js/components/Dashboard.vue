@@ -175,6 +175,7 @@ import StatWidget from './dashboard/StatWidget.vue';
 import ListWidget from './dashboard/ListWidget.vue';
 import WidgetCard from './dashboard/WidgetCard.vue';
 import ChartWidget from './dashboard/ChartWidget.vue';
+import PageVisitsWidget from './dashboard/PageVisitsWidget.vue';
 import ConfirmModal from './ConfirmModal.vue';
 
 const loading = ref(true);
@@ -196,6 +197,11 @@ const maxSubscriptionCount = computed(() => {
 
 function getWidgetComponent(widget) {
   const type = widget.widget_type;
+
+  // Special widgets
+  if (type === 'page_visits_stats') {
+    return PageVisitsWidget;
+  }
 
   // List widgets
   if (['popular_pages', 'recent_logs', 'recent_orders', 'promocodes_usage', 'recent_requests'].includes(type)) {
@@ -315,6 +321,24 @@ function getWidgetProps(widget) {
     return {
       title: 'Последние обращения',
       items: metrics.value.recent_requests || [],
+      loading: loadingMetrics.value,
+      width: widget.width
+    };
+  }
+
+  if (type === 'page_visits_stats') {
+    const topPages = (metrics.value.page_visits_stats?.top_pages || []).map(page => ({
+      id: page.id,
+      title: page.title,
+      subtitle: page.slug,
+      visits: page.visits
+    }));
+
+    return {
+      title: 'Топ-5 страниц по посещениям',
+      items: topPages,
+      totalVisits: metrics.value.page_visits_stats?.total_visits_30d || 0,
+      todayVisits: metrics.value.page_visits_stats?.today_visits || 0,
       loading: loadingMetrics.value,
       width: widget.width
     };

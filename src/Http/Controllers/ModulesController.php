@@ -59,12 +59,22 @@ class ModulesController extends Controller
                 'uninstall_command' => 'holartcms:infoblocks-uninstall',
             ],
             [
-                'id' => 'pages',
-                'name' => 'Страницы и СЕО',
-                'description' => 'Модуль для создания статических и динамических страниц с конструктором блоков и SEO-оптимизацией.',
-                'installed' => $this->isPagesModuleInstalled(),
-                'install_command' => 'holartcms:pages-install',
-                'uninstall_command' => 'holartcms:pages-uninstall',
+                'id' => 'seo',
+                'name' => 'Страницы и SEO',
+                'description' => 'Модуль для создания статических страниц и управления SEO-оптимизацией: мета-теги, sitemap, ЧПУ.',
+                'installed' => $this->isSeoModuleInstalled(),
+                'install_command' => 'holartcms:seo-install',
+                'uninstall_command' => 'holartcms:seo-uninstall',
+            ],
+            [
+                'id' => 'pagebuilder',
+                'name' => 'Конструктор страниц',
+                'description' => 'Модуль для создания и редактирования страниц с помощью визуального конструктора блоков. Требует установленный модуль "Страницы и SEO"',
+                'installed' => $this->isPageBuilderModuleInstalled(),
+                'install_command' => 'holartcms:pagebuilder-install',
+                'uninstall_command' => 'holartcms:pagebuilder-uninstall',
+                'dependencies' => ['seo'],
+                'can_install' => $this->isSeoModuleInstalled(),
             ]
         ];
 
@@ -127,8 +137,11 @@ class ModulesController extends Controller
                 case 'infoblocks':
                     $exitCode = Artisan::call('holartcms:infoblocks-install');
                     break;
-                case 'pages':
-                    $exitCode = Artisan::call('holartcms:pages-install');
+                case 'seo':
+                    $exitCode = Artisan::call('holartcms:seo-install');
+                    break;
+                case 'pagebuilder':
+                    $exitCode = Artisan::call('holartcms:pagebuilder-install');
                     break;
                 default:
                     return response()->json([
@@ -149,7 +162,7 @@ class ModulesController extends Controller
             }
 
             // Log activity
-            $moduleNames = ['shop' => 'Каталог и товары', 'callback' => 'Обратная связь', 'commerce' => 'Коммерция', 'logging' => 'Журнал активности', 'infoblocks' => 'Информационные блоки', 'pages' => 'Страницы и СЕО'];
+            $moduleNames = ['shop' => 'Каталог и товары', 'callback' => 'Обратная связь', 'commerce' => 'Коммерция', 'logging' => 'Журнал активности', 'infoblocks' => 'Информационные блоки', 'seo' => 'Страницы и SEO', 'pagebuilder' => 'Конструктор страниц'];
             $moduleName = $moduleNames[$moduleId] ?? $moduleId;
             TAdminAction::log('installed', 'module', null, 'Установлен модуль: ' . $moduleName);
 
@@ -206,16 +219,15 @@ class ModulesController extends Controller
                         '--preserve-db' => $preserveDatabase
                     ]);
                     break;
-                case 'pages':
-                    $params = ['--preserve-db' => $preserveDatabase];
-
-                    // If remove_components is explicitly set, use force mode
-                    if ($request->has('remove_components')) {
-                        $params['--force'] = true;
-                        $params['--remove-components'] = $removeComponents;
-                    }
-
-                    Artisan::call('holartcms:pages-uninstall', $params);
+                case 'seo':
+                    Artisan::call('holartcms:seo-uninstall', [
+                        '--preserve-db' => $preserveDatabase
+                    ]);
+                    break;
+                case 'pagebuilder':
+                    Artisan::call('holartcms:pagebuilder-uninstall', [
+                        '--preserve-db' => $preserveDatabase
+                    ]);
                     break;
                 default:
                     return response()->json([
@@ -227,7 +239,7 @@ class ModulesController extends Controller
             $output = Artisan::output();
 
             // Log activity
-            $moduleNames = ['shop' => 'Каталог и товары', 'callback' => 'Обратная связь', 'commerce' => 'Коммерция', 'logging' => 'Журнал активности', 'infoblocks' => 'Информационные блоки', 'pages' => 'Страницы и СЕО'];
+            $moduleNames = ['shop' => 'Каталог и товары', 'callback' => 'Обратная связь', 'commerce' => 'Коммерция', 'logging' => 'Журнал активности', 'infoblocks' => 'Информационные блоки', 'seo' => 'Страницы и SEO', 'pagebuilder' => 'Конструктор страниц'];
             $moduleName = $moduleNames[$moduleId] ?? $moduleId;
             TAdminAction::log('uninstalled', 'module', null, 'Удален модуль: ' . $moduleName);
 
@@ -302,19 +314,25 @@ class ModulesController extends Controller
     }
 
     /**
-     * Check if pages module is installed
+     * Check if SEO module is installed
      */
-    private function isPagesModuleInstalled()
+    private function isSeoModuleInstalled()
     {
         return file_exists(app_path('Http/Controllers/PagesController.php')) &&
-               file_exists(app_path('Http/Controllers/MenusController.php')) &&
                file_exists(app_path('Models/TPage.php')) &&
-               file_exists(app_path('Models/TMenu.php')) &&
                Schema::hasTable('t_pages') &&
+               Schema::hasTable('t_page_visits');
+    }
+
+    /**
+     * Check if Page Builder module is installed
+     */
+    private function isPageBuilderModuleInstalled()
+    {
+        return file_exists(app_path('Http/Controllers/PageBlocksController.php')) &&
+               file_exists(app_path('Models/TPageBlock.php')) &&
                Schema::hasTable('t_page_blocks') &&
-               Schema::hasTable('t_page_block_types') &&
-               Schema::hasTable('t_menus') &&
-               Schema::hasTable('t_menu_items');
+               Schema::hasTable('t_page_block_types');
     }
 
     /**

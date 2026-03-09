@@ -4,7 +4,6 @@ namespace HolartWeb\HolartCMS\Services;
 
 use HolartWeb\HolartCMS\Models\TAdministrator;
 use HolartWeb\HolartCMS\Models\TAdminAction;
-use HolartWeb\HolartCMS\Models\Pages\TPage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -22,38 +21,6 @@ class DashboardMetricsService
         ];
     }
 
-    /**
-     * Get popular pages by views
-     */
-    public function getPopularPages(int $limit = 10): array
-    {
-        // Check if pages table exists
-        if (!Schema::hasTable('t_pages')) {
-            return [];
-        }
-
-        try {
-            // This would require a page_views table or analytics integration
-            // For now, return pages ordered by updated_at as a placeholder
-            return \Illuminate\Support\Facades\DB::table('t_pages')
-                ->where('is_active', true)
-                ->orderBy('updated_at', 'desc')
-                ->limit($limit)
-                ->get(['id', 'title', 'slug', 'updated_at'])
-                ->map(function ($page) {
-                    return [
-                        'id' => $page->id,
-                        'title' => $page->title,
-                        'slug' => $page->slug,
-                        'views' => rand(10, 1000), // Placeholder - should be from analytics
-                        'last_update' => date('d.m.Y H:i', strtotime($page->updated_at)),
-                    ];
-                })
-                ->toArray();
-        } catch (\Exception $e) {
-            return [];
-        }
-    }
 
     /**
      * Get recent admin actions (logs)
@@ -184,6 +151,122 @@ class DashboardMetricsService
         } catch (\Exception $e) {
             return [];
         }
+    }
+
+    /**
+     * Get page visits statistics (top 5 pages for last 30 days)
+     */
+    public function getPageVisitsStats(): array
+    {
+        if (!Schema::hasTable('t_page_visits')) {
+            return [];
+        }
+
+        try {
+            // Get top URLs by visits (including all pages, catalogs, products)
+            $topUrls = DB::table('t_page_visits')
+                ->select('url')
+                ->selectRaw('COUNT(*) as visits_count')
+                ->where('visited_at', '>=', now()->subDays(30))
+                ->groupBy('url')
+                ->orderByDesc('visits_count')
+                ->limit(5)
+                ->get();
+
+            $topPages = [];
+            foreach ($topUrls as $urlData) {
+                $url = $urlData->url;
+                $visits = $urlData->visits_count;
+
+                // Extract path from URL
+                $path = parse_url($url, PHP_URL_PATH);
+                $slug = trim($path, '/');
+
+                // Try to find page title from different sources
+                $title = $this->getPageTitleForUrl($slug);
+
+                $topPages[] = [
+                    'id' => crc32($url), // Generate unique ID from URL
+                    'title' => $title,
+                    'slug' => $slug ?: 'главная',
+                    'visits' => $visits,
+                ];
+            }
+
+            $totalVisits = DB::table('t_page_visits')
+                ->where('visited_at', '>=', now()->subDays(30))
+                ->count();
+
+            $todayVisits = DB::table('t_page_visits')
+                ->whereDate('visited_at', today())
+                ->count();
+
+            return [
+                'top_pages' => $topPages,
+                'total_visits_30d' => $totalVisits,
+                'today_visits' => $todayVisits,
+            ];
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    /**
+     * Get page title for URL
+     */
+    private function getPageTitleForUrl(string $slug): string
+    {
+        if (empty($slug)) {
+            return 'Главная страница';
+        }
+
+        // Try to find in pages
+        if (Schema::hasTable('t_pages')) {
+            $pageModel = $this->getPageModel();
+            if ($pageModel) {
+                $page = $pageModel::where('slug', $slug)->first();
+                if ($page) {
+                    return $page->title;
+                }
+            }
+        }
+
+        // Try to find in catalogs
+        if (Schema::hasTable('t_catalogs')) {
+            $catalog = DB::table('t_catalogs')->where('slug', $slug)->first();
+            if ($catalog) {
+                return $catalog->name;
+            }
+        }
+
+        // Try to find in products (slug might be catalog/product)
+        if (Schema::hasTable('t_products') && str_contains($slug, '/')) {
+            $parts = explode('/', $slug);
+            $productSlug = end($parts);
+            $product = DB::table('t_products')->where('slug', $productSlug)->first();
+            if ($product) {
+                return $product->name;
+            }
+        }
+
+        // Fallback: format slug as title
+        return ucfirst(str_replace(['-', '_', '/'], ' ', $slug));
+    }
+
+    /**
+     * Get Page model class
+     */
+    private function getPageModel(): ?string
+    {
+        if (class_exists('App\Models\TPage')) {
+            return 'App\Models\TPage';
+        }
+
+        if (class_exists('HolartWeb\HolartCMS\Models\SEO\TPage')) {
+            return 'HolartWeb\HolartCMS\Models\SEO\TPage';
+        }
+
+        return null;
     }
 
     /**
@@ -349,32 +432,6 @@ class DashboardMetricsService
         }
     }
 
-    /**
-     * Get pages views chart (top 10)
-     */
-    public function getPagesViewsChart(int $limit = 10): array
-    {
-        if (!Schema::hasTable('t_pages')) {
-            return [];
-        }
-
-        try {
-            return DB::table('t_pages')
-                ->where('is_active', true)
-                ->orderBy('updated_at', 'desc')
-                ->limit($limit)
-                ->get(['id', 'title'])
-                ->map(function ($page) {
-                    return [
-                        'label' => $page->title,
-                        'value' => rand(50, 500), // Placeholder - should be from analytics
-                    ];
-                })
-                ->toArray();
-        } catch (\Exception $e) {
-            return [];
-        }
-    }
 
     /**
      * Get all metrics for dashboard
@@ -383,9 +440,7 @@ class DashboardMetricsService
     {
         $metrics = [
             'users_stats' => $this->getUsersStats(),
-            'popular_pages' => $this->getPopularPages(),
             'recent_logs' => $this->getRecentLogs(),
-            'pages_views_chart' => $this->getPagesViewsChart(),
         ];
 
         // Add commerce metrics if module is installed
@@ -406,6 +461,11 @@ class DashboardMetricsService
             $metrics['recent_requests'] = $this->getRecentRequests();
         }
 
+        // Add page visits stats if SEO module is installed
+        if (Schema::hasTable('t_pages') && Schema::hasTable('t_page_visits')) {
+            $metrics['page_visits_stats'] = $this->getPageVisitsStats();
+        }
+
         return $metrics;
     }
 
@@ -416,9 +476,7 @@ class DashboardMetricsService
     {
         return match ($type) {
             'users_stats' => $this->getUsersStats(),
-            'popular_pages' => $this->getPopularPages(),
             'recent_logs' => $this->getRecentLogs(),
-            'pages_views_chart' => $this->getPagesViewsChart(),
             'orders_stats' => $this->getOrdersStats(),
             'recent_orders' => $this->getRecentOrders(),
             'promocodes_usage' => $this->getPromocodesUsage(),

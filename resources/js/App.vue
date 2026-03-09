@@ -169,32 +169,50 @@
           </div>
         </div>
 
-        <!-- Pages & SEO Group (only if pages module is installed) -->
-        <div v-if="pagesModuleInstalled" class="mb-1">
-          <button @click="toggleMenuGroup('pages')" class="w-full flex items-center px-3 py-2.5 text-gray-300 hover:bg-gray-800 hover:text-white rounded-md transition-colors" :class="isCollapsed ? 'justify-center' : 'justify-between'" :title="isCollapsed ? 'Страницы и СЕО' : ''">
+        <!-- Pages & SEO Group (only if seo module is installed) -->
+        <div v-if="seoModuleInstalled" class="mb-1">
+          <button @click="toggleMenuGroup('pages_seo')" class="w-full flex items-center px-3 py-2.5 text-gray-300 hover:bg-gray-800 hover:text-white rounded-md transition-colors" :class="isCollapsed ? 'justify-center' : 'justify-between'" :title="isCollapsed ? 'Страницы и SEO' : ''">
             <div class="flex items-center">
-              <svg class="w-5 h-5" :class="isCollapsed ? '' : 'mr-3'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-              <span v-if="!isCollapsed">Страницы и СЕО</span>
+              <svg class="w-5 h-5" :class="isCollapsed ? '' : 'mr-3'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              <span v-if="!isCollapsed">Страницы и SEO</span>
             </div>
-            <svg v-if="!isCollapsed" class="w-4 h-4 transition-transform" :class="{ 'rotate-180': menuGroups.pages }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            <svg v-if="!isCollapsed" class="w-4 h-4 transition-transform" :class="{ 'rotate-180': menuGroups.pages_seo }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
-          <div v-if="menuGroups.pages && !isCollapsed" class="ml-3 mt-1 space-y-1">
+          <div v-if="menuGroups.pages_seo && !isCollapsed" class="ml-3 mt-1 space-y-1">
             <router-link to="/pages" v-slot="{ isActive }" custom>
               <a @click="$router.push('/pages'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                Список страниц
-              </a>
-            </router-link>
-            <router-link to="/page-block-types" v-slot="{ isActive }" custom>
-              <a @click="$router.push('/page-block-types'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z"/></svg>
-                Типы блоков
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                Страницы
               </a>
             </router-link>
             <router-link to="/pages-settings" v-slot="{ isActive }" custom>
               <a @click="$router.push('/pages-settings'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
                 Настройки
+              </a>
+            </router-link>
+            <router-link v-if="pageBuilderModuleInstalled" to="/page-builder" v-slot="{ isActive }" custom>
+              <a @click="$router.push('/page-builder'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z"/></svg>
+                Конструктор страниц
+              </a>
+            </router-link>
+            <router-link v-if="pageBuilderModuleInstalled" to="/page-builder-settings" v-slot="{ isActive }" custom>
+              <a @click="$router.push('/page-builder-settings'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                Настройки конструктора
+              </a>
+            </router-link>
+            <router-link v-if="pageBuilderModuleInstalled" to="/page-components" v-slot="{ isActive }" custom>
+              <a @click="$router.push('/page-components'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"/></svg>
+                Настройки компонентов
+              </a>
+            </router-link>
+            <router-link v-if="pageBuilderModuleInstalled" to="/page-templates" v-slot="{ isActive }" custom>
+              <a @click="$router.push('/page-templates'); isMobileMenuOpen = false" class="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer" :class="isActive ? 'text-white font-medium' : 'text-gray-400 hover:bg-gray-800 hover:text-white'" :style="isActive ? `background-color: ${themeColor}` : ''">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h14a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3z"/></svg>
+                Настройки шаблона
               </a>
             </router-link>
           </div>
@@ -405,7 +423,7 @@ const menuGroups = ref({
   callback: false,
   commerce: false,
   infoblocks: false,
-  pages: false,
+  pages_seo: false,
 });
 
 const adminUser = ref({
@@ -418,8 +436,9 @@ const shopModuleInstalled = ref(false);
 const callbackModuleInstalled = ref(false);
 const commerceModuleInstalled = ref(false);
 const infoblocksModuleInstalled = ref(false);
-const pagesModuleInstalled = ref(false);
 const loggingModuleInstalled = ref(false);
+const seoModuleInstalled = ref(false);
+const pageBuilderModuleInstalled = ref(false);
 const favoriteInfoBlocks = ref([]);
 
 const roleLabel = computed(() => {
@@ -561,11 +580,14 @@ const loadModulesStatus = async () => {
       const infoblocksModule = data.modules?.find(m => m.id === 'infoblocks');
       infoblocksModuleInstalled.value = infoblocksModule?.installed || false;
 
-      const pagesModule = data.modules?.find(m => m.id === 'pages');
-      pagesModuleInstalled.value = pagesModule?.installed || false;
-
       const loggingModule = data.modules?.find(m => m.id === 'logging');
       loggingModuleInstalled.value = loggingModule?.installed || false;
+
+      const seoModule = data.modules?.find(m => m.id === 'seo');
+      seoModuleInstalled.value = seoModule?.installed || false;
+
+      const pageBuilderModule = data.modules?.find(m => m.id === 'pagebuilder');
+      pageBuilderModuleInstalled.value = pageBuilderModule?.installed || false;
 
       // Load favorite infoblocks if module is installed
       if (infoblocksModuleInstalled.value) {

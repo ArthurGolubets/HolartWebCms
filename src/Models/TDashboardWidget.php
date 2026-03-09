@@ -43,6 +43,7 @@ class TDashboardWidget extends Model
     const TYPE_ORDERS_CHART = 'orders_chart';
     const TYPE_REVENUE_CHART = 'revenue_chart';
     const TYPE_PAGES_VIEWS_CHART = 'pages_views_chart';
+    const TYPE_PAGE_VISITS_STATS = 'page_visits_stats';
 
     /**
      * Get the administrator who owns this widget
@@ -167,6 +168,16 @@ class TDashboardWidget extends Model
                 'description' => 'Список из 5 последних обращений',
                 'module' => 'callback',
                 'icon' => 'inbox',
+            ];
+        }
+
+        // SEO module widgets
+        if (\Illuminate\Support\Facades\Schema::hasTable('t_pages') && \Illuminate\Support\Facades\Schema::hasTable('t_page_visits')) {
+            $types[self::TYPE_PAGE_VISITS_STATS] = [
+                'title' => 'Посещения страниц',
+                'description' => 'Топ-5 страниц по посещениям за 30 дней',
+                'module' => 'seo',
+                'icon' => 'chart-bar',
             ];
         }
 

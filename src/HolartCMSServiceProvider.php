@@ -27,6 +27,16 @@ class HolartCMSServiceProvider extends ServiceProvider
             'driver' => 'eloquent',
             'model' => \HolartWeb\HolartCMS\Models\TAdministrator::class,
         ]);
+
+        // Register PageDataService as singleton
+        $this->app->singleton(\HolartWeb\HolartCMS\Services\PageDataService::class, function ($app) {
+            return new \HolartWeb\HolartCMS\Services\PageDataService();
+        });
+
+        // Register PageVisitService as singleton
+        $this->app->singleton(\HolartWeb\HolartCMS\Services\PageVisitService::class, function ($app) {
+            return new \HolartWeb\HolartCMS\Services\PageVisitService();
+        });
     }
 
     /**
@@ -42,6 +52,10 @@ class HolartCMSServiceProvider extends ServiceProvider
 
         // Register middleware
         $this->app['router']->aliasMiddleware('admin.auth', \HolartWeb\HolartCMS\Http\Middleware\RedirectIfNotAdmin::class);
+        $this->app['router']->aliasMiddleware('share.page.data', \HolartWeb\HolartCMS\Http\Middleware\SharePageData::class);
+
+        // Add SharePageData middleware to web group globally
+        $this->app['router']->pushMiddlewareToGroup('web', \HolartWeb\HolartCMS\Http\Middleware\SharePageData::class);
 
         // Register commands (always register so they can be called via Artisan::call() from web)
         $this->commands([
@@ -59,7 +73,21 @@ class HolartCMSServiceProvider extends ServiceProvider
             \HolartWeb\HolartCMS\Console\InfoBlocksUninstallCommand::class,
             \HolartWeb\HolartCMS\Console\PagesInstallCommand::class,
             \HolartWeb\HolartCMS\Console\PagesUninstallCommand::class,
+            \HolartWeb\HolartCMS\Console\SeoInstallCommand::class,
+            \HolartWeb\HolartCMS\Console\SeoUninstallCommand::class,
+            \HolartWeb\HolartCMS\Console\PageBuilderInstallCommand::class,
+            \HolartWeb\HolartCMS\Console\PageBuilderUninstallCommand::class,
+            \HolartWeb\HolartCMS\Console\ScanRoutesCommand::class,
+            \HolartWeb\HolartCMS\Console\CleanOldPageVisitsCommand::class,
         ]);
+
+        // Schedule automatic cleanup of old page visits
+        if ($this->app->runningInConsole()) {
+            $this->app->booted(function () {
+                $schedule = $this->app->make(\Illuminate\Console\Scheduling\Schedule::class);
+                $schedule->command('holartcms:clean-page-visits')->daily();
+            });
+        }
 
         // Publish config
         $this->publishes([
