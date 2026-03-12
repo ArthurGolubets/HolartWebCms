@@ -91,8 +91,14 @@ class PagesInstallCommand extends Command
         $this->info('✓ Assets published successfully');
         $this->newLine();
 
-        // Step 5: Clear Cache
-        $this->info('Step 5: Clearing application cache...');
+        // Step 5: Register middleware
+        $this->info('Step 5: Registering middleware...');
+        $this->registerMiddleware();
+        $this->info('✓ Middleware registered');
+        $this->newLine();
+
+        // Step 6: Clear Cache
+        $this->info('Step 6: Clearing application cache...');
         Artisan::call('config:clear');
         Artisan::call('route:clear');
         Artisan::call('view:clear');
@@ -178,5 +184,58 @@ class PagesInstallCommand extends Command
                 ])
             );
         }
+    }
+
+    /**
+     * Register middleware in bootstrap/app.php
+     */
+    private function registerMiddleware()
+    {
+        $bootstrapPath = base_path('bootstrap/app.php');
+
+        if (!file_exists($bootstrapPath)) {
+            $this->warn('⚠ bootstrap/app.php not found. Please register middleware manually.');
+            return;
+        }
+
+        $content = file_get_contents($bootstrapPath);
+        $sharePageDataMiddleware = '\HolartWeb\HolartCMS\Http\Middleware\SharePageData::class';
+
+        // Check if already registered
+        if (str_contains($content, 'SharePageData')) {
+            $this->info('   Middleware already registered');
+            return;
+        }
+
+        // For Laravel 11+ style bootstrap/app.php
+        if (str_contains($content, '->withMiddleware')) {
+            // Try different patterns for withMiddleware including void return type
+            $patterns = [
+                '/->withMiddleware\(function\s*\(\s*Middleware\s+\$middleware\s*\)\s*:\s*void\s*{/',
+                '/->withMiddleware\(function\s*\(\s*Middleware\s+\$middleware\s*\)\s*{/',
+                '/->withMiddleware\(function\s*\(\s*\$middleware\s*\)\s*{/',
+                '/->withMiddleware\(\s*function\s*\(\s*Middleware\s+\$middleware\s*\)\s*{/',
+            ];
+
+            foreach ($patterns as $pattern) {
+                if (preg_match($pattern, $content, $matches, PREG_OFFSET_CAPTURE)) {
+                    $insertPosition = $matches[0][1] + strlen($matches[0][0]);
+
+                    // Insert the middleware registration
+                    $middlewareCode = "\n        \$middleware->web(append: [\n            {$sharePageDataMiddleware},\n        ]);\n";
+
+                    $content = substr_replace($content, $middlewareCode, $insertPosition, 0);
+                    file_put_contents($bootstrapPath, $content);
+                    $this->info('   Middleware registered successfully');
+                    return;
+                }
+            }
+        }
+
+        // Fallback: couldn't auto-register
+        $this->warn('⚠ Could not auto-register middleware. Please add manually to bootstrap/app.php:');
+        $this->warn('   $middleware->web(append: [');
+        $this->warn('       ' . $sharePageDataMiddleware . ',');
+        $this->warn('   ]);');
     }
 }

@@ -76,10 +76,11 @@ class SeoInstallCommand extends Command
         }
 
         $content = file_get_contents($bootstrapPath);
-        $middlewareClass = '\HolartWeb\HolartCMS\Http\Middleware\TrackPageVisits::class';
+        $trackPageVisitsMiddleware = '\HolartWeb\HolartCMS\Http\Middleware\TrackPageVisits::class';
+        $sharePageDataMiddleware = '\HolartWeb\HolartCMS\Http\Middleware\SharePageData::class';
 
         // Check if already registered
-        if (str_contains($content, 'TrackPageVisits')) {
+        if (str_contains($content, 'TrackPageVisits') && str_contains($content, 'SharePageData')) {
             $this->info('   Middleware already registered');
             return;
         }
@@ -98,8 +99,8 @@ class SeoInstallCommand extends Command
                 if (preg_match($pattern, $content, $matches, PREG_OFFSET_CAPTURE)) {
                     $insertPosition = $matches[0][1] + strlen($matches[0][0]);
 
-                    // Insert the middleware registration
-                    $middlewareCode = "\n        \$middleware->web(append: [\n            {$middlewareClass},\n        ]);\n";
+                    // Insert both middleware registrations
+                    $middlewareCode = "\n        \$middleware->web(append: [\n            {$sharePageDataMiddleware},\n            {$trackPageVisitsMiddleware},\n        ]);\n";
 
                     $content = substr_replace($content, $middlewareCode, $insertPosition, 0);
                     file_put_contents($bootstrapPath, $content);
@@ -112,7 +113,8 @@ class SeoInstallCommand extends Command
         // Fallback: couldn't auto-register
         $this->warn('⚠ Could not auto-register middleware. Please add manually to bootstrap/app.php:');
         $this->warn('   $middleware->web(append: [');
-        $this->warn('       ' . $middlewareClass . ',');
+        $this->warn('       ' . $sharePageDataMiddleware . ',');
+        $this->warn('       ' . $trackPageVisitsMiddleware . ',');
         $this->warn('   ]);');
 
         // Register module
