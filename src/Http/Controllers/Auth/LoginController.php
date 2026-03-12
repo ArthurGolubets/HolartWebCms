@@ -1,6 +1,6 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers\Auth;
+namespace HolartWeb\AxoraCMS\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -14,7 +14,7 @@ class LoginController extends Controller
      */
     public function showLoginForm()
     {
-        return view('holart-cms::auth.login');
+        return view('axora-cms::auth.login');
     }
 
     /**
@@ -51,7 +51,7 @@ class LoginController extends Controller
 
             return response()->json([
                 'message' => 'Login successful',
-                'redirect' => route('holart-cms.dashboard'),
+                'redirect' => route('axora-cms.dashboard'),
             ]);
         }
 
@@ -70,6 +70,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('holart-cms.login');
+        return redirect()->route('axora-cms.login');
     }
 }

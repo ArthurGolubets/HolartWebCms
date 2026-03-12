@@ -1,12 +1,12 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use HolartWeb\HolartCMS\Models\TAdministrator;
-use HolartWeb\HolartCMS\Enums\AdminRole;
-use HolartWeb\HolartCMS\Services\LicenseService;
+use HolartWeb\AxoraCMS\Models\TAdministrator;
+use HolartWeb\AxoraCMS\Enums\AdminRole;
+use HolartWeb\AxoraCMS\Services\LicenseService;
 
 class InstallCommand extends Command
 {
@@ -15,14 +15,14 @@ class InstallCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'holartcms:install {--force : Force installation}';
+    protected $signature = 'axoracms:install {--force : Force installation}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Install HolartCMS admin panel';
+    protected $description = 'Install AxoraCMS admin panel';
 
     /**
      * License service instance.
@@ -43,7 +43,7 @@ class InstallCommand extends Command
      */
     public function handle(): int
     {
-        $this->info('🚀 Установка HolartCMS...');
+        $this->info('🚀 Установка AxoraCMS...');
         $this->newLine();
 
         // Check license
@@ -57,7 +57,7 @@ class InstallCommand extends Command
         // Publish configuration
         $this->info('📦 Публикация конфигурации...');
         $this->call('vendor:publish', [
-            '--tag' => 'holart-cms-config',
+            '--tag' => 'axora-cms-config',
             '--force' => $this->option('force'),
         ]);
 
@@ -72,7 +72,7 @@ class InstallCommand extends Command
         // Publish assets
         $this->info('📂 Публикация ассетов...');
         $this->call('vendor:publish', [
-            '--tag' => 'holart-cms-assets',
+            '--tag' => 'axora-cms-assets',
             '--force' => $this->option('force'),
         ]);
 
@@ -84,9 +84,9 @@ class InstallCommand extends Command
         }
 
         $this->newLine();
-        $this->info('✅ HolartCMS успешно установлен!');
+        $this->info('✅ AxoraCMS успешно установлен!');
         $this->newLine();
-        $this->line('Админ-панель доступна по адресу: ' . url(config('holart-cms.route_prefix', 'admin')));
+        $this->line('Админ-панель доступна по адресу: ' . url(config('axora-cms.route_prefix', 'admin')));
 
         return self::SUCCESS;
     }
@@ -137,7 +137,7 @@ class InstallCommand extends Command
         }
 
         // Ask for license key
-        $this->warn('Для установки HolartCMS требуется лицензионный ключ');
+        $this->warn('Для установки AxoraCMS требуется лицензионный ключ');
         $key = $this->ask('Введите лицензионный ключ');
 
         if (!$key) {
@@ -166,7 +166,7 @@ class InstallCommand extends Command
         $this->info('👤 Создание супер-администратора...');
 
         $name = $this->ask('Имя', 'Супер Администратор');
-        $email = $this->ask('Email', 'admin@holartcms.local');
+        $email = $this->ask('Email', 'admin@axoracms.local');
         $password = $this->secret('Пароль (минимум 8 символов)');
         $passwordConfirmation = $this->secret('Подтвердите пароль');
 

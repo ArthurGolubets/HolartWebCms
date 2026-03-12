@@ -1,11 +1,11 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers\Commerce;
+namespace HolartWeb\AxoraCMS\Http\Controllers\Commerce;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Validator;
-use HolartWeb\HolartCMS\Models\Commerce\TOrdersData;
+use HolartWeb\AxoraCMS\Models\Commerce\TOrdersData;
 
 class OrdersDataController extends Controller
 {

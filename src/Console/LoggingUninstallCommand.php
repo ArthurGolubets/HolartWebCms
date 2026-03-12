@@ -1,9 +1,9 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
-use HolartWeb\HolartCMS\Models\TModule;
+use HolartWeb\AxoraCMS\Models\TModule;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
@@ -13,13 +13,13 @@ class LoggingUninstallCommand extends Command
 {
     const MODULE_NAME = 'logging';
 
-    protected $signature = 'holartcms:logging-uninstall {--preserve-db : Preserve database tables and data}';
-    protected $description = 'Uninstall HolartCMS Logging Module';
+    protected $signature = 'axoracms:logging-uninstall {--preserve-db : Preserve database tables and data}';
+    protected $description = 'Uninstall AxoraCMS Logging Module';
 
     public function handle(): int
     {
         $this->info('╔══════════════════════════════════════╗');
-        $this->info('║ HolartCMS Logging Module Uninstaller║');
+        $this->info('║ AxoraCMS Logging Module Uninstaller║');
         $this->info('╚══════════════════════════════════════╝');
         $this->newLine();
 

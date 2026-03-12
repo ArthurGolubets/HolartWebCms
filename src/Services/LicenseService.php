@@ -1,6 +1,6 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Services;
+namespace HolartWeb\AxoraCMS\Services;
 
 use Illuminate\Support\Facades\Http;
 
@@ -36,7 +36,7 @@ class LicenseService
      */
     public function saveLicense(string $key): void
     {
-        $licensePath = storage_path('holart-cms-license.key');
+        $licensePath = storage_path('axora-cms-license.key');
         file_put_contents($licensePath, $key);
     }
 
@@ -45,7 +45,7 @@ class LicenseService
      */
     public function getSavedLicense(): ?string
     {
-        $licensePath = storage_path('holart-cms-license.key');
+        $licensePath = storage_path('axora-cms-license.key');
 
         if (!file_exists($licensePath)) {
             return null;

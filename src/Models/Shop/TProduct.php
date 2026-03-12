@@ -1,6 +1,6 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Models\Shop;
+namespace HolartWeb\AxoraCMS\Models\Shop;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -74,7 +74,7 @@ class TProduct extends Model
     public function filterValues()
     {
         return $this->belongsToMany(
-            'HolartWeb\HolartCMS\Models\Shop\TFilterValue',
+            'HolartWeb\AxoraCMS\Models\Shop\TFilterValue',
             't_product_filter_values',
             'product_id',
             'filter_value_id'
@@ -109,8 +109,8 @@ class TProduct extends Model
     public function syncFilterValues(array $filterValueIds)
     {
         // Get filter_id for each filter_value_id
-        if (class_exists('HolartWeb\HolartCMS\Models\Shop\TFilterValue')) {
-            $filterValueClass = 'HolartWeb\HolartCMS\Models\Shop\TFilterValue';
+        if (class_exists('HolartWeb\AxoraCMS\Models\Shop\TFilterValue')) {
+            $filterValueClass = 'HolartWeb\AxoraCMS\Models\Shop\TFilterValue';
             $filterValues = $filterValueClass::whereIn('id', $filterValueIds)->get();
 
             $syncData = [];

@@ -1,11 +1,11 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers\Menus;
+namespace HolartWeb\AxoraCMS\Http\Controllers\Menus;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use HolartWeb\HolartCMS\Models\Menus\TMenuItem;
-use HolartWeb\HolartCMS\Models\TAdminAction;
+use HolartWeb\AxoraCMS\Models\Menus\TMenuItem;
+use HolartWeb\AxoraCMS\Models\TAdminAction;
 
 class MenuItemsController extends Controller
 {

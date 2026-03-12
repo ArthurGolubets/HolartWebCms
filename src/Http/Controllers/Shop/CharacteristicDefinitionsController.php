@@ -1,9 +1,9 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers\Shop;
+namespace HolartWeb\AxoraCMS\Http\Controllers\Shop;
 
 use App\Http\Controllers\Controller;
-use HolartWeb\HolartCMS\Models\Shop\TCharacteristicDefinition;
+use HolartWeb\AxoraCMS\Models\Shop\TCharacteristicDefinition;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 

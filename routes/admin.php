@@ -2,44 +2,44 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
-use HolartWeb\HolartCMS\Http\Controllers\Auth\LoginController;
-use HolartWeb\HolartCMS\Http\Controllers\Auth\ForgotPasswordController;
-use HolartWeb\HolartCMS\Http\Controllers\DashboardController;
-use HolartWeb\HolartCMS\Http\Controllers\AdministratorController;
-use HolartWeb\HolartCMS\Http\Controllers\SettingsController;
-use HolartWeb\HolartCMS\Http\Controllers\SearchController;
-use HolartWeb\HolartCMS\Http\Controllers\CatalogImportExportController;
-use HolartWeb\HolartCMS\Http\Controllers\ProductImportExportController;
-use HolartWeb\HolartCMS\Http\Controllers\LogsController;
-use HolartWeb\HolartCMS\Http\Controllers\ModulesController;
-use HolartWeb\HolartCMS\Http\Controllers\EnvironmentController;
-use HolartWeb\HolartCMS\Http\Controllers\ImageUploadController;
-use HolartWeb\HolartCMS\Http\Controllers\DashboardMetricsController;
-use HolartWeb\HolartCMS\Http\Controllers\DashboardWidgetsController;
+use HolartWeb\AxoraCMS\Http\Controllers\Auth\LoginController;
+use HolartWeb\AxoraCMS\Http\Controllers\Auth\ForgotPasswordController;
+use HolartWeb\AxoraCMS\Http\Controllers\DashboardController;
+use HolartWeb\AxoraCMS\Http\Controllers\AdministratorController;
+use HolartWeb\AxoraCMS\Http\Controllers\SettingsController;
+use HolartWeb\AxoraCMS\Http\Controllers\SearchController;
+use HolartWeb\AxoraCMS\Http\Controllers\CatalogImportExportController;
+use HolartWeb\AxoraCMS\Http\Controllers\ProductImportExportController;
+use HolartWeb\AxoraCMS\Http\Controllers\LogsController;
+use HolartWeb\AxoraCMS\Http\Controllers\ModulesController;
+use HolartWeb\AxoraCMS\Http\Controllers\EnvironmentController;
+use HolartWeb\AxoraCMS\Http\Controllers\ImageUploadController;
+use HolartWeb\AxoraCMS\Http\Controllers\DashboardMetricsController;
+use HolartWeb\AxoraCMS\Http\Controllers\DashboardWidgetsController;
 
 /*
 |--------------------------------------------------------------------------
 | Admin Routes
 |--------------------------------------------------------------------------
 |
-| Here are the admin panel routes for HolartCMS
+| Here are the admin panel routes for AxoraCMS
 |
 */
 
 // Guest routes (not authenticated)
 Route::middleware('guest:admin')->group(function () {
-    Route::get('login', [LoginController::class, 'showLoginForm'])->name('holart-cms.login');
-    Route::post('login', [LoginController::class, 'login'])->name('holart-cms.login.post');
+    Route::get('login', [LoginController::class, 'showLoginForm'])->name('axora-cms.login');
+    Route::post('login', [LoginController::class, 'login'])->name('axora-cms.login.post');
 
     // Password Reset Routes
-    Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('holart-cms.password.request');
-    Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('holart-cms.password.email');
+    Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('axora-cms.password.request');
+    Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('axora-cms.password.email');
 });
 
 // Authenticated admin routes
 Route::middleware(['admin.auth'])->group(function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('holart-cms.dashboard');
-    Route::post('logout', [LoginController::class, 'logout'])->name('holart-cms.logout');
+    Route::get('/', [DashboardController::class, 'index'])->name('axora-cms.dashboard');
+    Route::post('logout', [LoginController::class, 'logout'])->name('axora-cms.logout');
 
 
     // API Routes
@@ -79,8 +79,8 @@ Route::middleware(['admin.auth'])->group(function () {
         Route::post('environment/test-smtp', [EnvironmentController::class, 'testSmtp']);
 
         // Activity logs (admin actions tracking) - only if logging module is installed
-        if (class_exists('HolartWeb\\HolartCMS\\Models\\Logging\\TAdminAction')) {
-            $logsController = 'HolartWeb\\HolartCMS\\Http\\Controllers\\Logging\\LogsController';
+        if (class_exists('HolartWeb\\AxoraCMS\\Models\\Logging\\TAdminAction')) {
+            $logsController = 'HolartWeb\\AxoraCMS\\Http\\Controllers\\Logging\\LogsController';
             Route::get('logs/filters', [$logsController, 'filters']);
             Route::get('logs/statistics', [$logsController, 'statistics']);
             Route::get('logs/{id}', [$logsController, 'show']);
@@ -100,10 +100,10 @@ Route::middleware(['admin.auth'])->group(function () {
         Route::post('modules/{moduleId}/uninstall', [ModulesController::class, 'uninstall']);
 
         // Catalog routes - only if shop module is installed
-        if (class_exists('HolartWeb\\HolartCMS\\Models\\Shop\\TCatalog')) {
-            $catalogController = 'HolartWeb\\HolartCMS\\Http\\Controllers\\Shop\\CatalogController';
-            $productController = 'HolartWeb\\HolartCMS\\Http\\Controllers\\Shop\\ProductController';
-            $characteristicDefinitionsController = 'HolartWeb\\HolartCMS\\Http\\Controllers\\Shop\\CharacteristicDefinitionsController';
+        if (class_exists('HolartWeb\\AxoraCMS\\Models\\Shop\\TCatalog')) {
+            $catalogController = 'HolartWeb\\AxoraCMS\\Http\\Controllers\\Shop\\CatalogController';
+            $productController = 'HolartWeb\\AxoraCMS\\Http\\Controllers\\Shop\\ProductController';
+            $characteristicDefinitionsController = 'HolartWeb\\AxoraCMS\\Http\\Controllers\\Shop\\CharacteristicDefinitionsController';
 
             // Characteristic Definitions routes
             Route::post('characteristic-definitions/generate-code', [$characteristicDefinitionsController, 'generateCode']);
@@ -148,10 +148,10 @@ Route::middleware(['admin.auth'])->group(function () {
         }
 
         // Callback routes - only if callback module is installed
-        if (class_exists('HolartWeb\\HolartCMS\\Models\\Callback\\TUsersEmails')) {
-            $usersEmailsController = 'HolartWeb\\HolartCMS\\Http\\Controllers\\Callback\\UsersEmailsController';
-            $commentsController = 'HolartWeb\\HolartCMS\\Http\\Controllers\\Callback\\CommentsController';
-            $userRequestsController = 'HolartWeb\\HolartCMS\\Http\\Controllers\\Callback\\UserRequestsController';
+        if (class_exists('HolartWeb\\AxoraCMS\\Models\\Callback\\TUsersEmails')) {
+            $usersEmailsController = 'HolartWeb\\AxoraCMS\\Http\\Controllers\\Callback\\UsersEmailsController';
+            $commentsController = 'HolartWeb\\AxoraCMS\\Http\\Controllers\\Callback\\CommentsController';
+            $userRequestsController = 'HolartWeb\\AxoraCMS\\Http\\Controllers\\Callback\\UserRequestsController';
 
             // Users Emails routes
             Route::get('users-emails', [$usersEmailsController, 'index']);
@@ -180,11 +180,11 @@ Route::middleware(['admin.auth'])->group(function () {
         }
 
         // Commerce routes - only if commerce module is installed
-        if (class_exists('HolartWeb\\HolartCMS\\Models\\Commerce\\TOrders')) {
-            $ordersController = 'HolartWeb\\HolartCMS\\Http\\Controllers\\Commerce\\OrdersController';
-            $promocodesController = 'HolartWeb\\HolartCMS\\Http\\Controllers\\Commerce\\PromocodesController';
-            $transactionsController = 'HolartWeb\\HolartCMS\\Http\\Controllers\\Commerce\\PaymentTransactionsController';
-            $ordersDataController = 'HolartWeb\\HolartCMS\\Http\\Controllers\\Commerce\\OrdersDataController';
+        if (class_exists('HolartWeb\\AxoraCMS\\Models\\Commerce\\TOrders')) {
+            $ordersController = 'HolartWeb\\AxoraCMS\\Http\\Controllers\\Commerce\\OrdersController';
+            $promocodesController = 'HolartWeb\\AxoraCMS\\Http\\Controllers\\Commerce\\PromocodesController';
+            $transactionsController = 'HolartWeb\\AxoraCMS\\Http\\Controllers\\Commerce\\PaymentTransactionsController';
+            $ordersDataController = 'HolartWeb\\AxoraCMS\\Http\\Controllers\\Commerce\\OrdersDataController';
 
             // Orders routes
             Route::get('orders', [$ordersController, 'index']);
@@ -218,10 +218,10 @@ Route::middleware(['admin.auth'])->group(function () {
         }
 
         // InfoBlocks routes - only if infoblocks module is installed
-        if (class_exists('HolartWeb\\HolartCMS\\Models\\InfoBlocks\\TInfoBlock')) {
-            $infoBlocksController = 'HolartWeb\\HolartCMS\\Http\\Controllers\\InfoBlocks\\InfoBlocksController';
-            $infoBlockFieldsController = 'HolartWeb\\HolartCMS\\Http\\Controllers\\InfoBlocks\\InfoBlockFieldsController';
-            $infoBlockElementsController = 'HolartWeb\\HolartCMS\\Http\\Controllers\\InfoBlocks\\InfoBlockElementsController';
+        if (class_exists('HolartWeb\\AxoraCMS\\Models\\InfoBlocks\\TInfoBlock')) {
+            $infoBlocksController = 'HolartWeb\\AxoraCMS\\Http\\Controllers\\InfoBlocks\\InfoBlocksController';
+            $infoBlockFieldsController = 'HolartWeb\\AxoraCMS\\Http\\Controllers\\InfoBlocks\\InfoBlockFieldsController';
+            $infoBlockElementsController = 'HolartWeb\\AxoraCMS\\Http\\Controllers\\InfoBlocks\\InfoBlockElementsController';
 
             // InfoBlocks routes
             Route::get('infoblocks/favorites', [$infoBlocksController, 'favorites']);
@@ -252,10 +252,10 @@ Route::middleware(['admin.auth'])->group(function () {
         // Menus routes - use app controllers if they exist
         $menusController = class_exists(\App\Http\Controllers\MenusController::class)
             ? \App\Http\Controllers\MenusController::class
-            : \HolartWeb\HolartCMS\Http\Controllers\Menus\MenusController::class;
+            : \HolartWeb\AxoraCMS\Http\Controllers\Menus\MenusController::class;
         $menuItemsController = class_exists(\App\Http\Controllers\MenuItemsController::class)
             ? \App\Http\Controllers\MenuItemsController::class
-            : \HolartWeb\HolartCMS\Http\Controllers\Menus\MenuItemsController::class;
+            : \HolartWeb\AxoraCMS\Http\Controllers\Menus\MenuItemsController::class;
 
         // Menus routes
         Route::get('menus', [$menusController, 'index']);
@@ -275,8 +275,8 @@ Route::middleware(['admin.auth'])->group(function () {
         Route::post('menu-items/{id}/toggle-active', [$menuItemsController, 'toggleActive']);
 
         // Filter routes (only if shop module is installed)
-        if (class_exists('HolartWeb\\HolartCMS\\Models\\Shop\\TFilter')) {
-            $filterController = 'HolartWeb\\HolartCMS\\Http\\Controllers\\Shop\\FilterController';
+        if (class_exists('HolartWeb\\AxoraCMS\\Models\\Shop\\TFilter')) {
+            $filterController = 'HolartWeb\\AxoraCMS\\Http\\Controllers\\Shop\\FilterController';
 
             // Specific routes MUST come before generic {id} routes
             Route::get('filters/for-catalog/{catalogId}', [$filterController, 'forCatalog']);
@@ -297,8 +297,8 @@ Route::middleware(['admin.auth'])->group(function () {
 
         // Pages & SEO Module Routes (only if SEO module is installed)
         if (Schema::hasTable('t_pages')) {
-            $pagesController = 'HolartWeb\\HolartCMS\\Http\\Controllers\\SEO\\PagesController';
-            $statsController = 'HolartWeb\\HolartCMS\\Http\\Controllers\\SEO\\PageStatsController';
+            $pagesController = 'HolartWeb\\AxoraCMS\\Http\\Controllers\\SEO\\PagesController';
+            $statsController = 'HolartWeb\\AxoraCMS\\Http\\Controllers\\SEO\\PageStatsController';
 
             // Pages CRUD
             Route::get('pages', [$pagesController, 'index']);
@@ -320,8 +320,8 @@ Route::middleware(['admin.auth'])->group(function () {
 
         // Integrations routes (only if integrations table exists)
         if (Schema::hasTable('t_integration_settings')) {
-            $telegramController = 'HolartWeb\\HolartCMS\\Http\\Controllers\\Integrations\\TelegramSettingsController';
-            $yookassaController = 'HolartWeb\\HolartCMS\\Http\\Controllers\\Integrations\\YookassaSettingsController';
+            $telegramController = 'HolartWeb\\AxoraCMS\\Http\\Controllers\\Integrations\\TelegramSettingsController';
+            $yookassaController = 'HolartWeb\\AxoraCMS\\Http\\Controllers\\Integrations\\YookassaSettingsController';
 
             // Telegram integration
             Route::get('integrations/telegram', [$telegramController, 'index']);
@@ -336,5 +336,5 @@ Route::middleware(['admin.auth'])->group(function () {
     // SPA route - catch all for Vue Router
     Route::get('/{any}', [DashboardController::class, 'index'])
         ->where('any', '.*')
-        ->name('holart-cms.spa');
+        ->name('axora-cms.spa');
 });

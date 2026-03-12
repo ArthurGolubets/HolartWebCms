@@ -1,6 +1,6 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Services;
+namespace HolartWeb\AxoraCMS\Services;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
@@ -272,8 +272,8 @@ class PageDataService
     private function getPageModel(): ?string
     {
         // Use package model
-        if (class_exists('HolartWeb\HolartCMS\Models\SEO\TPage')) {
-            return 'HolartWeb\HolartCMS\Models\SEO\TPage';
+        if (class_exists('HolartWeb\AxoraCMS\Models\SEO\TPage')) {
+            return 'HolartWeb\AxoraCMS\Models\SEO\TPage';
         }
 
         return null;
@@ -287,8 +287,8 @@ class PageDataService
     private function getCatalogModel(): ?string
     {
         // Use package model
-        if (class_exists('HolartWeb\HolartCMS\Models\Shop\TCatalog')) {
-            return 'HolartWeb\HolartCMS\Models\Shop\TCatalog';
+        if (class_exists('HolartWeb\AxoraCMS\Models\Shop\TCatalog')) {
+            return 'HolartWeb\AxoraCMS\Models\Shop\TCatalog';
         }
 
         return null;
@@ -302,8 +302,8 @@ class PageDataService
     private function getProductModel(): ?string
     {
         // Use package model
-        if (class_exists('HolartWeb\HolartCMS\Models\Shop\TProduct')) {
-            return 'HolartWeb\HolartCMS\Models\Shop\TProduct';
+        if (class_exists('HolartWeb\AxoraCMS\Models\Shop\TProduct')) {
+            return 'HolartWeb\AxoraCMS\Models\Shop\TProduct';
         }
 
         return null;

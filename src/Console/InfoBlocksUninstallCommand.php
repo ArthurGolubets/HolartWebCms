@@ -1,9 +1,9 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
-use HolartWeb\HolartCMS\Models\TModule;
+use HolartWeb\AxoraCMS\Models\TModule;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
@@ -13,13 +13,13 @@ class InfoBlocksUninstallCommand extends Command
 {
     const MODULE_NAME = 'infoblocks';
 
-    protected $signature = 'holartcms:infoblocks-uninstall {--preserve-db : Preserve database tables and data}';
-    protected $description = 'Uninstall HolartCMS InfoBlocks Module';
+    protected $signature = 'axoracms:infoblocks-uninstall {--preserve-db : Preserve database tables and data}';
+    protected $description = 'Uninstall AxoraCMS InfoBlocks Module';
 
     public function handle(): int
     {
         $this->info('╔════════════════════════════════════════╗');
-        $this->info('║HolartCMS InfoBlocks Module Uninstaller║');
+        $this->info('║AxoraCMS InfoBlocks Module Uninstaller║');
         $this->info('╚════════════════════════════════════════╝');
         $this->newLine();
 

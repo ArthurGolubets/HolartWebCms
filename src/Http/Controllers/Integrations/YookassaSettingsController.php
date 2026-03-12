@@ -1,10 +1,10 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers\Integrations;
+namespace HolartWeb\AxoraCMS\Http\Controllers\Integrations;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use HolartWeb\HolartCMS\Models\Integrations\TIntegrationSettings;
+use HolartWeb\AxoraCMS\Models\Integrations\TIntegrationSettings;
 
 class YookassaSettingsController extends Controller
 {

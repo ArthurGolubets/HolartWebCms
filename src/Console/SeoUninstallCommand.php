@@ -1,24 +1,24 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
-use HolartWeb\HolartCMS\Models\TModule;
+use HolartWeb\AxoraCMS\Models\TModule;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
-use HolartWeb\HolartCMS\Models\TAdminAction;
+use HolartWeb\AxoraCMS\Models\TAdminAction;
 
 class SeoUninstallCommand extends Command
 {
     const MODULE_NAME = 'seo';
 
-    protected $signature = 'holartcms:seo-uninstall {--preserve-db : Preserve database tables}';
-    protected $description = 'Uninstall HolartCMS SEO Module';
+    protected $signature = 'axoracms:seo-uninstall {--preserve-db : Preserve database tables}';
+    protected $description = 'Uninstall AxoraCMS SEO Module';
 
     public function handle(): int
     {
         $this->info('╔═════════════════════════════════════════════╗');
-        $this->info('║ HolartCMS Pages & SEO Module Uninstaller   ║');
+        $this->info('║ AxoraCMS Pages & SEO Module Uninstaller   ║');
         $this->info('╚═════════════════════════════════════════════╝');
         $this->newLine();
 

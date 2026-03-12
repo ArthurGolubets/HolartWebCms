@@ -1,11 +1,11 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers\Logging;
+namespace HolartWeb\AxoraCMS\Http\Controllers\Logging;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
-use HolartWeb\HolartCMS\Models\TAdminAction;
+use HolartWeb\AxoraCMS\Models\TAdminAction;
 
 class LogsController extends Controller
 {

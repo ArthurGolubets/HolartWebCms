@@ -1,9 +1,9 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers\Pages;
+namespace HolartWeb\AxoraCMS\Http\Controllers\Pages;
 
 use Illuminate\Routing\Controller;
-use HolartWeb\HolartCMS\Models\Pages\TPage;
+use HolartWeb\AxoraCMS\Models\Pages\TPage;
 
 class PageViewerController extends Controller
 {
@@ -27,10 +27,10 @@ class PageViewerController extends Controller
                 ->orderBy('sort')
                 ->get();
 
-            return view('holart-cms::pages.preview', compact('page', 'blocks'));
+            return view('axora-cms::pages.preview', compact('page', 'blocks'));
         }
 
         // Static pages
-        return view('holart-cms::pages.preview-static', compact('page'));
+        return view('axora-cms::pages.preview-static', compact('page'));
     }
 }

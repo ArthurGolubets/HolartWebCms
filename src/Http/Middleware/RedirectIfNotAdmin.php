@@ -1,6 +1,6 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Middleware;
+namespace HolartWeb\AxoraCMS\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
@@ -14,7 +14,7 @@ class RedirectIfNotAdmin
     public function handle(Request $request, Closure $next)
     {
         if (!Auth::guard('admin')->check()) {
-            return redirect()->route('holart-cms.login');
+            return redirect()->route('axora-cms.login');
         }
 
         return $next($request);

@@ -1,11 +1,11 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers\Callback;
+namespace HolartWeb\AxoraCMS\Http\Controllers\Callback;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Validator;
-use HolartWeb\HolartCMS\Models\Callback\TComments;
+use HolartWeb\AxoraCMS\Models\Callback\TComments;
 
 class CommentsController extends Controller
 {
@@ -41,7 +41,7 @@ class CommentsController extends Controller
         }
 
         // Load product relationship if exists
-        if (class_exists('HolartWeb\HolartCMS\Models\Shop\TProduct')) {
+        if (class_exists('HolartWeb\AxoraCMS\Models\Shop\TProduct')) {
             $query->with('product:id,name');
         }
 

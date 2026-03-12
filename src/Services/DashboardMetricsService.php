@@ -1,9 +1,9 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Services;
+namespace HolartWeb\AxoraCMS\Services;
 
-use HolartWeb\HolartCMS\Models\TAdministrator;
-use HolartWeb\HolartCMS\Models\TAdminAction;
+use HolartWeb\AxoraCMS\Models\TAdministrator;
+use HolartWeb\AxoraCMS\Models\TAdminAction;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -259,8 +259,8 @@ class DashboardMetricsService
     private function getPageModel(): ?string
     {
         // Use package model
-        if (class_exists('HolartWeb\HolartCMS\Models\SEO\TPage')) {
-            return 'HolartWeb\HolartCMS\Models\SEO\TPage';
+        if (class_exists('HolartWeb\AxoraCMS\Models\SEO\TPage')) {
+            return 'HolartWeb\AxoraCMS\Models\SEO\TPage';
         }
 
         return null;

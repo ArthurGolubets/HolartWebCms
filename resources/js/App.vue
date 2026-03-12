@@ -447,7 +447,7 @@ const isDark = ref(false);
 const isCollapsed = ref(false);
 const isMobileMenuOpen = ref(false);
 const showUserMenu = ref(false);
-const panelName = ref('HolartCMS');
+const panelName = ref('AxoraCMS');
 const themeColor = globalThemeColor; // Use global theme color
 const menuGroups = ref({
   content: false,
@@ -496,7 +496,7 @@ const canAccessSettings = computed(() => {
 
 const toggleSidebar = () => {
   isCollapsed.value = !isCollapsed.value;
-  localStorage.setItem('holart-cms-sidebar', isCollapsed.value ? 'collapsed' : 'expanded');
+  localStorage.setItem('axora-cms-sidebar', isCollapsed.value ? 'collapsed' : 'expanded');
 };
 
 const toggleMenuGroup = (group) => {
@@ -505,7 +505,7 @@ const toggleMenuGroup = (group) => {
 
 const toggleTheme = () => {
   isDark.value = !isDark.value;
-  localStorage.setItem('holart-cms-theme', isDark.value ? 'dark' : 'light');
+  localStorage.setItem('axora-cms-theme', isDark.value ? 'dark' : 'light');
 
   if (isDark.value) {
     document.documentElement.classList.add('dark');
@@ -574,7 +574,7 @@ const loadSettings = async () => {
 
     if (response.ok) {
       const settings = await response.json();
-      panelName.value = settings.panel_name || 'HolartCMS';
+      panelName.value = settings.panel_name || 'AxoraCMS';
 
       if (settings.theme_color) {
         const colorMap = {
@@ -657,14 +657,14 @@ const loadFavoriteInfoBlocks = async () => {
 };
 
 onMounted(() => {
-  const savedTheme = localStorage.getItem('holart-cms-theme');
+  const savedTheme = localStorage.getItem('axora-cms-theme');
   isDark.value = savedTheme === 'dark';
 
   if (isDark.value) {
     document.documentElement.classList.add('dark');
   }
 
-  const savedSidebar = localStorage.getItem('holart-cms-sidebar');
+  const savedSidebar = localStorage.getItem('axora-cms-sidebar');
   isCollapsed.value = savedSidebar === 'collapsed';
 
   loadCurrentUser();

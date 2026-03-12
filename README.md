@@ -1,4 +1,4 @@
-# HolartCMS - Admin Panel for Laravel 12
+# AxoraCMS - Admin Panel for Laravel 12
 
 Полнофункциональная админ-панель для Laravel 12 с Vue.js, ролевой системой и современным дизайном на Tailwind CSS.
 
@@ -29,13 +29,13 @@
 
 ```bash
 # 1. Установить пакет через Composer
-composer require holartweb/holart-cms
+composer require holartweb/axora-cms
 
 # 2. Запустить команду установки (выполнит все шаги автоматически)
-php artisan holartcms:install
+php artisan axoracms:install
 ```
 
-Команда `holartcms:install` выполнит:
+Команда `axoracms:install` выполнит:
 1. ✅ Публикацию конфигурации
 2. ✅ Запуск миграций
 3. ✅ Установку npm зависимостей (если нужно)
@@ -52,7 +52,7 @@ php artisan holartcms:install
     "repositories": [
         {
             "type": "path",
-            "url": "./packages/holartweb/holart-cms"
+            "url": "./packages/holartweb/axora-cms"
         }
     ]
 }
@@ -61,34 +61,34 @@ php artisan holartcms:install
 Затем:
 
 ```bash
-composer require holartweb/holart-cms
-php artisan holartcms:install
+composer require holartweb/axora-cms
+php artisan axoracms:install
 ```
 
 ### Ручная установка (если нужно)
 
 ```bash
 # 1. Публикация конфигурации
-php artisan vendor:publish --tag=holart-cms-config
+php artisan vendor:publish --tag=axora-cms-config
 
 # 2. Запуск миграций
 php artisan migrate
 
 # 3. Сборка фронтенда
-cd packages/holartweb/holart-cms
+cd packages/holartweb/axora-cms
 npm install
 npm run build
 cd ../../..
 
 # 4. Публикация ассетов
-php artisan vendor:publish --tag=holart-cms-assets
+php artisan vendor:publish --tag=axora-cms-assets
 
 # 5. Создание администратора
 php artisan tinker
 ```
 
 ```php
-\HolartWeb\HolartCMS\Models\TAdministrator::create([
+\HolartWeb\AxoraCMS\Models\TAdministrator::create([
     'name' => 'Супер Администратор',
     'email' => 'admin@example.com',
     'password' => bcrypt('password'),
@@ -101,11 +101,11 @@ php artisan tinker
 
 ### Основные настройки
 
-В файле `config/holart-cms.php` или через `.env`:
+В файле `config/axora-cms.php` или через `.env`:
 
 ```php
 // Название панели (отображается в заголовках)
-'name' => env('HOLART_CMS_NAME', 'HolartCMS'),
+'name' => env('HOLART_CMS_NAME', 'AxoraCMS'),
 
 // Префикс роутов
 'route_prefix' => env('HOLART_CMS_PREFIX', 'admin'),
@@ -157,7 +157,7 @@ if ($admin->hasPermission('manage_orders')) {
 }
 
 // Проверка возможности назначить роль
-use HolartWeb\HolartCMS\Enums\AdminRole;
+use HolartWeb\AxoraCMS\Enums\AdminRole;
 
 if ($admin->canAssignRole(AdminRole::ADMINISTRATOR)) {
     // Может назначить роль администратора
@@ -167,8 +167,8 @@ if ($admin->canAssignRole(AdminRole::ADMINISTRATOR)) {
 В роутах с middleware:
 
 ```php
-use HolartWeb\HolartCMS\Http\Middleware\CheckAdminRole;
-use HolartWeb\HolartCMS\Http\Middleware\CheckAdminPermission;
+use HolartWeb\AxoraCMS\Http\Middleware\CheckAdminRole;
+use HolartWeb\AxoraCMS\Http\Middleware\CheckAdminPermission;
 
 // Доступ только для супер админа
 Route::middleware(['auth:admin', CheckAdminRole::class.':super_admin'])->group(function () {
@@ -206,7 +206,7 @@ Route::middleware(['auth:admin', CheckAdminPermission::class.':manage_orders'])-
 Разработка с hot-reload:
 
 ```bash
-cd packages/holartweb/holart-cms
+cd packages/holartweb/axora-cms
 npm run dev
 ```
 
@@ -219,9 +219,9 @@ npm run build
 ### Структура проекта
 
 ```
-packages/holartweb/holart-cms/
+packages/holartweb/axora-cms/
 ├── config/
-│   └── holart-cms.php (конфигурация с названием панели)
+│   └── axora-cms.php (конфигурация с названием панели)
 ├── database/
 │   └── migrations/
 │       └── 2024_01_01_000001_create_t_administrators_table.php
@@ -254,7 +254,7 @@ packages/holartweb/holart-cms/
 │   │       └── CheckAdminPermission.php
 │   ├── Models/
 │   │   └── TAdministrator.php
-│   └── HolartCMSServiceProvider.php
+│   └── AxoraCMSServiceProvider.php
 ├── tailwind.config.js
 ├── postcss.config.js
 ├── composer.json
@@ -269,7 +269,7 @@ packages/holartweb/holart-cms/
 
 ```php
 // routes/web.php
-use HolartWeb\HolartCMS\Enums\AdminRole;
+use HolartWeb\AxoraCMS\Enums\AdminRole;
 
 Route::middleware(['auth:admin'])->group(function () {
     // Доступно для всех авторизованных админов
@@ -319,8 +319,8 @@ const toggleTheme = () => {
 ## 🔄 Обновление
 
 ```bash
-composer update holartweb/holart-cms
-php artisan holartcms:install --force
+composer update holartweb/axora-cms
+php artisan axoracms:install --force
 ```
 
 ## 🐛 Troubleshooting
@@ -330,10 +330,10 @@ php artisan holartcms:install --force
 Если автоматическая сборка не сработала:
 
 ```bash
-cd packages/holartweb/holart-cms
+cd packages/holartweb/axora-cms
 npm install
 npm run build
-php artisan vendor:publish --tag=holart-cms-assets --force
+php artisan vendor:publish --tag=axora-cms-assets --force
 ```
 
 ### Не работает темная тема
@@ -358,4 +358,4 @@ Email: info@holartweb.com
 
 ---
 
-💡 **Совет:** Команда `php artisan holartcms:install` автоматически выполнит все необходимые шаги для установки!
+💡 **Совет:** Команда `php artisan axoracms:install` автоматически выполнит все необходимые шаги для установки!

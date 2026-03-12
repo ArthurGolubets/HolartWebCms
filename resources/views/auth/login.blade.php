@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вход - {{ config('holart-cms.name', 'HolartCMS') }}</title>
+    <title>Вход - {{ config('axora-cms.name', 'AxoraCMS') }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -64,7 +64,7 @@
                 <!-- Header -->
                 <div class="text-center mb-8">
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                        {{ config('holart-cms.name', 'HolartCMS') }}
+                        {{ config('axora-cms.name', 'AxoraCMS') }}
                     </h1>
                     <p class="text-gray-600 dark:text-gray-400">Панель администратора</p>
                 </div>
@@ -73,7 +73,7 @@
                 <div id="error-alert" class="hidden mb-6 p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-200 text-sm"></div>
 
                 <!-- Login Form -->
-                <form id="login-form" method="POST" action="{{ route('holart-cms.login.post') }}" class="space-y-5">
+                <form id="login-form" method="POST" action="{{ route('axora-cms.login.post') }}" class="space-y-5">
                     @csrf
 
                     <!-- Email -->
@@ -108,7 +108,7 @@
                             <input type="checkbox" name="remember" class="w-4 h-4 rounded border-gray-300 dark:border-gray-600">
                             <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">Запомнить меня</span>
                         </label>
-                        <a href="{{ route('holart-cms.password.request') }}" class="text-sm font-medium hover:underline transition" id="forgot-link">
+                        <a href="{{ route('axora-cms.password.request') }}" class="text-sm font-medium hover:underline transition" id="forgot-link">
                             Забыли пароль?
                         </a>
                     </div>
@@ -130,7 +130,7 @@
 
     <script>
         // Theme color from config
-        const themeColor = '{{ config("holart-cms.theme_color", "red") }}';
+        const themeColor = '{{ config("axora-cms.theme_color", "red") }}';
         const colorMap = {
             red: '#ef4444',
             blue: '#3b82f6',
@@ -154,7 +154,7 @@
         const moonIcon = document.getElementById('moon-icon');
         const body = document.getElementById('body');
 
-        const savedTheme = localStorage.getItem('holart-cms-theme') || 'light';
+        const savedTheme = localStorage.getItem('axora-cms-theme') || 'light';
         if (savedTheme === 'dark') {
             document.documentElement.classList.add('dark');
             body.classList.add('dark:bg-gray-900');
@@ -171,7 +171,7 @@
             const isDark = document.documentElement.classList.toggle('dark');
             sunIcon.classList.toggle('hidden');
             moonIcon.classList.toggle('hidden');
-            localStorage.setItem('holart-cms-theme', isDark ? 'dark' : 'light');
+            localStorage.setItem('axora-cms-theme', isDark ? 'dark' : 'light');
             body.style.backgroundColor = isDark ? '#111827' : '#f9fafb';
         });
 

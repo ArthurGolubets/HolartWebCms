@@ -1,7 +1,7 @@
 {
-    "name": "holartweb/holart-cms",
+    "name": "holartweb/axora-cms",
     "description": "Admin panel for Laravel 12 with Vue.js",
-    "version": "1.0.4.9",
+    "version": "1.0.5",
     "type": "library",
     "license": "MIT",
     "keywords": ["laravel", "admin", "cms", "vue"],
@@ -20,18 +20,18 @@
     },
     "autoload": {
         "psr-4": {
-            "HolartWeb\\HolartCMS\\": "src/"
+            "HolartWeb\\AxoraCMS\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "HolartWeb\\HolartCMS\\Tests\\": "tests/"
+            "HolartWeb\\AxoraCMS\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "HolartWeb\\HolartCMS\\HolartCMSServiceProvider"
+                "HolartWeb\\AxoraCMS\\AxoraCMSServiceProvider"
             ]
         }
     },

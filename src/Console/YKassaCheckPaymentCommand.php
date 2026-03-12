@@ -1,16 +1,16 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
-use HolartWeb\HolartCMS\Models\Commerce\TPaymentTransaction;
-use HolartWeb\HolartCMS\Models\Commerce\TOrders;
-use HolartWeb\HolartCMS\Models\Integrations\TIntegrationSettings;
+use HolartWeb\AxoraCMS\Models\Commerce\TPaymentTransaction;
+use HolartWeb\AxoraCMS\Models\Commerce\TOrders;
+use HolartWeb\AxoraCMS\Models\Integrations\TIntegrationSettings;
 use Illuminate\Support\Facades\Log;
 
 class YKassaCheckPaymentCommand extends Command
 {
-    protected $signature = 'holartcms:ykassa-check-payment';
+    protected $signature = 'axoracms:ykassa-check-payment';
     protected $description = 'Check YooKassa payment statuses';
 
     public function handle(): int

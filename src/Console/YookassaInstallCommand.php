@@ -1,9 +1,9 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
-use HolartWeb\HolartCMS\Models\TModule;
+use HolartWeb\AxoraCMS\Models\TModule;
 use Illuminate\Support\Facades\Artisan;
 
 class YookassaInstallCommand extends Command
@@ -11,7 +11,7 @@ class YookassaInstallCommand extends Command
     const VERSION = '1.0.0';
     const MODULE_NAME = 'yookassa';
 
-    protected $signature = 'holartcms:yookassa-install';
+    protected $signature = 'axoracms:yookassa-install';
     protected $description = 'Install Yookassa Integration';
 
     public function handle(): int
@@ -25,7 +25,7 @@ class YookassaInstallCommand extends Command
         $this->info('Checking dependencies...');
         if (!TModule::isInstalled('commerce')) {
             $this->error('❌ Commerce module is required for Yookassa integration!');
-            $this->error('Please install Commerce module first: php artisan holartcms:commerce-install');
+            $this->error('Please install Commerce module first: php artisan axoracms:commerce-install');
             return self::FAILURE;
         }
         $this->info('✓ Commerce module is installed');
@@ -75,9 +75,9 @@ class YookassaInstallCommand extends Command
         // Step 2: Run Migrations
         $this->info('Step 2: Running database migrations...');
 
-        $packagePath = base_path('vendor/holartweb/holart-cms');
+        $packagePath = base_path('vendor/holartweb/axora-cms');
         if (!file_exists($packagePath)) {
-            $packagePath = base_path('packages/holartweb/holart-cms');
+            $packagePath = base_path('packages/holartweb/axora-cms');
         }
 
         try {

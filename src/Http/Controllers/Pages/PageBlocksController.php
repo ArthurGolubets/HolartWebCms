@@ -1,12 +1,12 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers\Pages;
+namespace HolartWeb\AxoraCMS\Http\Controllers\Pages;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use HolartWeb\HolartCMS\Models\Pages\TPage;
-use HolartWeb\HolartCMS\Models\Pages\TPageBlock;
-use HolartWeb\HolartCMS\Models\TAdminAction;
+use HolartWeb\AxoraCMS\Models\Pages\TPage;
+use HolartWeb\AxoraCMS\Models\Pages\TPageBlock;
+use HolartWeb\AxoraCMS\Models\TAdminAction;
 
 class PageBlocksController extends Controller
 {

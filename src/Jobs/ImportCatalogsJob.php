@@ -1,6 +1,6 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Jobs;
+namespace HolartWeb\AxoraCMS\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -10,7 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use HolartWeb\HolartCMS\Models\TAdminAction;
+use HolartWeb\AxoraCMS\Models\TAdminAction;
 
 class ImportCatalogsJob implements ShouldQueue
 {
@@ -36,12 +36,12 @@ class ImportCatalogsJob implements ShouldQueue
      */
     public function handle()
     {
-        if (!class_exists('HolartWeb\HolartCMS\Models\Shop\TCatalog')) {
+        if (!class_exists('HolartWeb\AxoraCMS\Models\Shop\TCatalog')) {
             $this->updateProgress(0, 0, count($this->items), ['Catalog module not available'], 'error');
             return;
         }
 
-        $catalogClass = 'HolartWeb\HolartCMS\Models\Shop\TCatalog';
+        $catalogClass = 'HolartWeb\AxoraCMS\Models\Shop\TCatalog';
         $created = 0;
         $updated = 0;
         $errors = [];

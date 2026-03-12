@@ -1,12 +1,12 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers\InfoBlocks;
+namespace HolartWeb\AxoraCMS\Http\Controllers\InfoBlocks;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
-use HolartWeb\HolartCMS\Models\InfoBlocks\TInfoBlock;
-use HolartWeb\HolartCMS\Models\TAdminAction;
+use HolartWeb\AxoraCMS\Models\InfoBlocks\TInfoBlock;
+use HolartWeb\AxoraCMS\Models\TAdminAction;
 
 class InfoBlocksController extends Controller
 {

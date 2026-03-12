@@ -1,6 +1,6 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
@@ -9,20 +9,20 @@ use Illuminate\Support\Facades\Schema;
 
 class PagesInstallCommand extends Command
 {
-    protected $signature = 'holartcms:pages-install';
-    protected $description = 'Install HolartCMS Pages Module';
+    protected $signature = 'axoracms:pages-install';
+    protected $description = 'Install AxoraCMS Pages Module';
 
     public function handle(): int
     {
         $this->info('╔════════════════════════════════════╗');
-        $this->info('║ HolartCMS Pages Module Installer  ║');
+        $this->info('║ AxoraCMS Pages Module Installer  ║');
         $this->info('╚════════════════════════════════════╝');
         $this->newLine();
 
         // Determine package path
-        $packagePath = base_path('vendor/holartweb/holart-cms');
+        $packagePath = base_path('vendor/holartweb/axora-cms');
         if (!file_exists($packagePath)) {
-            $packagePath = base_path('packages/holartweb/holart-cms');
+            $packagePath = base_path('packages/holartweb/axora-cms');
         }
 
         // Step 1: Run Migrations
@@ -85,7 +85,7 @@ class PagesInstallCommand extends Command
         // Step 4: Publish Assets
         $this->info('Step 4: Publishing assets...');
         Artisan::call('vendor:publish', [
-            '--tag' => 'holart-cms-assets',
+            '--tag' => 'axora-cms-assets',
             '--force' => true,
         ]);
         $this->info('✓ Assets published successfully');
@@ -199,7 +199,7 @@ class PagesInstallCommand extends Command
         }
 
         $content = file_get_contents($bootstrapPath);
-        $sharePageDataMiddleware = '\HolartWeb\HolartCMS\Http\Middleware\SharePageData::class';
+        $sharePageDataMiddleware = '\HolartWeb\AxoraCMS\Http\Middleware\SharePageData::class';
 
         // Check if already registered
         if (str_contains($content, 'SharePageData')) {

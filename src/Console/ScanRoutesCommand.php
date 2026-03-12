@@ -1,14 +1,14 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Route;
-use HolartWeb\HolartCMS\Models\SEO\TPage;
+use HolartWeb\AxoraCMS\Models\SEO\TPage;
 
 class ScanRoutesCommand extends Command
 {
-    protected $signature = 'holartcms:scan-routes';
+    protected $signature = 'axoracms:scan-routes';
     protected $description = 'Scan application routes and create/update static pages';
 
     private $created = 0;
@@ -21,7 +21,7 @@ class ScanRoutesCommand extends Command
     public function handle(): int
     {
         $this->info('╔═════════════════════════════════════════╗');
-        $this->info('║   HolartCMS Route Scanner              ║');
+        $this->info('║   AxoraCMS Route Scanner              ║');
         $this->info('╚═════════════════════════════════════════╝');
         $this->newLine();
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Models\Commerce;
+namespace HolartWeb\AxoraCMS\Models\Commerce;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -37,8 +37,8 @@ class TOrderItems extends Model
      */
     public function product(): ?BelongsTo
     {
-        if (class_exists('HolartWeb\HolartCMS\Models\Shop\TProduct')) {
-            return $this->belongsTo(\HolartWeb\HolartCMS\Models\Shop\TProduct::class, 'product_id');
+        if (class_exists('HolartWeb\AxoraCMS\Models\Shop\TProduct')) {
+            return $this->belongsTo(\HolartWeb\AxoraCMS\Models\Shop\TProduct::class, 'product_id');
         }
         return null;
     }

@@ -1,9 +1,9 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
-use HolartWeb\HolartCMS\Models\TModule;
+use HolartWeb\AxoraCMS\Models\TModule;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
@@ -13,13 +13,13 @@ class CommerceUninstallCommand extends Command
 {
     const MODULE_NAME = 'commerce';
 
-    protected $signature = 'holartcms:commerce-uninstall {--preserve-db : Preserve database tables}';
-    protected $description = 'Uninstall HolartCMS Commerce Module';
+    protected $signature = 'axoracms:commerce-uninstall {--preserve-db : Preserve database tables}';
+    protected $description = 'Uninstall AxoraCMS Commerce Module';
 
     public function handle(): int
     {
         $this->info('╔════════════════════════════════════════╗');
-        $this->info('║ HolartCMS Commerce Module Uninstaller ║');
+        $this->info('║ AxoraCMS Commerce Module Uninstaller ║');
         $this->info('╚════════════════════════════════════════╝');
         $this->newLine();
 
@@ -131,7 +131,7 @@ class CommerceUninstallCommand extends Command
 
         if ($preserveDb) {
             $this->info('Note: Database tables were preserved.');
-            $this->info('To remove them, run: php artisan holartcms:commerce-uninstall');
+            $this->info('To remove them, run: php artisan axoracms:commerce-uninstall');
         }
 
         return self::SUCCESS;

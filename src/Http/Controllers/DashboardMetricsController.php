@@ -1,8 +1,8 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers;
+namespace HolartWeb\AxoraCMS\Http\Controllers;
 
-use HolartWeb\HolartCMS\Services\DashboardMetricsService;
+use HolartWeb\AxoraCMS\Services\DashboardMetricsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;

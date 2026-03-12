@@ -1,9 +1,9 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
-use HolartWeb\HolartCMS\Models\TModule;
+use HolartWeb\AxoraCMS\Models\TModule;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
@@ -13,13 +13,13 @@ class ShopUninstallCommand extends Command
 {
     const MODULE_NAME = 'shop';
 
-    protected $signature = 'holartcms:shop-uninstall {--preserve-db : Preserve database tables and data}';
-    protected $description = 'Uninstall HolartCMS Shop Module';
+    protected $signature = 'axoracms:shop-uninstall {--preserve-db : Preserve database tables and data}';
+    protected $description = 'Uninstall AxoraCMS Shop Module';
 
     public function handle(): int
     {
         $this->info('╔══════════════════════════════════════╗');
-        $this->info('║  HolartCMS Shop Module Uninstaller  ║');
+        $this->info('║  AxoraCMS Shop Module Uninstaller  ║');
         $this->info('╚══════════════════════════════════════╝');
         $this->newLine();
 

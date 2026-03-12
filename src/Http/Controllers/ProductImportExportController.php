@@ -1,8 +1,8 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers;
+namespace HolartWeb\AxoraCMS\Http\Controllers;
 
-use HolartWeb\HolartCMS\Models\TAdminAction;
+use HolartWeb\AxoraCMS\Models\TAdminAction;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -75,11 +75,11 @@ class ProductImportExportController extends Controller
      */
     public function export()
     {
-        if (!class_exists('HolartWeb\HolartCMS\Models\Shop\TProduct')) {
+        if (!class_exists('HolartWeb\AxoraCMS\Models\Shop\TProduct')) {
             return response()->json(['error' => 'Product module not available'], 404);
         }
 
-        $productClass = 'HolartWeb\HolartCMS\Models\Shop\TProduct';
+        $productClass = 'HolartWeb\AxoraCMS\Models\Shop\TProduct';
         $products = $productClass::with('catalog')->orderBy('id')->get();
 
         $spreadsheet = new Spreadsheet();
@@ -153,7 +153,7 @@ class ProductImportExportController extends Controller
             'file' => 'required|file|mimes:xlsx,xls,csv'
         ]);
 
-        if (!class_exists('HolartWeb\HolartCMS\Models\Shop\TProduct')) {
+        if (!class_exists('HolartWeb\AxoraCMS\Models\Shop\TProduct')) {
             return response()->json(['error' => 'Product module not available'], 404);
         }
 
@@ -167,7 +167,7 @@ class ProductImportExportController extends Controller
 
         $preview = [];
         $errors = [];
-        $productClass = 'HolartWeb\HolartCMS\Models\Shop\TProduct';
+        $productClass = 'HolartWeb\AxoraCMS\Models\Shop\TProduct';
 
         foreach ($data as $index => $row) {
             $rowNum = $index + 2; // +2 because of header and 0-indexing
@@ -252,7 +252,7 @@ class ProductImportExportController extends Controller
             'items' => 'required|array'
         ]);
 
-        if (!class_exists('HolartWeb\HolartCMS\Models\Shop\TProduct')) {
+        if (!class_exists('HolartWeb\AxoraCMS\Models\Shop\TProduct')) {
             return response()->json(['error' => 'Product module not available'], 404);
         }
 
@@ -271,7 +271,7 @@ class ProductImportExportController extends Controller
         ], 3600);
 
         // Dispatch job
-        \HolartWeb\HolartCMS\Jobs\ImportProductsJob::dispatch($items, $importId);
+        \HolartWeb\AxoraCMS\Jobs\ImportProductsJob::dispatch($items, $importId);
 
         return response()->json([
             'success' => true,

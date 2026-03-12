@@ -1,10 +1,10 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers\Shop;
+namespace HolartWeb\AxoraCMS\Http\Controllers\Shop;
 
-use HolartWeb\HolartCMS\Models\Shop\TProduct;
-use HolartWeb\HolartCMS\Models\Shop\TProductVariant;
-use HolartWeb\HolartCMS\Models\TAdminAction;
+use HolartWeb\AxoraCMS\Models\Shop\TProduct;
+use HolartWeb\AxoraCMS\Models\Shop\TProductVariant;
+use HolartWeb\AxoraCMS\Models\TAdminAction;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
@@ -65,8 +65,8 @@ class ProductController extends Controller
 
         // Get available filters for this product's catalog
         $availableFilters = [];
-        if (class_exists('HolartWeb\HolartCMS\Models\Shop\TFilter') && $product->catalog_id) {
-            $filterClass = 'HolartWeb\HolartCMS\Models\Shop\TFilter';
+        if (class_exists('HolartWeb\AxoraCMS\Models\Shop\TFilter') && $product->catalog_id) {
+            $filterClass = 'HolartWeb\AxoraCMS\Models\Shop\TFilter';
             $availableFilters = $filterClass::with('values')
                 ->forCatalog($product->catalog_id)
                 ->active()

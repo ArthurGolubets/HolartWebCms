@@ -1,5 +1,5 @@
 {
-  "name": "holart-cms",
+  "name": "axora-cms",
   "version": "1.0.0",
   "description": "Admin panel for Laravel with Vue.js",
   "scripts": {

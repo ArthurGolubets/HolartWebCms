@@ -1,6 +1,6 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Middleware;
+namespace HolartWeb\AxoraCMS\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;

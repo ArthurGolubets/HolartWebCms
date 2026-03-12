@@ -1,6 +1,6 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers\Auth;
+namespace HolartWeb\AxoraCMS\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -13,7 +13,7 @@ class ForgotPasswordController extends Controller
      */
     public function showLinkRequestForm()
     {
-        return view('holart-cms::auth.forgot-password');
+        return view('axora-cms::auth.forgot-password');
     }
 
     /**

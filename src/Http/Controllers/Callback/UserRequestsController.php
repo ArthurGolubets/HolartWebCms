@@ -1,11 +1,11 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers\Callback;
+namespace HolartWeb\AxoraCMS\Http\Controllers\Callback;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Validator;
-use HolartWeb\HolartCMS\Models\Callback\TUserRequests;
+use HolartWeb\AxoraCMS\Models\Callback\TUserRequests;
 
 class UserRequestsController extends Controller
 {

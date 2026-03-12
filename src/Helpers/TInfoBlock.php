@@ -1,9 +1,9 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Helpers;
+namespace HolartWeb\AxoraCMS\Helpers;
 
-use HolartWeb\HolartCMS\Models\InfoBlocks\TInfoBlock as TInfoBlockModel;
-use HolartWeb\HolartCMS\Models\InfoBlocks\TInfoBlockElement;
+use HolartWeb\AxoraCMS\Models\InfoBlocks\TInfoBlock as TInfoBlockModel;
+use HolartWeb\AxoraCMS\Models\InfoBlocks\TInfoBlockElement;
 
 /**
  * Helper class for Bitrix-like syntax: TInfoBlock('banners')->getList()

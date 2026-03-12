@@ -1,41 +1,41 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
-use HolartWeb\HolartCMS\Models\TModule;
+use HolartWeb\AxoraCMS\Models\TModule;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
-use HolartWeb\HolartCMS\Models\TAdminAction;
+use HolartWeb\AxoraCMS\Models\TAdminAction;
 
 class SeoInstallCommand extends Command
 {
     const VERSION = '1.0.0';
     const MODULE_NAME = 'seo';
 
-    protected $signature = 'holartcms:seo-install';
-    protected $description = 'Install HolartCMS SEO Module';
+    protected $signature = 'axoracms:seo-install';
+    protected $description = 'Install AxoraCMS SEO Module';
 
     public function handle(): int
     {
         $this->info('╔═══════════════════════════════════════════╗');
-        $this->info('║ HolartCMS Pages & SEO Module Installer   ║');
+        $this->info('║ AxoraCMS Pages & SEO Module Installer   ║');
         $this->info('╚═══════════════════════════════════════════╝');
         $this->newLine();
 
         // Determine package path
-        $packagePath = base_path('vendor/holartweb/holart-cms');
+        $packagePath = base_path('vendor/holartweb/axora-cms');
         if (!file_exists($packagePath)) {
-            $packagePath = base_path('packages/holartweb/holart-cms');
+            $packagePath = base_path('packages/holartweb/axora-cms');
         }
 
         // Step 1: Run migrations
         $this->info('Step 1: Running SEO migrations...');
 
         // Determine migration path
-        $migrationPath = 'vendor/holartweb/holart-cms/database/migrations/seo';
+        $migrationPath = 'vendor/holartweb/axora-cms/database/migrations/seo';
         if (!file_exists(base_path($migrationPath))) {
-            $migrationPath = 'packages/holartweb/holart-cms/database/migrations/seo';
+            $migrationPath = 'packages/holartweb/axora-cms/database/migrations/seo';
         }
 
         Artisan::call('migrate', [
@@ -82,8 +82,8 @@ class SeoInstallCommand extends Command
         }
 
         $content = file_get_contents($bootstrapPath);
-        $trackPageVisitsMiddleware = '\HolartWeb\HolartCMS\Http\Middleware\TrackPageVisits::class';
-        $sharePageDataMiddleware = '\HolartWeb\HolartCMS\Http\Middleware\SharePageData::class';
+        $trackPageVisitsMiddleware = '\HolartWeb\AxoraCMS\Http\Middleware\TrackPageVisits::class';
+        $sharePageDataMiddleware = '\HolartWeb\AxoraCMS\Http\Middleware\SharePageData::class';
 
         // Check if already registered
         if (str_contains($content, 'TrackPageVisits') && str_contains($content, 'SharePageData')) {

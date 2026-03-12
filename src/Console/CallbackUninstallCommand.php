@@ -1,9 +1,9 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
-use HolartWeb\HolartCMS\Models\TModule;
+use HolartWeb\AxoraCMS\Models\TModule;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
@@ -13,13 +13,13 @@ class CallbackUninstallCommand extends Command
 {
     const MODULE_NAME = 'callback';
 
-    protected $signature = 'holartcms:callback-user-uninstall {--preserve-db : Preserve database tables and data}';
-    protected $description = 'Uninstall HolartCMS Callback Module';
+    protected $signature = 'axoracms:callback-user-uninstall {--preserve-db : Preserve database tables and data}';
+    protected $description = 'Uninstall AxoraCMS Callback Module';
 
     public function handle(): int
     {
         $this->info('╔══════════════════════════════════════════╗');
-        $this->info('║  HolartCMS Callback Module Uninstaller  ║');
+        $this->info('║  AxoraCMS Callback Module Uninstaller  ║');
         $this->info('╚══════════════════════════════════════════╝');
         $this->newLine();
 

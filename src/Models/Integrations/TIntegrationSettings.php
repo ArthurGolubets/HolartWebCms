@@ -1,6 +1,6 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Models\Integrations;
+namespace HolartWeb\AxoraCMS\Models\Integrations;
 
 use Illuminate\Database\Eloquent\Model;
 

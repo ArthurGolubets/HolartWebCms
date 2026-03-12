@@ -1,6 +1,6 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Services;
+namespace HolartWeb\AxoraCMS\Services;
 
 use Illuminate\Support\Facades\Session;
 

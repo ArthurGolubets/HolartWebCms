@@ -1,9 +1,9 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
-use HolartWeb\HolartCMS\Models\TModule;
+use HolartWeb\AxoraCMS\Models\TModule;
 use Illuminate\Support\Facades\Artisan;
 
 class InfoBlocksInstallCommand extends Command
@@ -11,29 +11,29 @@ class InfoBlocksInstallCommand extends Command
     const VERSION = '1.0.0';
     const MODULE_NAME = 'infoblocks';
 
-    protected $signature = 'holartcms:infoblocks-install';
-    protected $description = 'Install HolartCMS InfoBlocks Module';
+    protected $signature = 'axoracms:infoblocks-install';
+    protected $description = 'Install AxoraCMS InfoBlocks Module';
 
     public function handle(): int
     {
         $this->info('╔════════════════════════════════════════╗');
-        $this->info('║ HolartCMS InfoBlocks Module Installer ║');
+        $this->info('║ AxoraCMS InfoBlocks Module Installer ║');
         $this->info('╚════════════════════════════════════════╝');
         $this->newLine();
 
         // Determine package path (works for both local development and composer installation)
-        $packagePath = base_path('vendor/holartweb/holart-cms');
+        $packagePath = base_path('vendor/holartweb/axora-cms');
         if (!file_exists($packagePath)) {
-            $packagePath = base_path('packages/holartweb/holart-cms');
+            $packagePath = base_path('packages/holartweb/axora-cms');
         }
 
         // Step 1: Run Migrations
         $this->info('Step 1: Running database migrations...');
 
         // Determine migration path
-        $migrationPath = 'vendor/holartweb/holart-cms/database/migrations/infoblocks';
+        $migrationPath = 'vendor/holartweb/axora-cms/database/migrations/infoblocks';
         if (!file_exists(base_path($migrationPath))) {
-            $migrationPath = 'packages/holartweb/holart-cms/database/migrations/infoblocks';
+            $migrationPath = 'packages/holartweb/axora-cms/database/migrations/infoblocks';
         }
 
         try {
@@ -77,7 +77,7 @@ class InfoBlocksInstallCommand extends Command
         // Step 3: Publish Assets
         $this->info('Step 3: Publishing assets...');
         Artisan::call('vendor:publish', [
-            '--tag' => 'holart-cms-assets',
+            '--tag' => 'axora-cms-assets',
             '--force' => true,
         ]);
         $this->info('✓ Assets published successfully');

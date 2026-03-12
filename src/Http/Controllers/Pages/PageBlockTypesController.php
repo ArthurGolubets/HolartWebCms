@@ -1,11 +1,11 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers\Pages;
+namespace HolartWeb\AxoraCMS\Http\Controllers\Pages;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use HolartWeb\HolartCMS\Models\Pages\TPageBlockType;
-use HolartWeb\HolartCMS\Models\TAdminAction;
+use HolartWeb\AxoraCMS\Models\Pages\TPageBlockType;
+use HolartWeb\AxoraCMS\Models\TAdminAction;
 
 class PageBlockTypesController extends Controller
 {
@@ -263,7 +263,7 @@ class PageBlockTypesController extends Controller
                         $template .= "        @php\n";
                         $template .= "            \${$fieldName}Ids = \$block->data['{$fieldName}'] ?? [];\n";
                         $template .= "            if (!is_array(\${$fieldName}Ids)) \${$fieldName}Ids = [\${$fieldName}Ids];\n";
-                        $template .= "            \${$fieldName}Items = \\HolartWeb\\HolartCMS\\Models\\Shop\\TCatalog::whereIn('id', \${$fieldName}Ids)->where('is_active', true)->get();\n";
+                        $template .= "            \${$fieldName}Items = \\HolartWeb\\AxoraCMS\\Models\\Shop\\TCatalog::whereIn('id', \${$fieldName}Ids)->where('is_active', true)->get();\n";
                         $template .= "        @endphp\n";
                         $template .= "        @if(\${$fieldName}Items->count() > 0)\n";
                         $template .= "            <div class=\"{$fieldName}\">\n";
@@ -280,7 +280,7 @@ class PageBlockTypesController extends Controller
                         $template .= "        @php\n";
                         $template .= "            \${$fieldName}Ids = \$block->data['{$fieldName}'] ?? [];\n";
                         $template .= "            if (!is_array(\${$fieldName}Ids)) \${$fieldName}Ids = [\${$fieldName}Ids];\n";
-                        $template .= "            \${$fieldName}Items = \\HolartWeb\\HolartCMS\\Models\\InfoBlocks\\TInfoBlockElement::whereIn('info_block_id', \${$fieldName}Ids)->where('is_active', true)->get();\n";
+                        $template .= "            \${$fieldName}Items = \\HolartWeb\\AxoraCMS\\Models\\InfoBlocks\\TInfoBlockElement::whereIn('info_block_id', \${$fieldName}Ids)->where('is_active', true)->get();\n";
                         $template .= "        @endphp\n";
                         $template .= "        @if(\${$fieldName}Items->count() > 0)\n";
                         $template .= "            <div class=\"{$fieldName}\">\n";
@@ -295,7 +295,7 @@ class PageBlockTypesController extends Controller
                         $template .= "        @php\n";
                         $template .= "            \${$fieldName}Ids = \$block->data['{$fieldName}'] ?? [];\n";
                         $template .= "            if (!is_array(\${$fieldName}Ids)) \${$fieldName}Ids = [\${$fieldName}Ids];\n";
-                        $template .= "            \${$fieldName}Items = \\HolartWeb\\HolartCMS\\Models\\Shop\\TProduct::whereIn('id', \${$fieldName}Ids)->where('is_active', true)->get();\n";
+                        $template .= "            \${$fieldName}Items = \\HolartWeb\\AxoraCMS\\Models\\Shop\\TProduct::whereIn('id', \${$fieldName}Ids)->where('is_active', true)->get();\n";
                         $template .= "        @endphp\n";
                         $template .= "        @if(\${$fieldName}Items->count() > 0)\n";
                         $template .= "            <div class=\"{$fieldName}\">\n";

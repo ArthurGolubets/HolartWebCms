@@ -1,10 +1,10 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers\Shop;
+namespace HolartWeb\AxoraCMS\Http\Controllers\Shop;
 
-use HolartWeb\HolartCMS\Models\Shop\TFilter;
-use HolartWeb\HolartCMS\Models\Shop\TFilterValue;
-use HolartWeb\HolartCMS\Models\TAdminAction;
+use HolartWeb\AxoraCMS\Models\Shop\TFilter;
+use HolartWeb\AxoraCMS\Models\Shop\TFilterValue;
+use HolartWeb\AxoraCMS\Models\TAdminAction;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;

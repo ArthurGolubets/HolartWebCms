@@ -1,13 +1,13 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Schema;
 
 class CleanOldPageVisitsCommand extends Command
 {
-    protected $signature = 'holartcms:clean-page-visits {--days=30 : Number of days to keep}';
+    protected $signature = 'axoracms:clean-page-visits {--days=30 : Number of days to keep}';
     protected $description = 'Clean page visits older than specified days';
 
     public function handle(): int
@@ -56,8 +56,8 @@ class CleanOldPageVisitsCommand extends Command
     private function getPageVisitModel(): ?string
     {
         // Use package model
-        if (class_exists('HolartWeb\HolartCMS\Models\SEO\TPageVisit')) {
-            return 'HolartWeb\HolartCMS\Models\SEO\TPageVisit';
+        if (class_exists('HolartWeb\AxoraCMS\Models\SEO\TPageVisit')) {
+            return 'HolartWeb\AxoraCMS\Models\SEO\TPageVisit';
         }
 
         return null;

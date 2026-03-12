@@ -1,8 +1,8 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Services;
+namespace HolartWeb\AxoraCMS\Services;
 
-use HolartWeb\HolartCMS\Models\Shop\TFilter;
+use HolartWeb\AxoraCMS\Models\Shop\TFilter;
 use Illuminate\Support\Collection;
 
 class FilterService
@@ -51,11 +51,11 @@ class FilterService
      */
     private function countProductsWithFilter($catalogId, $filterValueId, array $selectedFilters, $currentFilterId): int
     {
-        if (!class_exists('HolartWeb\HolartCMS\Models\Shop\TProduct')) {
+        if (!class_exists('HolartWeb\AxoraCMS\Models\Shop\TProduct')) {
             return 0;
         }
 
-        $query = \HolartWeb\HolartCMS\Models\Shop\TProduct::query()
+        $query = \HolartWeb\AxoraCMS\Models\Shop\TProduct::query()
             ->where('catalog_id', $catalogId);
 
         // Apply selected filters (excluding current filter to show available options)
@@ -84,12 +84,12 @@ class FilterService
      */
     public function filterProducts($catalogId, array $selectedFilters, $query = null)
     {
-        if (!class_exists('HolartWeb\HolartCMS\Models\Shop\TProduct')) {
+        if (!class_exists('HolartWeb\AxoraCMS\Models\Shop\TProduct')) {
             return collect([]);
         }
 
         if ($query === null) {
-            $query = \HolartWeb\HolartCMS\Models\Shop\TProduct::query()
+            $query = \HolartWeb\AxoraCMS\Models\Shop\TProduct::query()
                 ->where('catalog_id', $catalogId);
         }
 

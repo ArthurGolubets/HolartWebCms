@@ -21,7 +21,7 @@ return new class extends Migration
 
         // Insert default settings
         DB::table('t_panel_settings')->insert([
-            ['key' => 'panel_name', 'value' => 'HolartCMS', 'type' => 'string', 'created_at' => now(), 'updated_at' => now()],
+            ['key' => 'panel_name', 'value' => 'AxoraCMS', 'type' => 'string', 'created_at' => now(), 'updated_at' => now()],
             ['key' => 'theme_color', 'value' => 'red', 'type' => 'string', 'created_at' => now(), 'updated_at' => now()],
             ['key' => 'company_name', 'value' => '', 'type' => 'string', 'created_at' => now(), 'updated_at' => now()],
             ['key' => 'phones', 'value' => '[]', 'type' => 'array', 'created_at' => now(), 'updated_at' => now()],

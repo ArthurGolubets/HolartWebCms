@@ -1,8 +1,8 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Services\Integrations;
+namespace HolartWeb\AxoraCMS\Services\Integrations;
 
-use HolartWeb\HolartCMS\Models\Integrations\TIntegrationSettings;
+use HolartWeb\AxoraCMS\Models\Integrations\TIntegrationSettings;
 use Illuminate\Support\Facades\Http;
 
 class TelegramService
@@ -197,7 +197,7 @@ class TelegramService
             ];
         }
 
-        $testMessage = "✅ Тестовое сообщение от HolartCMS\n\nДата и время: " . now()->format('d.m.Y H:i:s');
+        $testMessage = "✅ Тестовое сообщение от AxoraCMS\n\nДата и время: " . now()->format('d.m.Y H:i:s');
 
         $result = $this->sendMessage($testMessage);
 

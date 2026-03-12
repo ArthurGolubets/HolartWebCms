@@ -1,6 +1,6 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Models\Commerce;
+namespace HolartWeb\AxoraCMS\Models\Commerce;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

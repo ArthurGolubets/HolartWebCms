@@ -1,6 +1,6 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Enums;
+namespace HolartWeb\AxoraCMS\Enums;
 
 enum AdminRole: string
 {

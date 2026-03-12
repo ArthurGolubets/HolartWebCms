@@ -1,10 +1,10 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
-use HolartWeb\HolartCMS\Models\TModule;
-use HolartWeb\HolartCMS\Services\LicenseService;
+use HolartWeb\AxoraCMS\Models\TModule;
+use HolartWeb\AxoraCMS\Services\LicenseService;
 use Illuminate\Support\Facades\Artisan;
 
 class CallbackInstallCommand extends Command
@@ -12,8 +12,8 @@ class CallbackInstallCommand extends Command
     const VERSION = '1.0.0';
     const MODULE_NAME = 'callback';
 
-    protected $signature = 'holartcms:callback-user-install';
-    protected $description = 'Install HolartCMS Callback Module';
+    protected $signature = 'axoracms:callback-user-install';
+    protected $description = 'Install AxoraCMS Callback Module';
 
     protected LicenseService $licenseService;
 
@@ -26,7 +26,7 @@ class CallbackInstallCommand extends Command
     public function handle(): int
     {
         $this->info('╔════════════════════════════════════════╗');
-        $this->info('║  HolartCMS Callback Module Installer  ║');
+        $this->info('║  AxoraCMS Callback Module Installer  ║');
         $this->info('╚════════════════════════════════════════╝');
         $this->newLine();
 
@@ -43,9 +43,9 @@ class CallbackInstallCommand extends Command
         // Step 2: Run Migrations
         $this->info('Step 2: Running database migrations...');
 
-        $packagePath = base_path('vendor/holartweb/holart-cms');
+        $packagePath = base_path('vendor/holartweb/axora-cms');
         if (!file_exists($packagePath)) {
-            $packagePath = base_path('packages/holartweb/holart-cms');
+            $packagePath = base_path('packages/holartweb/axora-cms');
         }
 
         try {

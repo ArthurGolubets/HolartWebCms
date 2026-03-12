@@ -1,6 +1,6 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Models\Menus;
+namespace HolartWeb\AxoraCMS\Models\Menus;
 
 use Illuminate\Database\Eloquent\Model;
 

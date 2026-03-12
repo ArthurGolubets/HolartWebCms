@@ -1,12 +1,12 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers;
+namespace HolartWeb\AxoraCMS\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use HolartWeb\HolartCMS\Models\TAdministrator;
+use HolartWeb\AxoraCMS\Models\TAdministrator;
 
 class AdministratorController extends Controller
 {

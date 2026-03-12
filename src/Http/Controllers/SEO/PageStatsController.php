@@ -1,10 +1,10 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers\SEO;
+namespace HolartWeb\AxoraCMS\Http\Controllers\SEO;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use HolartWeb\HolartCMS\Services\PageVisitService;
+use HolartWeb\AxoraCMS\Services\PageVisitService;
 
 class PageStatsController extends Controller
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers;
+namespace HolartWeb\AxoraCMS\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
-use HolartWeb\HolartCMS\Models\TAdminAction;
-use HolartWeb\HolartCMS\Models\TModule;
+use HolartWeb\AxoraCMS\Models\TAdminAction;
+use HolartWeb\AxoraCMS\Models\TModule;
 
 class ModulesController extends Controller
 {
@@ -96,7 +96,7 @@ class ModulesController extends Controller
 
         return response()->json([
             'modules' => $modules,
-            'show_modules_page' => config('holart-cms.show_modules', false)
+            'show_modules_page' => config('axora-cms.show_modules', false)
         ]);
     }
 
@@ -106,7 +106,7 @@ class ModulesController extends Controller
     public function index()
     {
         // Check if modules page is enabled
-        if (!config('holart-cms.show_modules', false)) {
+        if (!config('axora-cms.show_modules', false)) {
             abort(404);
         }
 
@@ -116,24 +116,24 @@ class ModulesController extends Controller
                 'name' => 'Каталог и товары',
                 'description' => 'Модуль, который добавит на сайт систему каталогов, товаров, и их логику',
                 'installed' => $this->isShopModuleInstalled(),
-                'install_command' => 'holartcms:shop-install',
-                'uninstall_command' => 'holartcms:shop-uninstall',
+                'install_command' => 'axoracms:shop-install',
+                'uninstall_command' => 'axoracms:shop-uninstall',
             ],
             [
                 'id' => 'callback',
                 'name' => 'Обратная связь',
                 'description' => 'Модуль для управления email подписками, комментариями и обращениями пользователей',
                 'installed' => $this->isCallbackModuleInstalled(),
-                'install_command' => 'holartcms:callback-user-install',
-                'uninstall_command' => 'holartcms:callback-user-uninstall',
+                'install_command' => 'axoracms:callback-user-install',
+                'uninstall_command' => 'axoracms:callback-user-uninstall',
             ],
             [
                 'id' => 'commerce',
                 'name' => 'Коммерция',
                 'description' => 'Модуль для управления заказами, промокодами и платежными транзакциями. Требует установленный модуль "Каталог и товары"',
                 'installed' => $this->isCommerceModuleInstalled(),
-                'install_command' => 'holartcms:commerce-install',
-                'uninstall_command' => 'holartcms:commerce-uninstall',
+                'install_command' => 'axoracms:commerce-install',
+                'uninstall_command' => 'axoracms:commerce-uninstall',
                 'dependencies' => ['shop'],
                 'can_install' => $this->isShopModuleInstalled(),
             ],
@@ -142,32 +142,32 @@ class ModulesController extends Controller
                 'name' => 'Журнал активности',
                 'description' => 'Модуль для отслеживания всех действий администраторов: создание, редактирование, удаление товаров, категорий, заказов, установка модулей и изменение настроек',
                 'installed' => $this->isLoggingModuleInstalled(),
-                'install_command' => 'holartcms:logging-install',
-                'uninstall_command' => 'holartcms:logging-uninstall',
+                'install_command' => 'axoracms:logging-install',
+                'uninstall_command' => 'axoracms:logging-uninstall',
             ],
             [
                 'id' => 'infoblocks',
                 'name' => 'Информационные блоки',
                 'description' => 'Модуль для создания пользовательских сущностей с динамическими полями.',
                 'installed' => $this->isInfoBlocksModuleInstalled(),
-                'install_command' => 'holartcms:infoblocks-install',
-                'uninstall_command' => 'holartcms:infoblocks-uninstall',
+                'install_command' => 'axoracms:infoblocks-install',
+                'uninstall_command' => 'axoracms:infoblocks-uninstall',
             ],
             [
                 'id' => 'seo',
                 'name' => 'Страницы и SEO',
                 'description' => 'Модуль для создания статических страниц и управления SEO-оптимизацией: мета-теги, sitemap, ЧПУ.',
                 'installed' => $this->isSeoModuleInstalled(),
-                'install_command' => 'holartcms:seo-install',
-                'uninstall_command' => 'holartcms:seo-uninstall',
+                'install_command' => 'axoracms:seo-install',
+                'uninstall_command' => 'axoracms:seo-uninstall',
             ],
             [
                 'id' => 'pagebuilder',
                 'name' => 'Конструктор страниц',
                 'description' => 'Модуль для создания и редактирования страниц с помощью визуального конструктора блоков. Требует установленный модуль "Страницы и SEO"',
                 'installed' => $this->isPageBuilderModuleInstalled(),
-                'install_command' => 'holartcms:pagebuilder-install',
-                'uninstall_command' => 'holartcms:pagebuilder-uninstall',
+                'install_command' => 'axoracms:pagebuilder-install',
+                'uninstall_command' => 'axoracms:pagebuilder-uninstall',
                 'dependencies' => ['seo'],
                 'can_install' => $this->isSeoModuleInstalled(),
             ],
@@ -176,8 +176,8 @@ class ModulesController extends Controller
                 'name' => 'Telegram',
                 'description' => 'Интеграция с Telegram для отправки уведомлений через бота',
                 'installed' => $this->isTelegramIntegrationInstalled(),
-                'install_command' => 'holartcms:telegram-install',
-                'uninstall_command' => 'holartcms:telegram-uninstall',
+                'install_command' => 'axoracms:telegram-install',
+                'uninstall_command' => 'axoracms:telegram-uninstall',
                 'type' => 'integration',
             ],
             [
@@ -185,8 +185,8 @@ class ModulesController extends Controller
                 'name' => 'ЮКassa',
                 'description' => 'Интеграция с платежной системой ЮКassa для приема платежей. Требует установленный модуль "Коммерция"',
                 'installed' => $this->isYookassaIntegrationInstalled(),
-                'install_command' => 'holartcms:yookassa-install',
-                'uninstall_command' => 'holartcms:yookassa-uninstall',
+                'install_command' => 'axoracms:yookassa-install',
+                'uninstall_command' => 'axoracms:yookassa-uninstall',
                 'type' => 'integration',
                 'dependencies' => ['commerce'],
                 'can_install' => $this->isCommerceModuleInstalled(),
@@ -216,7 +216,7 @@ class ModulesController extends Controller
     public function update(Request $request)
     {
         try {
-            Artisan::call('holartcms:update');
+            Artisan::call('axoracms:update');
 
             $output = Artisan::output();
 
@@ -250,31 +250,31 @@ class ModulesController extends Controller
 
             switch ($moduleId) {
                 case 'shop':
-                    $exitCode = Artisan::call('holartcms:shop-install');
+                    $exitCode = Artisan::call('axoracms:shop-install');
                     break;
                 case 'callback':
-                    $exitCode = Artisan::call('holartcms:callback-user-install');
+                    $exitCode = Artisan::call('axoracms:callback-user-install');
                     break;
                 case 'commerce':
-                    $exitCode = Artisan::call('holartcms:commerce-install');
+                    $exitCode = Artisan::call('axoracms:commerce-install');
                     break;
                 case 'logging':
-                    $exitCode = Artisan::call('holartcms:logging-install');
+                    $exitCode = Artisan::call('axoracms:logging-install');
                     break;
                 case 'infoblocks':
-                    $exitCode = Artisan::call('holartcms:infoblocks-install');
+                    $exitCode = Artisan::call('axoracms:infoblocks-install');
                     break;
                 case 'seo':
-                    $exitCode = Artisan::call('holartcms:seo-install');
+                    $exitCode = Artisan::call('axoracms:seo-install');
                     break;
                 case 'pagebuilder':
-                    $exitCode = Artisan::call('holartcms:pagebuilder-install');
+                    $exitCode = Artisan::call('axoracms:pagebuilder-install');
                     break;
                 case 'telegram':
-                    $exitCode = Artisan::call('holartcms:telegram-install');
+                    $exitCode = Artisan::call('axoracms:telegram-install');
                     break;
                 case 'yookassa':
-                    $exitCode = Artisan::call('holartcms:yookassa-install');
+                    $exitCode = Artisan::call('axoracms:yookassa-install');
                     break;
                 default:
                     return response()->json([
@@ -327,31 +327,31 @@ class ModulesController extends Controller
             // Update is essentially a reinstall that preserves data
             switch ($moduleId) {
                 case 'shop':
-                    $exitCode = Artisan::call('holartcms:shop-install');
+                    $exitCode = Artisan::call('axoracms:shop-install');
                     break;
                 case 'callback':
-                    $exitCode = Artisan::call('holartcms:callback-user-install');
+                    $exitCode = Artisan::call('axoracms:callback-user-install');
                     break;
                 case 'commerce':
-                    $exitCode = Artisan::call('holartcms:commerce-install');
+                    $exitCode = Artisan::call('axoracms:commerce-install');
                     break;
                 case 'logging':
-                    $exitCode = Artisan::call('holartcms:logging-install');
+                    $exitCode = Artisan::call('axoracms:logging-install');
                     break;
                 case 'infoblocks':
-                    $exitCode = Artisan::call('holartcms:infoblocks-install');
+                    $exitCode = Artisan::call('axoracms:infoblocks-install');
                     break;
                 case 'seo':
-                    $exitCode = Artisan::call('holartcms:seo-install');
+                    $exitCode = Artisan::call('axoracms:seo-install');
                     break;
                 case 'pagebuilder':
-                    $exitCode = Artisan::call('holartcms:pagebuilder-install');
+                    $exitCode = Artisan::call('axoracms:pagebuilder-install');
                     break;
                 case 'telegram':
-                    $exitCode = Artisan::call('holartcms:telegram-install');
+                    $exitCode = Artisan::call('axoracms:telegram-install');
                     break;
                 case 'yookassa':
-                    $exitCode = Artisan::call('holartcms:yookassa-install');
+                    $exitCode = Artisan::call('axoracms:yookassa-install');
                     break;
                 default:
                     return response()->json([
@@ -415,47 +415,47 @@ class ModulesController extends Controller
         try {
             switch ($moduleId) {
                 case 'shop':
-                    Artisan::call('holartcms:shop-uninstall', [
+                    Artisan::call('axoracms:shop-uninstall', [
                         '--preserve-db' => $preserveDatabase
                     ]);
                     break;
                 case 'callback':
-                    Artisan::call('holartcms:callback-user-uninstall', [
+                    Artisan::call('axoracms:callback-user-uninstall', [
                         '--preserve-db' => $preserveDatabase
                     ]);
                     break;
                 case 'commerce':
-                    Artisan::call('holartcms:commerce-uninstall', [
+                    Artisan::call('axoracms:commerce-uninstall', [
                         '--preserve-db' => $preserveDatabase
                     ]);
                     break;
                 case 'logging':
-                    Artisan::call('holartcms:logging-uninstall', [
+                    Artisan::call('axoracms:logging-uninstall', [
                         '--preserve-db' => $preserveDatabase
                     ]);
                     break;
                 case 'infoblocks':
-                    Artisan::call('holartcms:infoblocks-uninstall', [
+                    Artisan::call('axoracms:infoblocks-uninstall', [
                         '--preserve-db' => $preserveDatabase
                     ]);
                     break;
                 case 'seo':
-                    Artisan::call('holartcms:seo-uninstall', [
+                    Artisan::call('axoracms:seo-uninstall', [
                         '--preserve-db' => $preserveDatabase
                     ]);
                     break;
                 case 'pagebuilder':
-                    Artisan::call('holartcms:pagebuilder-uninstall', [
+                    Artisan::call('axoracms:pagebuilder-uninstall', [
                         '--preserve-db' => $preserveDatabase
                     ]);
                     break;
                 case 'telegram':
-                    Artisan::call('holartcms:telegram-uninstall', [
+                    Artisan::call('axoracms:telegram-uninstall', [
                         '--preserve-db' => $preserveDatabase
                     ]);
                     break;
                 case 'yookassa':
-                    Artisan::call('holartcms:yookassa-uninstall', [
+                    Artisan::call('axoracms:yookassa-uninstall', [
                         '--preserve-db' => $preserveDatabase
                     ]);
                     break;
@@ -563,8 +563,8 @@ class ModulesController extends Controller
      */
     private function getLicenseKey()
     {
-        if (class_exists('HolartWeb\HolartCMS\Models\TPanelSettings')) {
-            $settings = \HolartWeb\HolartCMS\Models\TPanelSettings::first();
+        if (class_exists('HolartWeb\AxoraCMS\Models\TPanelSettings')) {
+            $settings = \HolartWeb\AxoraCMS\Models\TPanelSettings::first();
             return $settings->license_key ?? '';
         }
         return '';

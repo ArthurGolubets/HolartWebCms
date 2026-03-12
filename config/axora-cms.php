@@ -12,7 +12,7 @@ return [
     |
     */
 
-    'name' => env('HOLART_CMS_NAME', 'HolartCMS'),
+    'name' => env('HOLART_CMS_NAME', 'AxoraCMS'),
 
     /*
     |--------------------------------------------------------------------------
@@ -69,7 +69,7 @@ return [
     |
     */
 
-    'admin_model' => \HolartWeb\HolartCMS\Models\TAdministrator::class,
+    'admin_model' => \HolartWeb\AxoraCMS\Models\TAdministrator::class,
 
     /*
     |--------------------------------------------------------------------------

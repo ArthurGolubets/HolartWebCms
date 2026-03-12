@@ -1,41 +1,41 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
-use HolartWeb\HolartCMS\Models\TModule;
+use HolartWeb\AxoraCMS\Models\TModule;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
-use HolartWeb\HolartCMS\Models\TAdminAction;
+use HolartWeb\AxoraCMS\Models\TAdminAction;
 
 class PageBuilderInstallCommand extends Command
 {
     const VERSION = '1.0.0';
     const MODULE_NAME = 'pagebuilder';
 
-    protected $signature = 'holartcms:pagebuilder-install';
-    protected $description = 'Install HolartCMS Page Builder Module';
+    protected $signature = 'axoracms:pagebuilder-install';
+    protected $description = 'Install AxoraCMS Page Builder Module';
 
     public function handle(): int
     {
         $this->info('╔═══════════════════════════════════════════╗');
-        $this->info('║ HolartCMS Page Builder Module Installer  ║');
+        $this->info('║ AxoraCMS Page Builder Module Installer  ║');
         $this->info('╚═══════════════════════════════════════════╝');
         $this->newLine();
 
         // Determine package path (works for both local development and composer installation)
-        $packagePath = base_path('vendor/holartweb/holart-cms');
+        $packagePath = base_path('vendor/holartweb/axora-cms');
         if (!file_exists($packagePath)) {
-            $packagePath = base_path('packages/holartweb/holart-cms');
+            $packagePath = base_path('packages/holartweb/axora-cms');
         }
 
         // Step 1: Run migrations
         $this->info('Step 1: Running Page Builder migrations...');
 
         // Determine migration path
-        $migrationPath = 'vendor/holartweb/holart-cms/database/migrations/pages';
+        $migrationPath = 'vendor/holartweb/axora-cms/database/migrations/pages';
         if (!file_exists(base_path($migrationPath))) {
-            $migrationPath = 'packages/holartweb/holart-cms/database/migrations/pages';
+            $migrationPath = 'packages/holartweb/axora-cms/database/migrations/pages';
         }
 
         Artisan::call('migrate', [

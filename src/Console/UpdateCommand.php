@@ -1,10 +1,10 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use HolartWeb\HolartCMS\Services\LicenseService;
+use HolartWeb\AxoraCMS\Services\LicenseService;
 
 class UpdateCommand extends Command
 {
@@ -13,14 +13,14 @@ class UpdateCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'holartcms:update';
+    protected $signature = 'axoracms:update';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Обновить HolartCMS: конфигурацию и пересобрать фронтенд';
+    protected $description = 'Обновить AxoraCMS: конфигурацию и пересобрать фронтенд';
 
     /**
      * License service instance.
@@ -41,7 +41,7 @@ class UpdateCommand extends Command
      */
     public function handle(): int
     {
-        $this->info('🔄 Обновление HolartCMS...');
+        $this->info('🔄 Обновление AxoraCMS...');
         $this->newLine();
 
         // Check license
@@ -55,7 +55,7 @@ class UpdateCommand extends Command
         // 1. Publish config
         $this->info('📦 Публикация конфигурации...');
         $this->call('vendor:publish', [
-            '--tag' => 'holart-cms-config',
+            '--tag' => 'axora-cms-config',
             '--force' => true,
         ]);
         $this->newLine();
@@ -68,7 +68,7 @@ class UpdateCommand extends Command
         // 3. Publish assets
         $this->info('📦 Публикация assets...');
         $this->call('vendor:publish', [
-            '--tag' => 'holart-cms-assets',
+            '--tag' => 'axora-cms-assets',
             '--force' => true,
         ]);
         $this->newLine();
@@ -80,7 +80,7 @@ class UpdateCommand extends Command
         $this->call('view:clear');
         $this->newLine();
 
-        $this->info('✅ HolartCMS успешно обновлен!');
+        $this->info('✅ AxoraCMS успешно обновлен!');
 
         return self::SUCCESS;
     }
@@ -129,7 +129,7 @@ class UpdateCommand extends Command
         // Check saved license
         if (!$this->licenseService->hasValidLicense('update')) {
             $this->error('❌ Лицензия недействительна или отсутствует');
-            $this->line('Пожалуйста, переустановите HolartCMS с действительной лицензией');
+            $this->line('Пожалуйста, переустановите AxoraCMS с действительной лицензией');
             return false;
         }
 

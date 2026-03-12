@@ -1,6 +1,6 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Services;
+namespace HolartWeb\AxoraCMS\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -227,8 +227,8 @@ class PageVisitService
     private function getPageModel(): ?string
     {
         // Use package model
-        if (class_exists('HolartWeb\HolartCMS\Models\SEO\TPage')) {
-            return 'HolartWeb\HolartCMS\Models\SEO\TPage';
+        if (class_exists('HolartWeb\AxoraCMS\Models\SEO\TPage')) {
+            return 'HolartWeb\AxoraCMS\Models\SEO\TPage';
         }
 
         return null;
@@ -242,8 +242,8 @@ class PageVisitService
     private function getPageVisitModel(): ?string
     {
         // Use package model
-        if (class_exists('HolartWeb\HolartCMS\Models\SEO\TPageVisit')) {
-            return 'HolartWeb\HolartCMS\Models\SEO\TPageVisit';
+        if (class_exists('HolartWeb\AxoraCMS\Models\SEO\TPageVisit')) {
+            return 'HolartWeb\AxoraCMS\Models\SEO\TPageVisit';
         }
 
         return null;

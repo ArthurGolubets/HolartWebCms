@@ -165,7 +165,7 @@
 // В bootstrap/app.php или routes/web.php
 Route::get('/custom-page', function() {
     return view('custom');
-})->withoutMiddleware(\HolartWeb\HolartCMS\Http\Middleware\SharePageData::class);
+})->withoutMiddleware(\HolartWeb\AxoraCMS\Http\Middleware\SharePageData::class);
 ```
 
 ## Примеры типовых задач

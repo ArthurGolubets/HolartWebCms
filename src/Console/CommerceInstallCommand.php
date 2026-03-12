@@ -1,10 +1,10 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
-use HolartWeb\HolartCMS\Models\TModule;
-use HolartWeb\HolartCMS\Services\LicenseService;
+use HolartWeb\AxoraCMS\Models\TModule;
+use HolartWeb\AxoraCMS\Services\LicenseService;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
@@ -14,8 +14,8 @@ class CommerceInstallCommand extends Command
     const VERSION = '1.0.0';
     const MODULE_NAME = 'commerce';
 
-    protected $signature = 'holartcms:commerce-install';
-    protected $description = 'Install HolartCMS Commerce Module';
+    protected $signature = 'axoracms:commerce-install';
+    protected $description = 'Install AxoraCMS Commerce Module';
 
     protected LicenseService $licenseService;
 
@@ -28,7 +28,7 @@ class CommerceInstallCommand extends Command
     public function handle(): int
     {
         $this->info('╔════════════════════════════════════════╗');
-        $this->info('║  HolartCMS Commerce Module Installer  ║');
+        $this->info('║  AxoraCMS Commerce Module Installer  ║');
         $this->info('╚════════════════════════════════════════╝');
         $this->newLine();
 
@@ -37,7 +37,7 @@ class CommerceInstallCommand extends Command
         if (!$this->checkShopModuleInstalled()) {
             $this->error('❌ Shop module is not installed!');
             $this->error('Commerce module requires Shop module to be installed first.');
-            $this->error('Please install Shop module using: php artisan holartcms:shop-install');
+            $this->error('Please install Shop module using: php artisan axoracms:shop-install');
             return self::FAILURE;
         }
         $this->info('✓ Shop module is installed');
@@ -57,9 +57,9 @@ class CommerceInstallCommand extends Command
         $this->info('Step 3: Copying commerce models...');
 
         // Determine package path (works for both local development and composer installation)
-        $packagePath = base_path('vendor/holartweb/holart-cms');
+        $packagePath = base_path('vendor/holartweb/axora-cms');
         if (!file_exists($packagePath)) {
-            $packagePath = base_path('packages/holartweb/holart-cms');
+            $packagePath = base_path('packages/holartweb/axora-cms');
         }
 
         $appModelsPath = app_path('Models');
@@ -97,7 +97,7 @@ class CommerceInstallCommand extends Command
                 $content = file_get_contents($source);
                 // Update namespace from package to app
                 $content = str_replace(
-                    'namespace HolartWeb\HolartCMS\Http\Controllers\Commerce;',
+                    'namespace HolartWeb\AxoraCMS\Http\Controllers\Commerce;',
                     'namespace App\Http\Controllers;',
                     $content
                 );
@@ -213,7 +213,7 @@ class CommerceInstallCommand extends Command
         // Step 7: Publish Assets
         $this->info('Step 7: Publishing assets...');
         Artisan::call('vendor:publish', [
-            '--tag' => 'holart-cms-assets',
+            '--tag' => 'axora-cms-assets',
             '--force' => true,
         ]);
         $this->info('✓ Assets published successfully');

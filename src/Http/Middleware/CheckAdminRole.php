@@ -1,11 +1,11 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Middleware;
+namespace HolartWeb\AxoraCMS\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use HolartWeb\HolartCMS\Enums\AdminRole;
+use HolartWeb\AxoraCMS\Enums\AdminRole;
 
 class CheckAdminRole
 {

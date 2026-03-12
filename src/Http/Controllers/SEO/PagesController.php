@@ -1,11 +1,11 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers\SEO;
+namespace HolartWeb\AxoraCMS\Http\Controllers\SEO;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use HolartWeb\HolartCMS\Models\SEO\TPage;
-use HolartWeb\HolartCMS\Models\TAdminAction;
+use HolartWeb\AxoraCMS\Models\SEO\TPage;
+use HolartWeb\AxoraCMS\Models\TAdminAction;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Artisan;
 
@@ -212,10 +212,10 @@ class PagesController extends Controller
     {
         try {
             // Execute the command using Artisan
-            Artisan::call('holartcms:scan-routes');
+            Artisan::call('axoracms:scan-routes');
 
             // Get the results from the command
-            $results = \HolartWeb\HolartCMS\Console\ScanRoutesCommand::getLastResults();
+            $results = \HolartWeb\AxoraCMS\Console\ScanRoutesCommand::getLastResults();
 
             if ($results) {
                 return response()->json([

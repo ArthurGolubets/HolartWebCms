@@ -1,9 +1,9 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
-use HolartWeb\HolartCMS\Models\TModule;
+use HolartWeb\AxoraCMS\Models\TModule;
 use Illuminate\Support\Facades\Artisan;
 
 class LoggingInstallCommand extends Command
@@ -11,20 +11,20 @@ class LoggingInstallCommand extends Command
     const VERSION = '1.0.0';
     const MODULE_NAME = 'logging';
 
-    protected $signature = 'holartcms:logging-install';
-    protected $description = 'Install HolartCMS Logging Module';
+    protected $signature = 'axoracms:logging-install';
+    protected $description = 'Install AxoraCMS Logging Module';
 
     public function handle(): int
     {
         $this->info('╔══════════════════════════════════════╗');
-        $this->info('║  HolartCMS Logging Module Installer ║');
+        $this->info('║  AxoraCMS Logging Module Installer ║');
         $this->info('╚══════════════════════════════════════╝');
         $this->newLine();
 
         // Determine package path (works for both local development and composer installation)
-        $packagePath = base_path('vendor/holartweb/holart-cms');
+        $packagePath = base_path('vendor/holartweb/axora-cms');
         if (!file_exists($packagePath)) {
-            $packagePath = base_path('packages/holartweb/holart-cms');
+            $packagePath = base_path('packages/holartweb/axora-cms');
         }
 
         // Step 1: Run Migration
@@ -32,7 +32,7 @@ class LoggingInstallCommand extends Command
 
         try {
             Artisan::call('migrate', [
-                '--path' => 'vendor/holartweb/holart-cms/database/migrations/2026_02_27_125658_create_t_admin_actions_table.php',
+                '--path' => 'vendor/holartweb/axora-cms/database/migrations/2026_02_27_125658_create_t_admin_actions_table.php',
                 '--force' => true
             ]);
             $this->info('✓ Migrations completed successfully');
@@ -40,7 +40,7 @@ class LoggingInstallCommand extends Command
             // Try alternative path
             try {
                 Artisan::call('migrate', [
-                    '--path' => 'packages/holartweb/holart-cms/database/migrations/2026_02_27_125658_create_t_admin_actions_table.php',
+                    '--path' => 'packages/holartweb/axora-cms/database/migrations/2026_02_27_125658_create_t_admin_actions_table.php',
                     '--force' => true
                 ]);
                 $this->info('✓ Migrations completed successfully');
@@ -80,7 +80,7 @@ class LoggingInstallCommand extends Command
         // Step 3: Publish Assets
         $this->info('Step 3: Publishing assets...');
         Artisan::call('vendor:publish', [
-            '--tag' => 'holart-cms-assets',
+            '--tag' => 'axora-cms-assets',
             '--force' => true,
         ]);
         $this->info('✓ Assets published successfully');

@@ -1,6 +1,6 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\Schema;
 
 class PagesUninstallCommand extends Command
 {
-    protected $signature = 'holartcms:pages-uninstall {--preserve-db : Preserve database tables and data} {--force : Force uninstall without confirmation} {--remove-components : Remove default blade components}';
-    protected $description = 'Uninstall HolartCMS Pages Module';
+    protected $signature = 'axoracms:pages-uninstall {--preserve-db : Preserve database tables and data} {--force : Force uninstall without confirmation} {--remove-components : Remove default blade components}';
+    protected $description = 'Uninstall AxoraCMS Pages Module';
 
     public function handle(): int
     {
         $this->info('╔══════════════════════════════════════╗');
-        $this->info('║ HolartCMS Pages Module Uninstaller  ║');
+        $this->info('║ AxoraCMS Pages Module Uninstaller  ║');
         $this->info('╚══════════════════════════════════════╝');
         $this->newLine();
 

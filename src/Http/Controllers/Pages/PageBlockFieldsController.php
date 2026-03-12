@@ -1,6 +1,6 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers\Pages;
+namespace HolartWeb\AxoraCMS\Http\Controllers\Pages;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -13,11 +13,11 @@ class PageBlockFieldsController extends Controller
     public function getCatalogs(Request $request)
     {
         // Check if Shop module is installed
-        if (!class_exists('HolartWeb\\HolartCMS\\Models\\Shop\\TCatalog')) {
+        if (!class_exists('HolartWeb\\AxoraCMS\\Models\\Shop\\TCatalog')) {
             return response()->json([]);
         }
 
-        $catalogClass = 'HolartWeb\\HolartCMS\\Models\\Shop\\TCatalog';
+        $catalogClass = 'HolartWeb\\AxoraCMS\\Models\\Shop\\TCatalog';
         $query = $catalogClass::query()->where('is_active', true);
 
         // Filter by search
@@ -41,11 +41,11 @@ class PageBlockFieldsController extends Controller
     public function getInfoBlocks(Request $request)
     {
         // Check if InfoBlocks module is installed
-        if (!class_exists('HolartWeb\\HolartCMS\\Models\\InfoBlocks\\TInfoBlock')) {
+        if (!class_exists('HolartWeb\\AxoraCMS\\Models\\InfoBlocks\\TInfoBlock')) {
             return response()->json([]);
         }
 
-        $infoBlockClass = 'HolartWeb\\HolartCMS\\Models\\InfoBlocks\\TInfoBlock';
+        $infoBlockClass = 'HolartWeb\\AxoraCMS\\Models\\InfoBlocks\\TInfoBlock';
         $query = $infoBlockClass::query()->where('is_active', true);
 
         // Filter by search
@@ -64,11 +64,11 @@ class PageBlockFieldsController extends Controller
     public function getProducts(Request $request)
     {
         // Check if Shop module is installed
-        if (!class_exists('HolartWeb\\HolartCMS\\Models\\Shop\\TProduct')) {
+        if (!class_exists('HolartWeb\\AxoraCMS\\Models\\Shop\\TProduct')) {
             return response()->json([]);
         }
 
-        $productClass = 'HolartWeb\\HolartCMS\\Models\\Shop\\TProduct';
+        $productClass = 'HolartWeb\\AxoraCMS\\Models\\Shop\\TProduct';
         $query = $productClass::query()->where('is_active', true);
 
         // Filter by search
@@ -111,11 +111,11 @@ class PageBlockFieldsController extends Controller
     public function getInfoBlockElements(Request $request, $infoBlockId)
     {
         // Check if InfoBlocks module is installed
-        if (!class_exists('HolartWeb\\HolartCMS\\Models\\InfoBlocks\\TInfoBlockElement')) {
+        if (!class_exists('HolartWeb\\AxoraCMS\\Models\\InfoBlocks\\TInfoBlockElement')) {
             return response()->json([]);
         }
 
-        $elementClass = 'HolartWeb\\HolartCMS\\Models\\InfoBlocks\\TInfoBlockElement';
+        $elementClass = 'HolartWeb\\AxoraCMS\\Models\\InfoBlocks\\TInfoBlockElement';
         $query = $elementClass::query()
             ->where('info_block_id', $infoBlockId)
             ->where('is_active', true);

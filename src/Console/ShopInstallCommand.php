@@ -1,10 +1,10 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
-use HolartWeb\HolartCMS\Services\LicenseService;
-use HolartWeb\HolartCMS\Models\TModule;
+use HolartWeb\AxoraCMS\Services\LicenseService;
+use HolartWeb\AxoraCMS\Models\TModule;
 use Illuminate\Support\Facades\Artisan;
 
 class ShopInstallCommand extends Command
@@ -12,8 +12,8 @@ class ShopInstallCommand extends Command
     const VERSION = '1.0.0';
     const MODULE_NAME = 'shop';
 
-    protected $signature = 'holartcms:shop-install';
-    protected $description = 'Install HolartCMS Shop Module';
+    protected $signature = 'axoracms:shop-install';
+    protected $description = 'Install AxoraCMS Shop Module';
 
     protected LicenseService $licenseService;
 
@@ -26,7 +26,7 @@ class ShopInstallCommand extends Command
     public function handle(): int
     {
         $this->info('╔══════════════════════════════════════╗');
-        $this->info('║   HolartCMS Shop Module Installer   ║');
+        $this->info('║   AxoraCMS Shop Module Installer   ║');
         $this->info('╚══════════════════════════════════════╝');
         $this->newLine();
 
@@ -44,9 +44,9 @@ class ShopInstallCommand extends Command
         $this->info('Step 2: Running database migrations...');
 
         // Determine package path (works for both local development and composer installation)
-        $packagePath = base_path('vendor/holartweb/holart-cms');
+        $packagePath = base_path('vendor/holartweb/axora-cms');
         if (!file_exists($packagePath)) {
-            $packagePath = base_path('packages/holartweb/holart-cms');
+            $packagePath = base_path('packages/holartweb/axora-cms');
         }
 
         try {
@@ -92,7 +92,7 @@ class ShopInstallCommand extends Command
         // Step 4: Publish Assets
         $this->info('Step 4: Publishing assets...');
         Artisan::call('vendor:publish', [
-            '--tag' => 'holart-cms-assets',
+            '--tag' => 'axora-cms-assets',
             '--force' => true,
         ]);
         $this->info('✓ Assets published successfully');

@@ -31,8 +31,8 @@
         <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
           <h4 class="font-medium text-gray-900 dark:text-white mb-2">Полезные команды</h4>
           <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-            <p><code class="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">php artisan holartcms:scan-routes</code> - Сканировать роуты приложения</p>
-            <p><code class="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">php artisan holartcms:scan-routes --update</code> - Обновить существующие страницы</p>
+            <p><code class="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">php artisan axoracms:scan-routes</code> - Сканировать роуты приложения</p>
+            <p><code class="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">php artisan axoracms:scan-routes --update</code> - Обновить существующие страницы</p>
           </div>
         </div>
 

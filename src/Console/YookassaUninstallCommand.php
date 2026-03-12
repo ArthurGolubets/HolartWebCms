@@ -1,9 +1,9 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
-use HolartWeb\HolartCMS\Models\TModule;
+use HolartWeb\AxoraCMS\Models\TModule;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
@@ -11,7 +11,7 @@ class YookassaUninstallCommand extends Command
 {
     const MODULE_NAME = 'yookassa';
 
-    protected $signature = 'holartcms:yookassa-uninstall {--preserve-db : Preserve database tables}';
+    protected $signature = 'axoracms:yookassa-uninstall {--preserve-db : Preserve database tables}';
     protected $description = 'Uninstall Yookassa Integration';
 
     public function handle(): int

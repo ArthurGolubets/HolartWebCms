@@ -1,9 +1,9 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
-use HolartWeb\HolartCMS\Models\TModule;
+use HolartWeb\AxoraCMS\Models\TModule;
 use Illuminate\Support\Facades\Artisan;
 
 class TelegramInstallCommand extends Command
@@ -11,7 +11,7 @@ class TelegramInstallCommand extends Command
     const VERSION = '1.0.0';
     const MODULE_NAME = 'telegram';
 
-    protected $signature = 'holartcms:telegram-install';
+    protected $signature = 'axoracms:telegram-install';
     protected $description = 'Install Telegram Integration';
 
     public function handle(): int
@@ -24,9 +24,9 @@ class TelegramInstallCommand extends Command
         // Run Migrations
         $this->info('Running database migrations...');
 
-        $packagePath = base_path('vendor/holartweb/holart-cms');
+        $packagePath = base_path('vendor/holartweb/axora-cms');
         if (!file_exists($packagePath)) {
-            $packagePath = base_path('packages/holartweb/holart-cms');
+            $packagePath = base_path('packages/holartweb/axora-cms');
         }
 
         try {

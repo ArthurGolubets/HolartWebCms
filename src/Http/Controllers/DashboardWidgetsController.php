@@ -1,8 +1,8 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers;
+namespace HolartWeb\AxoraCMS\Http\Controllers;
 
-use HolartWeb\HolartCMS\Models\TDashboardWidget;
+use HolartWeb\AxoraCMS\Models\TDashboardWidget;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;

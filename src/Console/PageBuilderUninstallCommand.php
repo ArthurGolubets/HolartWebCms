@@ -1,9 +1,9 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Console;
+namespace HolartWeb\AxoraCMS\Console;
 
 use Illuminate\Console\Command;
-use HolartWeb\HolartCMS\Models\TModule;
+use HolartWeb\AxoraCMS\Models\TModule;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\File;
 
@@ -11,13 +11,13 @@ class PageBuilderUninstallCommand extends Command
 {
     const MODULE_NAME = 'pagebuilder';
 
-    protected $signature = 'holartcms:pagebuilder-uninstall {--preserve-db : Preserve database tables}';
-    protected $description = 'Uninstall HolartCMS Page Builder Module';
+    protected $signature = 'axoracms:pagebuilder-uninstall {--preserve-db : Preserve database tables}';
+    protected $description = 'Uninstall AxoraCMS Page Builder Module';
 
     public function handle(): int
     {
         $this->info('╔═════════════════════════════════════════════╗');
-        $this->info('║ HolartCMS Page Builder Module Uninstaller  ║');
+        $this->info('║ AxoraCMS Page Builder Module Uninstaller  ║');
         $this->info('╚═════════════════════════════════════════════╝');
         $this->newLine();
 

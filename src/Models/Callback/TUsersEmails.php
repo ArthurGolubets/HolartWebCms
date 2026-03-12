@@ -1,6 +1,6 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Models\Callback;
+namespace HolartWeb\AxoraCMS\Models\Callback;
 
 use Illuminate\Database\Eloquent\Model;
 

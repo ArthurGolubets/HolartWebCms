@@ -1,8 +1,8 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Services\Integrations;
+namespace HolartWeb\AxoraCMS\Services\Integrations;
 
-use HolartWeb\HolartCMS\Models\Integrations\TIntegrationSettings;
+use HolartWeb\AxoraCMS\Models\Integrations\TIntegrationSettings;
 
 class YookassaService
 {

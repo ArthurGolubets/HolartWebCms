@@ -1,6 +1,6 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Models\Shop;
+namespace HolartWeb\AxoraCMS\Models\Shop;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -70,7 +70,7 @@ class TFilter extends Model
      */
     public function scopeForCatalog($query, $catalogId)
     {
-        if (!class_exists('HolartWeb\HolartCMS\Models\Shop\TCatalog')) {
+        if (!class_exists('HolartWeb\AxoraCMS\Models\Shop\TCatalog')) {
             return $query->whereNull('catalog_id');
         }
 

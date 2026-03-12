@@ -1,11 +1,11 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers\Commerce;
+namespace HolartWeb\AxoraCMS\Http\Controllers\Commerce;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Validator;
-use HolartWeb\HolartCMS\Models\Commerce\TPromocodes;
+use HolartWeb\AxoraCMS\Models\Commerce\TPromocodes;
 
 class PromocodesController extends Controller
 {

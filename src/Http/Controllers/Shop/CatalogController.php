@@ -1,9 +1,9 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers\Shop;
+namespace HolartWeb\AxoraCMS\Http\Controllers\Shop;
 
-use HolartWeb\HolartCMS\Models\Shop\TCatalog;
-use HolartWeb\HolartCMS\Models\TAdminAction;
+use HolartWeb\AxoraCMS\Models\Shop\TCatalog;
+use HolartWeb\AxoraCMS\Models\TAdminAction;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
@@ -74,8 +74,8 @@ class CatalogController extends Controller
 
         // Get filters for this catalog
         $filters = [];
-        if (class_exists('HolartWeb\HolartCMS\Models\Shop\TFilter')) {
-            $filterClass = 'HolartWeb\HolartCMS\Models\Shop\TFilter';
+        if (class_exists('HolartWeb\AxoraCMS\Models\Shop\TFilter')) {
+            $filterClass = 'HolartWeb\AxoraCMS\Models\Shop\TFilter';
             $filters = $filterClass::with('values')
                 ->where('catalog_id', $id)
                 ->orderBy('sort')

@@ -1,13 +1,13 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Http\Controllers;
+namespace HolartWeb\AxoraCMS\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use HolartWeb\HolartCMS\Models\TPanelSettings;
-use HolartWeb\HolartCMS\Models\TAdminAction;
+use HolartWeb\AxoraCMS\Models\TPanelSettings;
+use HolartWeb\AxoraCMS\Models\TAdminAction;
 
 class SettingsController extends Controller
 {

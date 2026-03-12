@@ -1,6 +1,6 @@
 <?php
 
-namespace HolartWeb\HolartCMS\Services;
+namespace HolartWeb\AxoraCMS\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -17,7 +17,7 @@ class CatalogService
         if (!Schema::hasTable('t_catalogs')) {
             return null;
         }
-        return config('holart-cms.models.catalog', \HolartWeb\HolartCMS\Models\Shop\TCatalog::class);
+        return config('axora-cms.models.catalog', \HolartWeb\AxoraCMS\Models\Shop\TCatalog::class);
     }
 
     /**
@@ -28,7 +28,7 @@ class CatalogService
         if (!Schema::hasTable('t_products')) {
             return null;
         }
-        return config('holart-cms.models.product', \HolartWeb\HolartCMS\Models\Shop\TProduct::class);
+        return config('axora-cms.models.product', \HolartWeb\AxoraCMS\Models\Shop\TProduct::class);
     }
 
     /**
