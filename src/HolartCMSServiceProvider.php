@@ -70,8 +70,17 @@ class HolartCMSServiceProvider extends ServiceProvider
         $this->app['router']->aliasMiddleware('admin.auth', \HolartWeb\HolartCMS\Http\Middleware\RedirectIfNotAdmin::class);
         $this->app['router']->aliasMiddleware('share.page.data', \HolartWeb\HolartCMS\Http\Middleware\SharePageData::class);
 
-        // Add SharePageData middleware to web group globally
-        $this->app['router']->pushMiddlewareToGroup('web', \HolartWeb\HolartCMS\Http\Middleware\SharePageData::class);
+        // Add SharePageData middleware to web group only if modules are installed
+        $this->app->booted(function () {
+            try {
+                if (\HolartWeb\HolartCMS\Models\TModule::isInstalled('seo') ||
+                    \HolartWeb\HolartCMS\Models\TModule::isInstalled('pages')) {
+                    $this->app['router']->pushMiddlewareToGroup('web', \HolartWeb\HolartCMS\Http\Middleware\SharePageData::class);
+                }
+            } catch (\Exception $e) {
+                // Skip if database is not configured yet
+            }
+        });
 
         // Register commands (always register so they can be called via Artisan::call() from web)
         $this->commands([
