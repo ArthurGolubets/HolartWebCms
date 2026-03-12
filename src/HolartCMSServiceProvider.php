@@ -27,19 +27,6 @@ class HolartCMSServiceProvider extends ServiceProvider
             'driver' => 'eloquent',
             'model' => \HolartWeb\HolartCMS\Models\TAdministrator::class,
         ]);
-
-        // Register services as singletons (they handle DB checks internally)
-        $this->app->singleton(\HolartWeb\HolartCMS\Services\PageDataService::class, function ($app) {
-            return new \HolartWeb\HolartCMS\Services\PageDataService();
-        });
-
-        $this->app->singleton(\HolartWeb\HolartCMS\Services\PageVisitService::class, function ($app) {
-            return new \HolartWeb\HolartCMS\Services\PageVisitService();
-        });
-
-        $this->app->singleton(\HolartWeb\HolartCMS\Services\CatalogService::class, function ($app) {
-            return new \HolartWeb\HolartCMS\Services\CatalogService();
-        });
     }
 
     /**
@@ -52,6 +39,19 @@ class HolartCMSServiceProvider extends ServiceProvider
 
         // Load views
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'holart-cms');
+
+        // Register services as singletons (lazy loaded)
+        $this->app->singleton(\HolartWeb\HolartCMS\Services\PageDataService::class, function ($app) {
+            return new \HolartWeb\HolartCMS\Services\PageDataService();
+        });
+
+        $this->app->singleton(\HolartWeb\HolartCMS\Services\PageVisitService::class, function ($app) {
+            return new \HolartWeb\HolartCMS\Services\PageVisitService();
+        });
+
+        $this->app->singleton(\HolartWeb\HolartCMS\Services\CatalogService::class, function ($app) {
+            return new \HolartWeb\HolartCMS\Services\CatalogService();
+        });
 
         // Register middleware aliases only
         $this->app['router']->aliasMiddleware('admin.auth', \HolartWeb\HolartCMS\Http\Middleware\RedirectIfNotAdmin::class);

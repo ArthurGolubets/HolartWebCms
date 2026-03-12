@@ -9,13 +9,6 @@ use HolartWeb\HolartCMS\Services\PageDataService;
 
 class SharePageData
 {
-    protected PageDataService $pageDataService;
-
-    public function __construct(PageDataService $pageDataService)
-    {
-        $this->pageDataService = $pageDataService;
-    }
-
     /**
      * Handle an incoming request.
      *
@@ -30,16 +23,23 @@ class SharePageData
             return $next($request);
         }
 
-        // Check if the current route has an inactive entity
-        if ($this->pageDataService->hasInactiveEntity()) {
-            abort(404, 'Page not found or is inactive');
+        try {
+            // Resolve service from container (lazy load)
+            $pageDataService = app(PageDataService::class);
+
+            // Check if the current route has an inactive entity
+            if ($pageDataService->hasInactiveEntity()) {
+                abort(404, 'Page not found or is inactive');
+            }
+
+            // Get page data for current route
+            $pageData = $pageDataService->getPageData();
+
+            // Share with all views
+            View::share('pageData', $pageData);
+        } catch (\Exception $e) {
+            // If service fails (DB not available), continue without page data
         }
-
-        // Get page data for current route
-        $pageData = $this->pageDataService->getPageData();
-
-        // Share with all views
-        View::share('pageData', $pageData);
 
         return $next($request);
     }
